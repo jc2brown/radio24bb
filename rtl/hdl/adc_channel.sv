@@ -93,11 +93,11 @@ sigstat_inct (
 );
 
 
-reg [7:0] in_offset;
-always @(posedge clk) in_offset <= signed'(in) + signed'(offset); 
+//reg [7:0] in_offset;
+//always @(posedge clk) in_offset <= signed'(in) + signed'(offset); 
 
-reg in_offset_valid;
-always @(posedge clk) in_offset_valid <= valid_in; 
+//reg in_offset_valid;
+//always @(posedge clk) in_offset_valid <= valid_in; 
 
 
 
@@ -105,6 +105,7 @@ always @(posedge clk) in_offset_valid <= valid_in;
 
 
 wire [7:0] in_clamped;
+wire in_clamped_valid;
 
 gain_offset_clamp
 #(
@@ -121,7 +122,7 @@ dac_gain_offset (
     .gain(gain),
     .offset(offset),
     .out(in_clamped),
-    .out_valid()
+    .out_valid(in_clamped_valid)
 );
 
 ////always @(posedge clk) in_scaled <= (signed'(in) * signed'(gain)) + signed'({offset, 8'h0});
@@ -148,7 +149,7 @@ fir_filter_inst (
     .len(),    
 
     .in({{10{in_clamped[7]}}, in_clamped[7:0]}),
-    .valid_in(in_scaled_valid),
+    .valid_in(in_clamped_valid),
     
     .out(in_filtered),
     .valid_out(in_filtered_valid)
