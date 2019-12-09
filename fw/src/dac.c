@@ -42,34 +42,25 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 	regs->stat_cfg = 0;
 	regs->stat_limit = 0;
 
-
 	regs->dds_step = 0;
 
 	for (int i = 0; i < 4096; ++i) {
 		regs->dds_cfg = (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
-
 	}
 
 	regs->dds_step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
 
-
-
-
 	regs->att = 0b11;
 	regs->amp_en = 1;
 	regs->led = 0b001;
-
 
 	regs->dds_fm_mux = 1;
 	regs->dds_fm_raw = 0;
 	regs->dds_fm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
 	regs->dds_fm_offset = 00000000;
 
-
 	regs->mux = 4;
 }
-
-
 
 
 
@@ -167,8 +158,6 @@ void handle_dac_stat_cmd(void *arg, struct command *cmd) {
 
 
 
-
-
 void init_dac_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
 
 	struct cmd_context *dac_channel_ctx = make_cmd_context(name, arg);
@@ -182,7 +171,6 @@ void init_dac_channel_context(char *name, void* arg, struct cmd_context *parent_
 	add_command(dac_channel_ctx, "led", handle_dac_led_cmd);
 	add_command(dac_channel_ctx, "stat", handle_dac_stat_cmd);
 }
-
 
 
 
