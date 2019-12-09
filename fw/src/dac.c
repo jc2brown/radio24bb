@@ -68,12 +68,17 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 void handle_dac_opt_cmd(void *arg, struct command *cmd) {
 	struct dac_channel *channel = (struct dac_channel *)arg;
 	dac_stat(channel);
-	int min = channel->regs->stat_min;
-	int max = channel->regs->stat_max;
+	int min = (int8_t)channel->regs->stat_min;
+	int max = (int8_t)channel->regs->stat_max;
+	xil_printf("min:%d  max:%d\n", min, max);
 	int ampl = max - min;
 	int avg = (min + max) / 2;
-	channel->regs->gain = (256UL * 128UL) / ampl;
-	channel->regs->offset = -avg;
+	xil_printf("ampl:%d  avg:%d\n", ampl, avg);
+	int gain = (256UL * 128UL) / ampl;
+	int offset = -avg;
+	xil_printf("gain:%d  offset:%d\n", gain, offset);
+	channel->regs->gain = gain;
+	channel->regs->offset = offset;
 }
 
 void handle_dac_gain_cmd(void *arg, struct command *cmd) {
