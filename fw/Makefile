@@ -1,27 +1,9 @@
 
-
 FW_ROOT?=.
 
-
-
-
-
-
-
-# include $(FW_ROOT)/src/include.mk
-
-
-
+UNAME:=$(shell uname)
 
 -include $(FW_ROOT)/rtl_info.mk
-# include $(FW_ROOT)/fw_info.mk
-
-
-
-# MAIN_OBJ:=$(basename $(MAIN))
-# MAIN_OBJ:=$(addsuffix .o,$(MAIN_OBJ))
-# MAIN_OBJ:=$(addprefix $(OBJ_DIR)/,$(MAIN_OBJ))
-
 
 .SUFFIXES:
 	
@@ -78,13 +60,7 @@ WORKSPACE_DIR:=$(FW_ROOT)/workspace
 HW_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_hw
 BSP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_bsp
 APP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_app
-
-
-
-
 SRC_DIR:=$(FW_ROOT)/src
-
-
 
 SRC_LIST:=$(shell cat $(SRC_DIR)/fw_sources.lst)
 $(info $(SRC_LIST))
@@ -94,8 +70,6 @@ OBJS:=$(addsuffix .o,$(OBJS))
 OBJS:=$(addprefix $(OBJ_DIR)/,$(OBJS))
 
 SRCS:=$(addprefix $(SRC_DIR)/,$(SRC_LIST))
-
-
 
 
 BSP_GEN_STAMP:=$(FW_ROOT)/.$(PROJECT_TOP).bsp.gen
@@ -224,5 +198,4 @@ $(FW_ROOT)/clean:
 $(FW_ROOT)/boot: $(BIT_FILE) $(ELF_FILE)
 	$(XSCT) $(FW_ROOT)/tools/init_$(BOARD).tcl $(BIT_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(INIT_STAMP)
 	$(XSCT) $(FW_ROOT)/tools/boot_$(BOARD).tcl $(ELF_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(BOOT_STAMP)
-
 

@@ -100,7 +100,6 @@ $(BIT_FILE) $(HDF_FILE) $(INFO_FILE): $(IMPL_CHECKPOINT)
 	@cd $(PROJECT_DIR) && \
 	$(PREFIX) vivado -mode batch -source ../scripts/generate_bit.tcl -tclargs $(PROJECT_NAME) -tclargs $(PROJECT_TOP) $(POSTFIX)
 	cp $(RTL_ROOT)/rtl_info.mk $(RTL_ROOT)/out/
-	touch $(RTL_ROOT)/out/rtl_info.mk
 
 
 .PHONY: $(RTL_ROOT)/proj-no-bd
