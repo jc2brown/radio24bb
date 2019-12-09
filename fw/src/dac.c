@@ -3,15 +3,25 @@
 #include <math.h>
 
 #include "dac.h"
+#include "command.h"
 
 
 
 
 
 
+struct dac_channel *make_dac_channel(uint32_t regs_addr) {
+	struct dac_channel *channel = (struct dac_channel *)malloc(sizeof(struct dac_channel));
+	channel->regs = (struct dac_channel_regs *)regs_addr;
+	init_dac_channel_regs(channel->regs);
+	return channel;
+}
 
 
 
+void init_dac_channel(struct dac_channel *channel) {
+	init_dac_channel_regs(channel->regs);
+}
 
 
 
@@ -59,7 +69,59 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 
 
 
+
+
+
+
+void handle_dac_att_cmd(void *arg, struct command *cmd) {
+	struct dac_channel *channel = (struct dac_channel *)arg;
+	int att_sel = atoi(cmd->tokens[cmd->index++]);
+	if (att_sel >= 0 && att_sel <= 3) {
+		channel->regs->att = att_sel;
+	}
+}
+
+
+
+
+void handle_dac_stat_cmd(void *arg, struct command *cmd) {
+	struct dac_channel *channel = (struct dac_channel *)arg;
+
+	channel->regs->stat_cfg = 1;
+	channel->regs->stat_cfg = 0;
+	channel->regs->stat_limit = 1000000000;
+	channel->regs->stat_cfg = 2;
+	usleep(100000);
+	channel->regs->stat_cfg = 0;
+
+	xil_printf("MIN: %d\n", (int8_t)channel->regs->stat_min);
+	xil_printf("MAX: %d\n", (int8_t)channel->regs->stat_max);
+	xil_printf("COUNT: %d\n", channel->regs->stat_count);
+
+}
+
+
+
+
+
+
+
+void init_dac_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
+
+	struct cmd_context *dac_channel_ctx = make_cmd_context(name, arg);
+	add_subcontext(parent_ctx, dac_channel_ctx);
+
+	add_command(dac_channel_ctx, "att", handle_dac_att_cmd);
+	add_command(dac_channel_ctx, "stat", handle_dac_stat_cmd);
+}
+
+
+
+
+
+
 /*
+ *
 
 localparam REG_GAIN = 12'h000;
 localparam REG_OFFSET = 12'h04;

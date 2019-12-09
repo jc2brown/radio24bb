@@ -30,6 +30,9 @@ void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx) {
 
 
 void add_command(struct cmd_context *ctx, const char *name, void (*handler)(void *, struct command *)) {
+	if (ctx == NULL) {
+		ctx = get_root_context();
+	}
 	stringmap_put(ctx->commands, name, handler);
 }
 

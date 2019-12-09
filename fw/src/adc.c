@@ -47,7 +47,7 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 }
 
 
-void handle_att_cmd(void *arg, struct command *cmd) {
+void handle_adc_att_cmd(void *arg, struct command *cmd) {
 	struct adc_channel *channel = (struct adc_channel *)arg;
 	int att_sel = atoi(cmd->tokens[cmd->index++]);
 	if (att_sel >= 0 && att_sel <= 3) {
@@ -58,7 +58,7 @@ void handle_att_cmd(void *arg, struct command *cmd) {
 
 
 
-void handle_stat_cmd(void *arg, struct command *cmd) {
+void handle_adc_stat_cmd(void *arg, struct command *cmd) {
 	struct adc_channel *channel = (struct adc_channel *)arg;
 
 	channel->regs->stat_cfg = 1;
@@ -77,21 +77,6 @@ void handle_stat_cmd(void *arg, struct command *cmd) {
 
 
 
-
-//
-//void ina_att_handler(void *arg, struct command *cmd) {
-//	xil_printf("ina_att_handler(%d, cmd) att=%d\n", (int)arg, atoi(cmd->tokens[cmd->index++]));
-//}
-//
-//
-//
-//void ina_red_led_handler(void *arg, struct command *cmd) {
-//	xil_printf("ina_red_led_handler(%d, cmd) red_led=%d\n", (int)arg, atoi(cmd->tokens[cmd->index++]));
-//}
-
-
-
-
 void init_adc_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
 
 	struct cmd_context *adc_channel_ctx = make_cmd_context(name, arg);
@@ -100,8 +85,8 @@ void init_adc_channel_context(char *name, void* arg, struct cmd_context *parent_
 	struct cmd_context *led_ctx = make_cmd_context("led", arg);
 	add_subcontext(adc_channel_ctx, led_ctx);
 
-	add_command(adc_channel_ctx, "att", handle_att_cmd);
-	add_command(adc_channel_ctx, "stat", handle_stat_cmd);
+	add_command(adc_channel_ctx, "att", handle_adc_att_cmd);
+	add_command(adc_channel_ctx, "stat", handle_adc_stat_cmd);
 }
 
 

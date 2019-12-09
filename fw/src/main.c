@@ -25,6 +25,12 @@
 
 #include "command.h"
 
+
+void info_handler(void *arg, struct command *cmd) {
+	xil_printf("INFO\n");
+}
+
+
 int main()
 {
 
@@ -100,6 +106,9 @@ int main()
 	//xil_printf()
 
 
+	add_command(NULL, "info", info_handler);
+
+
 	struct adc_channel *ina = make_adc_channel(INA_REGS);
 	struct adc_channel *inb = make_adc_channel(INB_REGS);
 
@@ -108,20 +117,27 @@ int main()
 
 
 
+	struct dac_channel *outa = make_dac_channel(OUTA_REGS);
+	struct dac_channel *outb = make_dac_channel(OUTB_REGS);
 
-	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
-	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)OUTB_REGS;
+	init_dac_channel_context("outa", outa, NULL);
+	init_dac_channel_context("outb", outb, NULL);
 
-	init_adc_channel_context("ina", ina, NULL);
-	init_adc_channel_context("inb", inb, NULL);
+
+
+//	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
+//	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)OUTB_REGS;
+//
+//	init_adc_channel_context("ina", ina, NULL);
+//	init_adc_channel_context("inb", inb, NULL);
 
 
 
 //	init_adc_channel_regs(ina_regs);
 //	init_adc_channel_regs(inb_regs);
 
-	init_dac_channel_regs(outa_regs);
-	init_dac_channel_regs(outb_regs);
+//	init_dac_channel_regs(outa_regs);
+//	init_dac_channel_regs(outb_regs);
 
 
 /*

@@ -2,6 +2,21 @@
 #ifndef DAC_H
 #define DAC_H
 
+#include "command.h"
+
+struct dac_channel {
+	struct dac_channel_regs *regs;
+};
+
+
+
+
+
+struct dac_channel *make_dac_channel(uint32_t regs_addr);
+
+void init_dac_channel(struct dac_channel *channel);
+
+void init_dac_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
 
 
 
