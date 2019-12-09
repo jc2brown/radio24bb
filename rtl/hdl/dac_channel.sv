@@ -255,16 +255,33 @@ fir_filter_inst (
 );
 
 
-reg [23:0] dac_data_scaled;
-always @(posedge clk) dac_data_scaled <= (signed'(dac_data_filtered) * signed'(gain)) + signed'({offset, 8'h0});
 
 
+gain_offset_clamp
+#(
+    .IN_WIDTH(8),
+    .GAIN_WIDTH(16),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(8),
+    .OUT_WIDTH(8)
+)
+dac_gain_offset (
+    .clk(clk),
+    .in(dac_data_filtered),
+    .in_valid(1),
+    .gain(gain),
+    .offset(offset),
+    .out(dac_data_out),
+    .out_valid()
+);
 
+//reg [23:0] dac_data_scaled;
+//always @(posedge clk) dac_data_scaled <= (signed'(dac_data_filtered) * signed'(gain)) + signed'({offset, 8'h0});
 
-assign dac_data_out = 
-    signed'(dac_data_scaled[23:8]) <= signed'(-128) ? -128 :
-         signed'(dac_data_scaled[23:8]) >= signed'(127) ? 127 :
-              dac_data_scaled[23:8];
+//assign dac_data_out = 
+//    signed'(dac_data_scaled[23:8]) <= signed'(-128) ? -128 :
+//         signed'(dac_data_scaled[23:8]) >= signed'(127) ? 127 :
+//              dac_data_scaled[23:8];
               
               
               

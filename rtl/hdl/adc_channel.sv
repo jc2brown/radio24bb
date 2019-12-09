@@ -100,16 +100,38 @@ reg in_offset_valid;
 always @(posedge clk) in_offset_valid <= valid_in; 
 
 
-//always @(posedge clk) in_scaled <= (signed'(in) * signed'(gain)) + signed'({offset, 8'h0});
-always @(posedge clk) in_scaled <= (signed'(in_offset) * signed'(gain));
-always @(posedge clk) in_scaled_valid <= in_offset_valid;
 
 
 
-wire [7:0] in_clamped = 
-    signed'(in_scaled[23:8]) <= signed'(-128) ? -128 :
-         signed'(in_scaled[23:8]) >= signed'(127) ? 127 :
-              in_scaled[15:8];
+
+wire [7:0] in_clamped;
+
+gain_offset_clamp
+#(
+    .IN_WIDTH(8),
+    .GAIN_WIDTH(16),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(8),
+    .OUT_WIDTH(8)
+)
+dac_gain_offset (
+    .clk(clk),
+    .in(in),
+    .in_valid(1),
+    .gain(gain),
+    .offset(offset),
+    .out(in_clamped),
+    .out_valid()
+);
+
+////always @(posedge clk) in_scaled <= (signed'(in) * signed'(gain)) + signed'({offset, 8'h0});
+//always @(posedge clk) in_scaled <= (signed'(in_offset) * signed'(gain));
+//always @(posedge clk) in_scaled_valid <= in_offset_valid;
+
+//wire [7:0] in_clamped = 
+//    signed'(in_scaled[23:8]) <= signed'(-128) ? -128 :
+//         signed'(in_scaled[23:8]) >= signed'(127) ? 127 :
+//              in_scaled[15:8];
               
               
 
