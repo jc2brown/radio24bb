@@ -3,3 +3,4 @@ out/
 workspace/
 *.bsp.*
 *.done
+Packages/
