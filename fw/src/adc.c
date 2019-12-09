@@ -47,6 +47,47 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 }
 
 
+void handle_adc_gain_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int gain = atoi(cmd->tokens[cmd->index++]);
+	if (gain >= 0 && gain <= 65535) {
+		channel->regs->gain = gain;
+	}
+}
+
+
+void handle_adc_offset_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int offset = atoi(cmd->tokens[cmd->index++]);
+	if (offset >= -128 && offset <= 127) {
+		channel->regs->offset = offset;
+	}
+}
+
+
+void handle_adc_opt_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	adc_stat(channel);
+	int min = channel->regs->stat_min;
+	int max = channel->regs->stat_max;
+	int ampl = max - min;
+	int avg = (min + max) / 2;
+	channel->regs->gain = (256UL * 128UL) / ampl;
+	channel->regs->offset = -avg;
+}
+
+
+
+
+void handle_adc_led_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int led = atoi(cmd->tokens[cmd->index++]);
+	if (led >= 0 && led <= 7) {
+		channel->regs->led = led;
+	}
+}
+
+
 void handle_adc_att_cmd(void *arg, struct command *cmd) {
 	struct adc_channel *channel = (struct adc_channel *)arg;
 	int att_sel = atoi(cmd->tokens[cmd->index++]);
@@ -57,21 +98,21 @@ void handle_adc_att_cmd(void *arg, struct command *cmd) {
 
 
 
-
-void handle_adc_stat_cmd(void *arg, struct command *cmd) {
-	struct adc_channel *channel = (struct adc_channel *)arg;
-
+void adc_stat(struct adc_channel *channel) {
 	channel->regs->stat_cfg = 1;
 	channel->regs->stat_cfg = 0;
 	channel->regs->stat_limit = 1000000000;
 	channel->regs->stat_cfg = 2;
 	usleep(100000);
 	channel->regs->stat_cfg = 0;
+}
 
-	xil_printf("MIN: %d\n", (int8_t)channel->regs->stat_min);
-	xil_printf("MAX: %d\n", (int8_t)channel->regs->stat_max);
-	xil_printf("COUNT: %d\n", channel->regs->stat_count);
 
+
+void handle_adc_stat_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	adc_stat(channel);
+	xil_printf("STAT: %d .. %d  (%d)\n", (int8_t)channel->regs->stat_min, (int8_t)channel->regs->stat_max, channel->regs->stat_count);
 }
 
 
@@ -82,10 +123,11 @@ void init_adc_channel_context(char *name, void* arg, struct cmd_context *parent_
 	struct cmd_context *adc_channel_ctx = make_cmd_context(name, arg);
 	add_subcontext(parent_ctx, adc_channel_ctx);
 
-	struct cmd_context *led_ctx = make_cmd_context("led", arg);
-	add_subcontext(adc_channel_ctx, led_ctx);
-
+	add_command(adc_channel_ctx, "gain", handle_adc_gain_cmd);
+	add_command(adc_channel_ctx, "offset", handle_adc_offset_cmd);
+	add_command(adc_channel_ctx, "opt", handle_adc_opt_cmd);
 	add_command(adc_channel_ctx, "att", handle_adc_att_cmd);
+	add_command(adc_channel_ctx, "led", handle_adc_led_cmd);
 	add_command(adc_channel_ctx, "stat", handle_adc_stat_cmd);
 }
 

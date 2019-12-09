@@ -30,11 +30,48 @@ void info_handler(void *arg, struct command *cmd) {
 	xil_printf("INFO\n");
 }
 
+void led_handler(void *arg, struct command *cmd) {
+
+	int ina_led = 0;
+	int inb_led = 0;
+	int outa_led = 0;
+	int outb_led = 0;
+
+	char buf[64];
+
+	for (int i = 0; i < 8; ++i) {
+
+		sprintf(buf, "ina led %d", ina_led);
+		ina_led = (ina_led + 1) % 8;
+		issue_command(buf, NULL);
+
+		sprintf(buf, "inb led %d", inb_led);
+		inb_led = (inb_led + 1) % 8;
+		issue_command(buf, NULL);
+
+		sprintf(buf, "outa led %d", outa_led);
+		outa_led = (outa_led + 1) % 8;
+		issue_command(buf, NULL);
+
+		sprintf(buf, "outb led %d", outb_led);
+		outb_led = (outb_led + 1) % 8;
+		issue_command(buf, NULL);
+
+		usleep(100000);
+	}
+
+	issue_command("ina led 0", NULL);
+	issue_command("inb led 0", NULL);
+	issue_command("outa led 0", NULL);
+	issue_command("outb led 0", NULL);
+
+}
+
 
 int main()
 {
 
-	xil_printf("Hello\r\n");
+	xil_printf("\nHello\r\n");
 	usleep(100000);
 
 	_return_if_error_(spi_init());
@@ -107,6 +144,9 @@ int main()
 
 
 	add_command(NULL, "info", info_handler);
+	add_command(NULL, "led", led_handler);
+
+
 
 
 	struct adc_channel *ina = make_adc_channel(INA_REGS);
@@ -263,7 +303,7 @@ int main()
 
 
 
-	issue_command("ina stat", NULL);
+	issue_command("led", NULL);
 
 
 

@@ -100,7 +100,7 @@ struct cmd_context *dispatch_command(struct cmd_context *ctx, struct command *cm
 
 		//xil_printf("Unrecognized command: %s\n", token);
 
-		if (ctx == orig_ctx) {
+		if (ctx == orig_ctx || cmd->index != cmd->num_tokens) {
 			xil_printf("Unrecognized command\n");
 		}
 		return ctx;
@@ -136,7 +136,7 @@ void init_root_context() {
 	if (inited) {
 		return;
 	}
-	root_ctx = make_cmd_context("root", NULL);
+	root_ctx = make_cmd_context("bb", NULL);
 	inited = 1;
 	set_root_context();
 }
