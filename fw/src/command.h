@@ -43,10 +43,11 @@ void add_command(struct cmd_context *ctx, const char *name, handler_fcn);
 
 void init_root_context();
 void set_root_context();
-struct cmd_context *get_root_ctx();
+struct cmd_context *get_root_context();
 
 
 
+struct cmd_context * issue_command(const char *cmd_str, struct cmd_context *ctx);
 void handle_command();
 
 

@@ -103,8 +103,8 @@ int main()
 	struct adc_channel *ina = make_adc_channel(INA_REGS);
 	struct adc_channel *inb = make_adc_channel(INB_REGS);
 
-	init_adc_channel_context("ina", ina, get_root_ctx());
-	init_adc_channel_context("inb", inb, get_root_ctx());
+	init_adc_channel_context("ina", ina, NULL);
+	init_adc_channel_context("inb", inb, NULL);
 
 
 
@@ -112,6 +112,8 @@ int main()
 	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
 	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)OUTB_REGS;
 
+	init_adc_channel_context("ina", ina, NULL);
+	init_adc_channel_context("inb", inb, NULL);
 
 
 
@@ -245,12 +247,19 @@ int main()
 
 
 
+	issue_command("ina stat", NULL);
 
 
 
 
 	while (1) {
+
+
+
 		handle_command();
+
+
+
 	}
 
 

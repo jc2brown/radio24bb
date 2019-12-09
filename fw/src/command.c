@@ -21,6 +21,9 @@ struct cmd_context *make_cmd_context(const char *name, void *arg) {
 
 
 void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx) {
+	if (ctx == NULL) {
+		ctx = get_root_context();
+	}
 	subctx->parent = ctx;
 	stringmap_put(ctx->subcontexts, subctx->name, subctx);
 }
@@ -33,28 +36,38 @@ void add_command(struct cmd_context *ctx, const char *name, void (*handler)(void
 
 
 
-
-void get_command(struct command *cmd) {
-	cmd->index = 0;
-	cmd->line[0] = '\0';
-	cmd->num_tokens = 0;
-	for (int i = 0; i < 16; ++i) {
-		cmd->tokens[i] = (char*)"";
-	}
-	fgets(cmd->line, 1024, stdin);
-	for (char *c = cmd->line; *c != '\0'; ++c) {
+void tokenize_command(const char *cmd_str, struct command *cmd) {
+	for (char *c = (char*)cmd_str; *c != '\0'; ++c) {
 		if (isgraph(*c)) {
-			if (c == cmd->line || !isgraph(*(c-1))) { // Relying on short-circuit to prevent accessing line-1
+			if (c == cmd_str || !isgraph(*(c-1))) { // Relying on short-circuit to prevent accessing line-1
 				cmd->tokens[cmd->num_tokens++] = c;
 			}
 		} else {
 			*c = '\0';
 		}
 	}
+}
 
-//	for (int i = 0; i < cmd->num_tokens; ++i) {
-//		xil_printf("%d: %s\n", i, cmd->tokens[i]);
-//	}
+
+
+
+
+
+
+
+void init_command(struct command *cmd) {
+	cmd->index = 0;
+	cmd->line[0] = '\0';
+	cmd->num_tokens = 0;
+	for (int i = 0; i < 16; ++i) {
+		cmd->tokens[i] = (char*)"";
+	}
+}
+
+void get_command(struct command *cmd) {
+	init_command(cmd);
+	fgets(cmd->line, 1024, stdin);
+	tokenize_command(cmd->line, cmd);
 }
 
 
@@ -133,9 +146,22 @@ void set_root_context() {
 }
 
 
-struct cmd_context *get_root_ctx() {
+struct cmd_context *get_root_context() {
 	init_root_context();
 	return root_ctx;
+}
+
+
+
+
+struct cmd_context * issue_command(const char *cmd_str, struct cmd_context *ctx) {
+	struct command cmd;
+	init_command(&cmd);
+	tokenize_command(cmd_str, &cmd);
+	if (ctx == NULL) {
+		ctx = get_root_context();
+	}
+	return dispatch_command(ctx, &cmd);
 }
 
 
