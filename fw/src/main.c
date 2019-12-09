@@ -23,7 +23,7 @@
 
 #include "aic3204.h"
 
-
+#include "command.h"
 
 int main()
 {
@@ -38,7 +38,7 @@ int main()
 	_return_if_error_(ina219_config());
 
 
-	init_aic3204();
+	//init_aic3204();
 
 	XGpioPs gpiops_inst;
 	XGpioPs *gpiops_ptr = &gpiops_inst;
@@ -86,16 +86,37 @@ int main()
 
 
 
-	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
-	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
-
-	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)(0x43C02000UL);
-	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)(0x43C03000UL);
+#define INA_REGS 0x43C00000UL
+#define INB_REGS 0x43C01000UL
 
 
+#define OUTA_REGS 0x43C02000UL
+#define OUTB_REGS 0x43C03000UL
 
-	init_adc_channel_regs(ina_regs);
-	init_adc_channel_regs(inb_regs);
+//	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
+//	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
+
+
+	//xil_printf()
+
+
+	struct adc_channel *ina = make_adc_channel(INA_REGS);
+	struct adc_channel *inb = make_adc_channel(INB_REGS);
+
+	init_adc_channel_context("ina", ina, get_root_ctx());
+	init_adc_channel_context("inb", inb, get_root_ctx());
+
+
+
+
+	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
+	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)OUTB_REGS;
+
+
+
+
+//	init_adc_channel_regs(ina_regs);
+//	init_adc_channel_regs(inb_regs);
 
 	init_dac_channel_regs(outa_regs);
 	init_dac_channel_regs(outb_regs);
@@ -214,16 +235,31 @@ int main()
 
 
 
-	char line[1024];
-	char *tokens[16];
+//	char line[1024];
+//	char *tokens[16];
+
+
+
+
+
+
+
+
+
 
 
 
 	while (1) {
+		handle_command();
+	}
 
 
-		XGpioPs_WritePin(gpiops_ptr, 67, !XGpioPs_ReadPin(gpiops_ptr, 57)); // INB_R on DORB
-		XGpioPs_WritePin(gpiops_ptr, 68, !XGpioPs_ReadPin(gpiops_ptr, 61)); // INA_R on DORA
+	return 0;
+}
+
+
+//		XGpioPs_WritePin(gpiops_ptr, 67, !XGpioPs_ReadPin(gpiops_ptr, 57)); // INB_R on DORB
+//		XGpioPs_WritePin(gpiops_ptr, 68, !XGpioPs_ReadPin(gpiops_ptr, 61)); // INA_R on DORA
 
 
 
@@ -396,10 +432,6 @@ int main()
 */
 
 
-	};
-
-	{
-
 
 
 
@@ -463,7 +495,8 @@ int main()
 		XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
 		usleep(500000);
 		*/
-	}
+
+
 
 /*
 	while (1) {
@@ -475,10 +508,6 @@ int main()
 	}
 	*/
 
-
-	return 0;
-
-}
 
 
 

@@ -1,26 +1,28 @@
 
 #include <stdint.h>
+#include <stdlib.h>
+#include "command.h"
 
 #include "adc.h"
+#include "xil_printf.h"
+#include "sleep.h"
 
 
 
 
 
-/*
-struct adc_channel_stats {
-	uint32_t cfg;
-	uint32_t min;
-	uint32_t max;
-	uint32_t limit;
-	uint32_t count;
-}; 
-
-*/
+struct adc_channel *make_adc_channel(uint32_t regs_addr) {
+	struct adc_channel *channel = (struct adc_channel *)malloc(sizeof(struct adc_channel));
+	channel->regs = (struct adc_channel_regs *)regs_addr;
+	init_adc_channel_regs(channel->regs);
+	return channel;
+}
 
 
 
-
+void init_adc_channel(struct adc_channel *channel) {
+	init_adc_channel_regs(channel->regs);
+}
 
 
 
@@ -31,7 +33,6 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 	regs->offset = 0;
 
 	for (int i = 0; i < 21; ++i) {
-		//regs->filter_coef = (uint32_t)(ina_filter2_coef[20-i] * (double)(1<<23));
 		regs->filter_coef = (uint32_t)(ina_filter0_coef[i] * (double)(1<<23));
 	}
 
@@ -46,17 +47,63 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 }
 
 
+void handle_att_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int att_sel = atoi(cmd->tokens[cmd->index++]);
+	if (att_sel >= 0 && att_sel <= 3) {
+		channel->regs->att = att_sel;
+	}
+}
 
-/*
 
-localparam REG_GAIN = 12'h000;
-localparam REG_OFFSET = 12'h04;
-localparam REG_FILTER_COEF = 12'h08;
-localparam REG_STAT_CFG   = 12'h0C;
-localparam REG_STAT_MIN   = 12'h10;
-localparam REG_STAT_MAX   = 12'h14;
-localparam REG_STAT_LIMIT = 12'h18;
-localparam REG_STAT_COUNT = 12'h1C;
 
-*/
+
+void handle_stat_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+
+	channel->regs->stat_cfg = 1;
+	channel->regs->stat_cfg = 0;
+	channel->regs->stat_limit = 1000000000;
+	channel->regs->stat_cfg = 2;
+	usleep(100000);
+	channel->regs->stat_cfg = 0;
+
+	xil_printf("MIN: %d\n", (int8_t)channel->regs->stat_min);
+	xil_printf("MAX: %d\n", (int8_t)channel->regs->stat_max);
+	xil_printf("COUNT: %d\n", channel->regs->stat_count);
+
+}
+
+
+
+
+
+//
+//void ina_att_handler(void *arg, struct command *cmd) {
+//	xil_printf("ina_att_handler(%d, cmd) att=%d\n", (int)arg, atoi(cmd->tokens[cmd->index++]));
+//}
+//
+//
+//
+//void ina_red_led_handler(void *arg, struct command *cmd) {
+//	xil_printf("ina_red_led_handler(%d, cmd) red_led=%d\n", (int)arg, atoi(cmd->tokens[cmd->index++]));
+//}
+
+
+
+
+void init_adc_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
+
+	struct cmd_context *adc_channel_ctx = make_cmd_context(name, arg);
+	add_subcontext(parent_ctx, adc_channel_ctx);
+
+	struct cmd_context *led_ctx = make_cmd_context("led", arg);
+	add_subcontext(adc_channel_ctx, led_ctx);
+
+	add_command(adc_channel_ctx, "att", handle_att_cmd);
+	add_command(adc_channel_ctx, "stat", handle_stat_cmd);
+}
+
+
+
 

@@ -1,7 +1,10 @@
 adc.c  
 aic3204.c  
+command.c
 dac.c  
 i2c.c  
 ina219.c  
+list.c
 spi.c 
+stringmap.c
 main.c

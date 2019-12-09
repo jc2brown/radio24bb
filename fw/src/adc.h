@@ -3,6 +3,21 @@
 #define ADC_H
 
 
+#include "command.h"
+
+
+struct adc_channel {
+	struct adc_channel_regs *regs;
+};
+
+
+struct adc_channel *make_adc_channel(uint32_t regs_addr);
+
+void init_adc_channel(struct adc_channel *channel);
+
+void init_adc_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
+
+
 
 
 static double ina_filter0_coef[21] = {
