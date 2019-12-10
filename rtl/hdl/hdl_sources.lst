@@ -4,6 +4,9 @@ aic3204_if.sv
 cross_interp.sv
 dac_channel.sv
 dac_channel_regs.sv
+dds.sv
+dds_block.sv
+dds_regs.sv
 ddac.sv
 dds.sv
 divlut.sv

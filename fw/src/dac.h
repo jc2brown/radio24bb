@@ -115,9 +115,6 @@ static double outa_filter3_coef[21] = {
 
 
 
-
-
-
 struct dac_channel_regs {
 
 	uint32_t gain;
@@ -125,8 +122,6 @@ struct dac_channel_regs {
 	uint32_t filter_coef;
 	uint32_t mux;
 	uint32_t raw;
-	uint32_t dds_cfg;
-	uint32_t dds_step;
 	uint32_t stat_cfg;
 	uint32_t stat_min;
 	uint32_t stat_max;
@@ -135,10 +130,6 @@ struct dac_channel_regs {
 	uint32_t att;
 	uint32_t amp_en;
 	uint32_t led;
-	uint32_t dds_fm_mux;
-	uint32_t dds_fm_raw;
-	uint32_t dds_fm_gain;
-	uint32_t dds_fm_offset;
 
 };
 
