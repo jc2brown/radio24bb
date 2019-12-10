@@ -140,7 +140,9 @@ $(FW_ROOT)/bsp: $(SDK_DEPS)
 
 
 $(BSP_GEN_STAMP): $(HDF_FILE)
-	rm -rf $(WORKSPACE_DIR)
+	mv $(SRC_DIR) _$(SRC_DIR)
+	rm -rf $(WORKSPACE_DIR)	
+	mv _$(SRC_DIR) $(SRC_DIR)
 	$(XSCT) $(FW_ROOT)/tools/gen_hw_bsp.tcl $(BSP_GEN_STAMP) $(HDF_FILE) $(WORKSPACE_DIR) $(TARGET_CPU) $(PROJECT_TOP)
 	#rm -rf $(APP_DIR)/src
 ifeq ($(UNAME), windows32)
