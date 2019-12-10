@@ -229,10 +229,10 @@ prbs_gain_offset (
 
 reg signed [7:0] dac_data;
 always @(posedge clk) dac_data <= scaled_prbs_data + 
-        mux == 0 ? raw :
-        mux == 1 ? dds_data :
-        mux == 2 ? ina_data : 
-        mux == 3 ? inb_data : 
+        (mux == 0) ? raw :
+        (mux == 1) ? dds_data :
+        (mux == 2) ? ina_data : 
+        (mux == 3) ? inb_data : 
         0;
                                
                                                
@@ -256,7 +256,7 @@ am_modulator (
     .out_valid()
 );      
   
-assign dds_data_out = dds_data;//modulated_dac_data; 
+assign dds_data_out = dac_data;//modulated_dac_data; 
 
 sigstat #( .WIDTH(8) )
 sigstat_inst (
