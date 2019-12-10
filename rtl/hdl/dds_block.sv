@@ -76,15 +76,15 @@ wire signed [31:0] am_raw;
 wire signed [31:0] am_gain;
 wire signed [31:0] am_offset;
       
-wire signed [3:0] pm_mux;
-wire signed [31:0] pm_raw;
-wire signed [31:0] pm_gain;
-wire signed [31:0] pm_offset;
-      
 wire signed [3:0] fm_mux;
 wire signed [31:0] fm_raw;
 wire signed [31:0] fm_gain;
 wire signed [31:0] fm_offset;
+      
+wire signed [3:0] pm_mux;
+wire signed [31:0] pm_raw;
+wire signed [31:0] pm_gain;
+wire signed [31:0] pm_offset;
 
     
 wire signed [15:0] am_data = (am_mux == 0) ? am_raw :

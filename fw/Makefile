@@ -154,6 +154,7 @@ $(BSP_BUILD_STAMP): $(BSP_GEN_STAMP)
 	make -C $(BSP_DIR) -j1
 	touch $@
 
+.SECONDARY: $(SRC_DIR) $(wildcard $(SRC_DIR)/*)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc $(SDK_DEPS)
 	mkdir -p $(OBJ_DIR)
@@ -198,4 +199,6 @@ $(FW_ROOT)/clean:
 $(FW_ROOT)/boot: $(BIT_FILE) $(ELF_FILE)
 	$(XSCT) $(FW_ROOT)/tools/init_$(BOARD).tcl $(BIT_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(INIT_STAMP)
 	$(XSCT) $(FW_ROOT)/tools/boot_$(BOARD).tcl $(ELF_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(BOOT_STAMP)
+
+
 
