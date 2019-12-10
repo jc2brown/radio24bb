@@ -142,7 +142,7 @@ $(FW_ROOT)/bsp: $(SDK_DEPS)
 $(BSP_GEN_STAMP): $(HDF_FILE)
 	rm -rf $(WORKSPACE_DIR)
 	$(XSCT) $(FW_ROOT)/tools/gen_hw_bsp.tcl $(BSP_GEN_STAMP) $(HDF_FILE) $(WORKSPACE_DIR) $(TARGET_CPU) $(PROJECT_TOP)
-	rm -rf $(APP_DIR)/src
+	#rm -rf $(APP_DIR)/src
 ifeq ($(UNAME), windows32)
 	cmd /c "$(shell cygpath -a -w $(FW_ROOT)/tools/linksrc.bat) $(shell cygpath -a -w $(APP_DIR)/src) $(shell cygpath -a -w $(FW_ROOT)/src) "
 else ifeq ($(UNAME), Linux)
