@@ -26,6 +26,16 @@
 #include "command.h"
 
 
+void loopa_handler(void *arg, struct command *cmd) {
+	issue_command("outa src ina", NULL);
+	issue_command("ina att 0", NULL);
+	issue_command("outa att 0", NULL);
+	issue_command("ina opt", NULL);
+	issue_command("outa opt", NULL);
+}
+
+
+
 void info_handler(void *arg, struct command *cmd) {
 	xil_printf("INFO\n");
 }
@@ -143,6 +153,7 @@ int main()
 	//xil_printf()
 
 
+	add_command(NULL, "loopa", loopa_handler);
 	add_command(NULL, "info", info_handler);
 	add_command(NULL, "led", led_handler);
 
