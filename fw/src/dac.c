@@ -42,9 +42,9 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 	regs->stat_cfg = 0;
 	regs->stat_limit = 0;
 
-	regs->att = 0b11;
+	regs->att = 0b00;
 	regs->amp_en = 1;
-	regs->led = 0b001;
+	regs->led = 0b000;
 
 	regs->mux = 4;
 }

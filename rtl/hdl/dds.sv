@@ -10,7 +10,7 @@ module dds (
     input [31:0] step,
         
     input signed [31:0] fm_data,    
-    input signed [31:0] pm_data,
+    input signed [11:0] pm_data,
     
     output reg signed [31:0] out,
     output reg signed out_valid
@@ -68,7 +68,7 @@ always @(posedge clk) begin
     end
     else begin
         if (run) begin        
-            out <= lut[accum[31:20]+pm_data[31:20]];
+            out <= lut[accum[31:20]+pm_data[11:0]];
             out_valid <= 1'b1;
         end
         else begin

@@ -82,9 +82,9 @@ wire signed [31:0] fm_gain;
 wire signed [31:0] fm_offset;
       
 wire signed [3:0] pm_mux;
-wire signed [31:0] pm_raw;
-wire signed [31:0] pm_gain;
-wire signed [31:0] pm_offset;
+wire signed [15:0] pm_raw;
+wire signed [19:0] pm_gain;
+wire signed [11:0] pm_offset;
 
     
 wire signed [15:0] am_data = (am_mux == 0) ? am_raw :
@@ -150,15 +150,15 @@ dds_fm_gain_offset (
 );
     
     
-wire signed [23:0] scaled_pm_data;
+wire signed [11:0] scaled_pm_data;
 
 gain_offset_clamp
 #(
     .IN_WIDTH(16),
-    .GAIN_WIDTH(32),
+    .GAIN_WIDTH(20),
     .GAIN_RADIX(8),
-    .OFFSET_WIDTH(32),
-    .OUT_WIDTH(32)
+    .OFFSET_WIDTH(12),
+    .OUT_WIDTH(12)
 )
 dds_pm_gain_offset (
     .clk(clk),
