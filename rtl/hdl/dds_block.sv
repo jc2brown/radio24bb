@@ -227,7 +227,8 @@ prbs_gain_offset (
 );
 
 
-wire signed [7:0] dac_data = scaled_prbs_data + 
+reg signed [7:0] dac_data;
+always @(posedge clk) dac_data <= scaled_prbs_data + 
         mux == 0 ? raw :
         mux == 1 ? dds_data :
         mux == 2 ? ina_data : 

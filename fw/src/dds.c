@@ -9,6 +9,7 @@
 
 
 
+
 struct dds_channel *make_dds_channel(uint32_t regs_addr) {
 	struct dds_channel *channel = (struct dds_channel *)malloc(sizeof(struct dds_channel));
 	channel->regs = (struct dds_channel_regs *)regs_addr;
