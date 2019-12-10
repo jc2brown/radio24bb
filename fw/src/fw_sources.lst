@@ -2,6 +2,7 @@ adc.c
 aic3204.c  
 command.c
 dac.c  
+dds.c
 i2c.c  
 ina219.c  
 list.c

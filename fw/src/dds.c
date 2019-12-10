@@ -41,20 +41,20 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 	regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
 
-	regs->dds_am_mux = 0;
-	regs->dds_am_raw = 0;
-	regs->dds_am_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
-	regs->dds_am_offset = 0;
+	regs->am_mux = 0;
+	regs->am_raw = 0;
+	regs->am_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	regs->am_offset = 0;
 
-	regs->dds_fm_mux = 0;
-	regs->dds_fm_raw = 0;
-	regs->dds_fm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
-	regs->dds_fm_offset = 0;
+	regs->fm_mux = 0;
+	regs->fm_raw = 0;
+	regs->fm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	regs->fm_offset = 0;
 
-	regs->dds_pm_mux = 0;
-	regs->dds_pm_raw = 0;
-	regs->dds_pm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
-	regs->dds_pm_offset = 0;
+	regs->pm_mux = 0;
+	regs->pm_raw = 0;
+	regs->pm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	regs->pm_offset = 0;
 
 }
 

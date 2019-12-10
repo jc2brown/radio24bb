@@ -20,6 +20,7 @@
 
 #include "adc.h"
 #include "dac.h"
+#include "dds.h"
 
 #include "aic3204.h"
 
@@ -146,6 +147,9 @@ int main()
 #define OUTA_REGS 0x43C02000UL
 #define OUTB_REGS 0x43C03000UL
 
+#define DDSA_REGS 0x43C05000UL
+#define DDSB_REGS 0x43C06000UL
+
 //	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
 
@@ -174,6 +178,12 @@ int main()
 	init_dac_channel_context("outa", outa, NULL);
 	init_dac_channel_context("outb", outb, NULL);
 
+
+	struct dds_channel *ddsa = make_dds_channel(DDSA_REGS);
+	struct dds_channel *ddsb = make_dds_channel(DDSB_REGS);
+
+	init_dds_channel_context("ddsa", ddsa, NULL);
+	init_dds_channel_context("ddsb", ddsb, NULL);
 
 
 //	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
