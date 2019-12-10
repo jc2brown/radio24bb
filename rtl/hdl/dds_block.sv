@@ -235,7 +235,7 @@ wire [7:0] dac_data = scaled_prbs_data +
         0;
                                
                                                
-wire [7:0] modulated_dac_data = dac_data;  
+wire [7:0] modulated_dac_data;
                         
 gain_offset_clamp
 #(
