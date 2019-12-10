@@ -25,13 +25,13 @@ module gain_offset_clamp
 // STAGE 1
 //
 
-reg signed [IN_WIDTH-1:0] valid_d1;
+reg signed valid_d1;
 always @(posedge clk) valid_d1 <= in_valid;
 
 reg signed [IN_WIDTH-1:0] in_d1;
 always @(posedge clk) in_d1 <= in;
 
-reg signed [IN_WIDTH-1:0] gain_d1;
+reg signed [GAIN_WIDTH-1:0] gain_d1;
 always @(posedge clk) gain_d1 <= gain;
     
 reg signed [OFFSET_WIDTH-1:0] offset_d1;
@@ -42,7 +42,7 @@ always @(posedge clk) offset_d1 <= offset;
 // STAGE 2
 //
 
-reg signed [IN_WIDTH-1:0] valid_d2;
+reg signed valid_d2;
 always @(posedge clk) valid_d2 <= valid_d1;
 
 reg signed [(IN_WIDTH+GAIN_WIDTH)-1:0] product_d2;
@@ -56,11 +56,11 @@ always @(posedge clk) offset_d2 <= offset_d1;
 // STAGE 3
 //
 
-reg signed [IN_WIDTH-1:0] valid_d3;
+reg signed valid_d3;
 always @(posedge clk) valid_d3 <= valid_d2;
 
 reg signed [(IN_WIDTH+GAIN_WIDTH)-1:0] sum_d3;
-always @(posedge clk) sum_d3 <= signed'(product_d2) + signed'({offset, {GAIN_RADIX{1'h0}}});
+always @(posedge clk) sum_d3 <= signed'(product_d2) + signed'({offset_d2, {GAIN_RADIX{1'h0}}});
 
 
 //

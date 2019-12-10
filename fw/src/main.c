@@ -27,6 +27,12 @@
 #include "command.h"
 
 
+void tonea_handler(void *arg, struct command *cmd) {
+	issue_command("outa src ddsa", NULL);
+	issue_command("ddsa src dds", NULL);
+}
+
+
 void loopa_handler(void *arg, struct command *cmd) {
 	issue_command("outa src ina", NULL);
 	issue_command("ina att 0", NULL);
@@ -157,6 +163,7 @@ int main()
 	//xil_printf()
 
 
+	add_command(NULL, "tonea", tonea_handler);
 	add_command(NULL, "loopa", loopa_handler);
 	add_command(NULL, "info", info_handler);
 	add_command(NULL, "led", led_handler);

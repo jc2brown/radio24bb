@@ -1,0 +1,5 @@
+
+PROJECT_NAME:=radio24bb
+PROJECT_TOP:=r24bb_top
+BLOCK_DESIGN:=r24bb_bd
+BOARD:=microzed7020

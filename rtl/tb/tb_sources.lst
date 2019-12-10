@@ -12,6 +12,7 @@ tb_divlut.sv
 tb_fir_filter.sv
 tb_fm_demod.sv
 tb_ft601_if.sv
+tb_gain_offset_clamp.sv
 tb_i2c_basic.sv
 tb_i2c_ioexp.sv
 tb_ioexp.sv
