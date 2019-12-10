@@ -124,7 +124,7 @@ dds_am_gain_offset (
     .in(am_data),
     .in_valid(1),
     .gain(am_gain),
-    .offset(),
+    .offset(am_offset),
     .out(scaled_am_data),
     .out_valid()
 );         
@@ -144,7 +144,7 @@ dds_fm_gain_offset (
     .in(fm_data),
     .in_valid(1),
     .gain(fm_gain),
-    .offset(),
+    .offset(fm_offset),
     .out(scaled_fm_data),
     .out_valid()
 );
@@ -165,7 +165,7 @@ dds_pm_gain_offset (
     .in(pm_data),
     .in_valid(1),
     .gain(pm_gain),
-    .offset(),
+    .offset(pm_offset),
     .out(scaled_pm_data),
     .out_valid()
 );
