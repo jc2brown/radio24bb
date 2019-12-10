@@ -126,19 +126,19 @@ begin
             case ({paddr[11:2], 2'b00})                
                                           
                 REG_AM_MUX:     am_mux <= pwdata[3:0];                         
-                REG_AM_RAW:     am_mux <= pwdata;                   
-                REG_AM_GAIN:    am_mux <= pwdata;                   
-                REG_AM_OFFSET:  am_mux <= pwdata;     
+                REG_AM_RAW:     am_raw <= pwdata;                   
+                REG_AM_GAIN:    am_gain <= pwdata;                   
+                REG_AM_OFFSET:  am_offset <= pwdata;     
                                                           
                 REG_FM_MUX:     fm_mux <= pwdata[3:0];                         
-                REG_FM_RAW:     fm_mux <= pwdata;                   
-                REG_FM_GAIN:    fm_mux <= pwdata;                   
-                REG_FM_OFFSET:  fm_mux <= pwdata;    
+                REG_FM_RAW:     fm_raw <= pwdata;                   
+                REG_FM_GAIN:    fm_gain <= pwdata;                   
+                REG_FM_OFFSET:  fm_offset <= pwdata;    
                                                           
                 REG_PM_MUX:     pm_mux <= pwdata[3:0];                         
-                REG_PM_RAW:     pm_mux <= pwdata;                   
-                REG_PM_GAIN:    pm_mux <= pwdata;                   
-                REG_PM_OFFSET:  pm_mux <= pwdata;                                  
+                REG_PM_RAW:     pm_raw <= pwdata;                   
+                REG_PM_GAIN:    pm_gain <= pwdata;                   
+                REG_PM_OFFSET:  pm_offset <= pwdata;                                  
                                                                                           
                 REG_RAW: raw <= pwdata;   
                

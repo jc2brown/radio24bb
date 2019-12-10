@@ -256,7 +256,7 @@ am_modulator (
     .out_valid()
 );      
   
-assign dds_data_out = dac_data;//modulated_dac_data; 
+assign dds_data_out = modulated_dac_data; 
 
 sigstat #( .WIDTH(8) )
 sigstat_inst (
