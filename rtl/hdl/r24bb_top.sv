@@ -157,6 +157,20 @@ wire usb_rd_fifo_empty;
 
 
 
+
+/////////////////////////////////////////////////////////////
+//
+// DDS
+//
+/////////////////////////////////////////////////////////////
+
+wire signed [7:0] ddsa_data;
+wire signed [7:0] ddsb_data;
+
+
+
+
+
 /////////////////////////////////////////////////////////////
 //
 // DAC/ADC clock generator
@@ -487,9 +501,10 @@ dac_channel outa_dac_channel (
         
         .dac_data_out(outa_data_out),
                 
-        .ina_data(ina_data),
-        
+        .ina_data(ina_data),        
         .inb_data(inb_data),
+        .ddsa_data(ddsa_data),
+        .ddsb_data(ddsb_data),
                         
         .usb_rd_data(usb_rd_data),
         .usb_rd_data_valid(usb_rd_valid),
@@ -525,9 +540,10 @@ dac_channel outb_dac_channel (
         
         .dac_data_out(outb_data_out),
                 
-        .ina_data(ina_data),
-        
+        .ina_data(ina_data),        
         .inb_data(inb_data),
+        .ddsa_data(ddsa_data),
+        .ddsb_data(ddsb_data),
                         
         .usb_rd_data(usb_rd_data),
         .usb_rd_data_valid(usb_rd_valid),
@@ -800,12 +816,72 @@ aic3204_if aic3204_if_inst(
 
 
 
+
+    
+/////////////////////////////////////////////////////////////
+//
+// DDS Blocks
+//
+/////////////////////////////////////////////////////////////
+
+wire [31:0] ddsa_prdata;
+
+dds_block ddsa (
+            
+    .clk(clk),
+    .reset(reset),
+        
+    .penable(penable),
+    .psel(paddr[31:12] == 20'h43C05),
+    .paddr(paddr),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .prdata(ddsa_prdata),
+            
+    .ina_data(ina_data),    
+    .inb_data(inb_data),
+    .ddsa_data(ddsa_data),
+    .ddsb_data(ddsb_data),
+    
+    .dds_data_out(ddsa_data)                                             
+);
+
+
+
+wire [31:0] ddsb_prdata;
+
+dds_block ddsb (
+            
+    .clk(clk),
+    .reset(reset),
+        
+    .penable(penable),
+    .psel(paddr[31:12] == 20'h43C06),
+    .paddr(paddr),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .prdata(ddsb_prdata),
+            
+    .ina_data(ina_data),    
+    .inb_data(inb_data),
+    .ddsa_data(ddsa_data),
+    .ddsb_data(ddsb_data),
+    
+    .dds_data_out(ddsb_data)                                             
+);
+
+
+
+
+
 assign prdata = 
         ( paddr[15:12] == 4'h0 ) ? ina_prdata :  
         ( paddr[15:12] == 4'h1 ) ? inb_prdata :  
         ( paddr[15:12] == 4'h2 ) ? outa_prdata :  
         ( paddr[15:12] == 4'h3 ) ? outb_prdata :
         ( paddr[15:12] == 4'h4 ) ? regs_prdata :
+        ( paddr[15:12] == 4'h5 ) ? ddsa_prdata :
+        ( paddr[15:12] == 4'h6 ) ? ddsb_prdata :
         'h0;  
 
 

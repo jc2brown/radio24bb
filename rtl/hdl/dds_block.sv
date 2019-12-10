@@ -1,27 +1,27 @@
 
 module dds_block (
-
         
-        input clk,
-        input reset,
+    input clk,
+    input reset,
+        
+    input penable,
+    input psel,
+    input [31:0] paddr,
+    input pwrite,
+    input [31:0] pwdata,
+    output [31:0] prdata,
+    
+    output signed [7:0] dds_data_out,
             
-        input penable,
-        input psel,
-        input [31:0] paddr,
-        input pwrite,
-        input [31:0] pwdata,
-        output [31:0] prdata,
-        
-        output [7:0] dds_data_out,
-                
-        input [7:0] ina_data,
-        input [7:0] inb_data,
-                        
-        input [31:0] usb_rd_data,
-        input usb_rd_data_valid,
-        output usb_rd_full
-        
-                                     
+    input signed [7:0] ina_data,
+    input signed [7:0] inb_data,
+    input signed [7:0] ddsa_data,
+    input signed [7:0] ddsb_data
+                    
+//    input [31:0] usb_rd_data,
+//    input usb_rd_data_valid,
+//    output usb_rd_full
+                                             
 );
 
 
@@ -32,31 +32,30 @@ wire [7:0] stat_max;
 wire [31:0] stat_count;    
 
 
-wire [7:0] usb_data;
+//wire signed [7:0] usb_data;
 
 
-xpm_fifo_sync #(
-    .USE_ADV_FEATURES("0000"),
-    .DOUT_RESET_VALUE("0"),    // String
-    .FIFO_MEMORY_TYPE("block"), // String
-    .FIFO_READ_LATENCY(1),     // DECIMAL
-    .FIFO_WRITE_DEPTH(65536),   // DECIMAL
-    .READ_DATA_WIDTH(32),      // DECIMAL
-    .WRITE_DATA_WIDTH(8)
-)
-fifo_inst (
+//xpm_fifo_sync #(
+//    .USE_ADV_FEATURES("0000"),
+//    .DOUT_RESET_VALUE("0"),    // String
+//    .FIFO_MEMORY_TYPE("block"), // String
+//    .FIFO_READ_LATENCY(1),     // DECIMAL
+//    .FIFO_WRITE_DEPTH(65536),   // DECIMAL
+//    .READ_DATA_WIDTH(32),      // DECIMAL
+//    .WRITE_DATA_WIDTH(8)
+//)
+//fifo_inst (
 
-    .rst(reset),       
-    .wr_clk(clk),
+//    .rst(reset),       
+//    .wr_clk(clk),
     
-    .din(usb_rd_data),      
-    .wr_en(usb_rd_data_valid),
-    .full(usb_rd_full),
+//    .din(usb_rd_data),      
+//    .wr_en(usb_rd_data_valid),
+//    .full(usb_rd_full),
     
-    .dout(usb_data),  
-    .rd_en(1)
-);
-
+//    .dout(usb_data),  
+//    .rd_en(1)
+//);
 
 
 wire [15:0] gain;  
@@ -64,8 +63,7 @@ wire [15:0] offset;
 wire [24:0] filter_cfg_din;
 wire filter_cfg_ce;         
             
-wire [2:0] mux;
- 
+wire [2:0] mux; 
 wire [31:0] raw;
  
 wire [7:0] dds_cfg;
@@ -73,43 +71,69 @@ wire dds_cfg_ce;
 wire [31:0] dds_step;
 
 
-    
-wire [7:0] dds_data;
-    
-    
-
-wire [3:0] am_mux;
-wire [7:0] am_raw;
-wire [15:0] am_gain;
-wire [7:0] am_offset;
-
-
-wire [3:0] pm_mux;
-wire [7:0] pm_raw;
-wire [15:0] pm_gain;
-wire [7:0] pm_offset;
-
-
-
-
-
-wire [3:0] fm_mux;
-wire [7:0] fm_raw;
-wire [15:0] fm_gain;
-wire [7:0] fm_offset;
+wire signed [3:0] am_mux;
+wire signed [31:0] am_raw;
+wire signed [31:0] am_gain;
+wire signed [31:0] am_offset;
+      
+wire signed [3:0] pm_mux;
+wire signed [31:0] pm_raw;
+wire signed [31:0] pm_gain;
+wire signed [31:0] pm_offset;
+      
+wire signed [3:0] fm_mux;
+wire signed [31:0] fm_raw;
+wire signed [31:0] fm_gain;
+wire signed [31:0] fm_offset;
 
     
-    
-wire [7:0] fm_data = (fm_mux == 0) ? fm_raw :
-                     (fm_mux == 1) ? ina_data : 
-                     (fm_mux == 2) ? inb_data :
-                     0;
-                    
-wire [7:0] scaled_fm_data;
+wire signed [15:0] am_data = (am_mux == 0) ? am_raw :
+                             (am_mux == 1) ? ina_data : 
+                             (am_mux == 2) ? inb_data :
+                             (am_mux == 3) ? ddsa_data :
+                             (am_mux == 4) ? ddsb_data :
+                             0;
+                             
+wire signed [15:0] fm_data = (fm_mux == 0) ? fm_raw :
+                             (fm_mux == 1) ? ina_data : 
+                             (fm_mux == 2) ? inb_data :
+                             (fm_mux == 3) ? ddsa_data :
+                             (fm_mux == 4) ? ddsb_data :
+                             0;
+
+wire signed [15:0] pm_data = (pm_mux == 0) ? pm_raw :
+                             (pm_mux == 1) ? ina_data : 
+                             (pm_mux == 2) ? inb_data :
+                             (pm_mux == 3) ? ddsa_data :
+                             (pm_mux == 4) ? ddsb_data :
+                             0;
+                                  
+                                 
+wire signed [23:0] scaled_am_data;
 
 gain_offset_clamp
 #(
-    .IN_WIDTH(8),
+    .IN_WIDTH(16),
+    .GAIN_WIDTH(32),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(32),
+    .OUT_WIDTH(32)
+)
+dds_am_gain_offset (
+    .clk(clk),
+    .in(am_data),
+    .in_valid(1),
+    .gain(am_gain),
+    .offset(),
+    .out(scaled_am_data),
+    .out_valid()
+);         
+  
+wire signed [23:0] scaled_fm_data;
+
+gain_offset_clamp
+#(
+    .IN_WIDTH(16),
     .GAIN_WIDTH(32),
     .GAIN_RADIX(8),
     .OFFSET_WIDTH(32),
@@ -124,16 +148,30 @@ dds_fm_gain_offset (
     .out(scaled_fm_data),
     .out_valid()
 );
-     
-     
-wire [24:0] dds_fm_gain;           
-wire [24:0] dds_fm_offset;           
+    
+    
+wire signed [23:0] scaled_pm_data;
+
+gain_offset_clamp
+#(
+    .IN_WIDTH(16),
+    .GAIN_WIDTH(32),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(32),
+    .OUT_WIDTH(32)
+)
+dds_pm_gain_offset (
+    .clk(clk),
+    .in(pm_data),
+    .in_valid(1),
+    .gain(pm_gain),
+    .offset(),
+    .out(scaled_pm_data),
+    .out_valid()
+);
+
                 
-                
-                
-                
-                
-                  
+wire signed [7:0] dds_data;                
                     
 dds dds_inst (
 
@@ -143,15 +181,9 @@ dds dds_inst (
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
     
-    .step(dds_step),
-    
-    .fm_in(scaled_fm_data),
-    .fm_gain(dds_fm_gain),
-    .fm_offset(dds_fm_offset),
-        
-    .pm_in(dds_fm),
-    .pm_gain(dds_fm_gain),
-    .pm_offset(dds_fm_offset),
+    .step(dds_step),    
+    .fm_data(scaled_fm_data),
+    .pm_data(scaled_pm_data),
     
     .out(dds_data),
     .out_valid()
@@ -170,131 +202,61 @@ prbs prbs_inst (
     .init(prbs_init),
     .data(prbs_data)
 );
-
-
+  
           
-wire [7:0] dac_data =   (mux == 0) ? raw :
-                        (mux == 1) ? ina_data : 
-                        (mux == 2) ? inb_data :
-                        (mux == 3) ? usb_data : 
-                        (mux == 4) ? dds_data : 
-                        (mux == 5) ? prbs_data : 
-                        0; 
-  
-/*  
-wire [7:0] fm_raw;
-wire [7:0] am_raw;
- 
-wire [2:0] am_mux;
-wire [2:0] fm_mux;
-  
+wire signed [15:0] prbs_gain;
+wire signed [7:0] prbs_offset;
+wire signed [7:0] scaled_prbs_data;
 
-wire [7:0] am_in  = (am_mux == 0) ? fm_raw :
-                    (am_mux == 1) ? ina_data : 
-                    (am_mux == 2) ? inb_data :
-                    0;
-  
-                      
-
-wire [7:0] fm_in  = (fm_mux == 0) ? fm_raw :
-                    (fm_mux == 1) ? ina_data : 
-                    (fm_mux == 2) ? inb_data :
-                    0;
-  
-  
-wire [7:0] fm_scaled;
-  
-  
-clamped_mult_add 
-cma_inst (
-    .clk(clk),
-    .in(fm_in),
-    .gain(fm_gain),
-    .offset(fm_offset),
-    .out(fm_scaled)
-);
-*/
-
-
-wire [7:0] modulated_dac_data = dac_data;
-  /*
-
-
-modulator modulator_inst (    
-    .reset(reset),
-    .clk(clk),
-
-    .fm_in(fm_in),
-    .am_in(am_in),
-    
-    .in(dac_data),
-    .out(modulated_dac_data)
-);
-
-  
-  
-  
-module clamped_mult_add
+gain_offset_clamp
 #(
-    parameter IN_WIDTH = 8,
-    parameter GAIN_WIDTH = 16
+    .IN_WIDTH(8),
+    .GAIN_WIDTH(16),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(8),
+    .OUT_WIDTH(8)
 )
-(
-
-    input clk,
-    input [7:0] in,
-    input [15:0] gain,
-    input [7:0] offset,
-    output [7:0] out
-
-);
-
-
-
-
-reg [23:0] result;
-always @(posedge clk) result <= (signed'(in) * signed'(gain)) + signed'({offset, 8'h0});
-
-
-
-assign out = 
-    signed'(result[23:8]) <= signed'(-128) ? -128 :
-         signed'(result[23:8]) >= signed'(127) ? 127 :
-              result[23:8];
-              
-
-endmodule  
-
-              
-              
-       */       
-              
-  
-  
-
-gain_offset am_modulator (
+prbs_gain_offset (
     .clk(clk),
-    .in(dds_data),
+    .in(prbs_data),
     .in_valid(1),
-    .gain(gain),
-    .offset(offset),    
-    .out(dds_data_out)
+    .gain(prbs_gain),
+    .offset(prbs_offset),
+    .out(scaled_prbs_data),
+    .out_valid()
 );
 
 
-//reg [23:0] dac_data_scaled;
-//always @(posedge clk) dac_data_scaled <= (signed'(dac_data_filtered) * signed'(gain)) + signed'({offset, 8'h0});
-
-//assign dac_data_out = 
-//    signed'(dac_data_scaled[23:8]) <= signed'(-128) ? -128 :
-//         signed'(dac_data_scaled[23:8]) >= signed'(127) ? 127 :
-//              dac_data_scaled[23:8];
-              
-              
-              
-              
-//assign dac_data_out =  dac_data_scaled[15:8];
-
+wire [7:0] dac_data = scaled_prbs_data + 
+        mux == 0 ? raw :
+        mux == 1 ? dds_data :
+        mux == 2 ? ina_data : 
+        mux == 3 ? inb_data : 
+        0;
+                               
+                                               
+wire [7:0] modulated_dac_data = dac_data;  
+                        
+gain_offset_clamp
+#(
+    .IN_WIDTH(8),
+    .GAIN_WIDTH(16),
+    .GAIN_RADIX(8),
+    .OFFSET_WIDTH(8),
+    .OUT_WIDTH(8)
+)
+am_modulator (
+    .clk(clk),
+    .in(dac_data),
+    .in_valid(1),
+    .gain(scaled_am_data),
+    .offset(0),
+    .out(modulated_dac_data),
+    .out_valid()
+);      
+  
+assign dds_data_out = modulated_dac_data; 
+  
 
 sigstat #( .WIDTH(8) )
 sigstat_inst (
@@ -325,21 +287,8 @@ dds_regs regs (
     .paddr(paddr),
     .pwrite(pwrite),
     .pwdata(pwdata),
-    .prdata(prdata),     
-               
-    .mux(mux),
+    .prdata(prdata), 
     
-    .raw(raw),
-    
-    .dds_cfg(dds_cfg),
-    .dds_cfg_ce(dds_cfg_ce),     
-    .dds_step(dds_step),
-        
-    .stat_cfg(stat_cfg),
-    .stat_limit(stat_limit),
-    .stat_min(stat_min),
-    .stat_max(stat_max),
-    .stat_count(stat_count),
     
     .am_mux(am_mux),
     .am_raw(am_raw),
@@ -354,7 +303,26 @@ dds_regs regs (
     .pm_mux(pm_mux),
     .pm_raw(pm_raw),
     .pm_gain(pm_gain),
-    .pm_offset(pm_offset)         
+    .pm_offset(pm_offset),       
+               
+    .mux(mux),    
+    
+    .raw(raw),
+    
+    .rom_data(dds_cfg),
+    .rom_wr_en(dds_cfg_ce),  
+       
+    .step(dds_step),
+    
+    .prbs_gain(prbs_gain),
+    .prbs_offset(prbs_offset),
+        
+    .stat_cfg(stat_cfg),
+    .stat_limit(stat_limit),
+    .stat_min(stat_min),
+    .stat_max(stat_max),
+    .stat_count(stat_count)
+          
         
 );
 

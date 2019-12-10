@@ -1,5 +1,5 @@
 
-module dds(
+module dds (
 
     input clk,
     input reset,
@@ -8,36 +8,16 @@ module dds(
     input cfg_ce, 
     
     input [31:0] step,
+        
+    input signed [31:0] fm_data,    
+    input signed [31:0] pm_data,
     
-    input [7:0] fm_in,
-    input [23:0] fm_gain,
-    input [23:0] fm_offset,
-    
-    output reg [31:0] out,
-    output reg out_valid
+    output reg signed [31:0] out,
+    output reg signed out_valid
 
 );
     
-    
-    
-          
 
-reg [31:0] fm;
-always @(posedge clk) fm <= (signed'(fm_in) * signed'(fm_gain)) + signed'({fm_offset, 8'h0});
-
-
-/*
-wire [29:0] dds_fm_in = 
-signed'(result[23:8]) <= signed'(-128) ? -128 :
-   signed'(result[23:8]) >= signed'(127) ? 127 :
-        result[23:8];
-        */
-        
-        
-        
-        
-        
-    
 
 reg [7:0] dds_data;
 reg dds_data_valid;
@@ -75,7 +55,7 @@ always @(posedge clk) begin
     end
     else begin  
         if (run) begin
-            accum <= signed'(accum) + signed'(step) + signed'(fm);
+            accum <= signed'(accum) + signed'(step) + signed'(fm_data);
         end
     end
 end
@@ -88,7 +68,7 @@ always @(posedge clk) begin
     end
     else begin
         if (run) begin        
-            out <= lut[accum[31:20]];
+            out <= lut[accum[31:20]+pm_data[31:20]];
             out_valid <= 1'b1;
         end
         else begin
