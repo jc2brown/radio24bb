@@ -11,6 +11,7 @@ fir_cell.sv
 fir_filter.sv
 fm_demod.sv
 ft601_if.sv
+gain_offset_clamp.sv
 i2c_basic.sv
 i2c_ioexp.sv
 max19506_if.sv
