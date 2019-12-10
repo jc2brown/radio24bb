@@ -42,8 +42,8 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 	regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
 
 	regs->am_mux = 0;
-	regs->am_raw = 0;
-	regs->am_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	regs->am_raw = 1;
+	regs->am_gain = 256; //((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
 	regs->am_offset = 0;
 
 	regs->fm_mux = 0;

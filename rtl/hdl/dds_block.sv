@@ -64,7 +64,7 @@ wire [24:0] filter_cfg_din;
 wire filter_cfg_ce;         
             
 wire [2:0] mux; 
-wire [31:0] raw;
+wire signed [31:0] raw;
  
 wire [7:0] dds_cfg;
 wire dds_cfg_ce;    
@@ -227,7 +227,7 @@ prbs_gain_offset (
 );
 
 
-wire [7:0] dac_data = scaled_prbs_data + 
+wire signed [7:0] dac_data = scaled_prbs_data + 
         mux == 0 ? raw :
         mux == 1 ? dds_data :
         mux == 2 ? ina_data : 
@@ -235,7 +235,7 @@ wire [7:0] dac_data = scaled_prbs_data +
         0;
                                
                                                
-wire [7:0] modulated_dac_data;
+wire signed [7:0] modulated_dac_data;
                         
 gain_offset_clamp
 #(
