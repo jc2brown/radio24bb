@@ -25,6 +25,8 @@ void init_dds_channel(struct dds_channel *channel) {
 
 
 
+
+
 void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 	regs->mux = 0;
@@ -42,7 +44,7 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 	regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
 
-	regs->am_mux = 0;
+	regs->am_mux = 1;
 	regs->am_raw = 127;
 	regs->am_gain = 127; //((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
 	regs->am_offset = 0;
@@ -57,7 +59,7 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 	regs->pm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
 	regs->pm_offset = 0;
 
-	regs->prbs_gain = 256;
+	regs->prbs_gain = 127;
 	regs->prbs_offset = 0;
 
 }

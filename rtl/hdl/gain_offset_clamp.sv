@@ -60,7 +60,7 @@ reg signed valid_d3;
 always @(posedge clk) valid_d3 <= valid_d2;
 
 reg signed [(IN_WIDTH+GAIN_WIDTH)-1:0] sum_d3;
-always @(posedge clk) sum_d3 <= signed'(product_d2) + signed'({offset_d2, {GAIN_RADIX{1'h0}}});
+always @(posedge clk) sum_d3 <= signed'(product_d2[(IN_WIDTH+GAIN_WIDTH)-1:GAIN_RADIX]) + signed'(offset_d2);
 
 
 //
@@ -73,17 +73,15 @@ always @(posedge clk) out_valid <= valid_d3;
 localparam signed [(IN_WIDTH+GAIN_WIDTH-GAIN_RADIX)-1:0] min = signed'({1'b1, {(OUT_WIDTH-1){1'b0}}});
 localparam signed [(IN_WIDTH+GAIN_WIDTH-GAIN_RADIX)-1:0] max = signed'({1'b0, {(OUT_WIDTH-1){1'b1}}});
 
-wire signed [(IN_WIDTH+GAIN_WIDTH-GAIN_RADIX)-1:0] product = signed'(sum_d3[(IN_WIDTH+GAIN_WIDTH)-1:GAIN_RADIX]);
-
-reg signed [(IN_WIDTH+GAIN_WIDTH-GAIN_RADIX)-1:0] clamped_product;
+reg signed [(IN_WIDTH+GAIN_WIDTH-GAIN_RADIX)-1:0] clamped_sum;
 always @(posedge clk)
-    clamped_product <= 
-        (product <= min) ? min :
-             (product >= max) ? max :
-                  product;
+    clamped_sum <= 
+        (sum_d3 <= min) ? min :
+             (sum_d3 >= max) ? max :
+                  sum_d3;
                   
                 
-assign out = clamped_product[OUT_WIDTH-1:0];
+assign out = clamped_sum[OUT_WIDTH-1:0];
               
               
               
