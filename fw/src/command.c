@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "stringmap.h"
+#include <stdbool.h>
 #include "command.h"
 
 #include "xil_printf.h"
@@ -40,6 +41,7 @@ void add_command(struct cmd_context *ctx, const char *name, void (*handler)(void
 
 
 void tokenize_command(const char *cmd_str, struct command *cmd) {
+	init_command(cmd);
 	for (char *c = (char*)cmd_str; *c != '\0'; ++c) {
 		if (isgraph(*c)) {
 			if (c == cmd_str || !isgraph(*(c-1))) { // Relying on short-circuit to prevent accessing line-1
@@ -60,7 +62,7 @@ void tokenize_command(const char *cmd_str, struct command *cmd) {
 
 void init_command(struct command *cmd) {
 	cmd->index = 0;
-	cmd->line[0] = '\0';
+	//cmd->line[0] = '\0';   // Assume the user will write this before tokenize() 
 	cmd->num_tokens = 0;
 	for (int i = 0; i < 16; ++i) {
 		cmd->tokens[i] = (char*)"";
@@ -68,7 +70,6 @@ void init_command(struct command *cmd) {
 }
 
 void get_command(struct command *cmd) {
-	init_command(cmd);
 	fgets(cmd->line, 1024, stdin);
 	tokenize_command(cmd->line, cmd);
 }
@@ -80,32 +81,64 @@ struct cmd_context *dispatch_command(struct cmd_context *ctx, struct command *cm
 
 	struct cmd_context *orig_ctx = ctx;
 
+	if (cmd->num_tokens == 0) {
+		xil_printf("ERROR: blank command\n");
+		return orig_ctx;
+	} 
+
+
+
+
 	while (1) {
 
 		char *token = cmd->tokens[cmd->index++];
+		bool valid_token = false;
+		//xil_printf("token=%s  idx=%d  #=%d\n", token, cmd->index, cmd->num_tokens);
 
 		struct cmd_context *subctx = (struct cmd_context *)stringmap_get(ctx->subcontexts, token);
 		if (subctx != NULL) {
+			// xil_printf("\nSUBCTX %s\n", token);
 			ctx = subctx;
+			valid_token = true;
 //			xil_printf("Entering context: %s\n", token);
-			continue;
+			//continue;
 		}
 
-		handler_fcn handler = (void (*)(void*, struct command *))stringmap_get(ctx->commands, token);
-		if (handler != NULL) {
-			handler(ctx->arg, cmd);
-//			xil_printf("Calling command: %s\n", token);
-			return orig_ctx;
+		else {
+
+			handler_fcn handler = (void (*)(void*, struct command *))stringmap_get(ctx->commands, token);
+			if (handler != NULL) {
+				// xil_printf("\nCMD %s\n", token);
+				handler(ctx->arg, cmd);
+				///xil_printf(" OK\n");
+	//			xil_printf("Calling command: %s\n", token);
+				valid_token = true;
+				ctx = orig_ctx;
+				//return orig_ctx;
+			}
 		}
+
+
+		if (valid_token) {
+			// xil_printf("%s ", token);
+		}
+
 
 		//xil_printf("Unrecognized command: %s\n", token);
 
-		if (ctx == orig_ctx || cmd->index != cmd->num_tokens) {
-			xil_printf("Unrecognized command\n");
+
+		if (!valid_token) {
+			// xil_printf("Unrecognized command: %s\n", token);
+			return orig_ctx;
 		}
-		return ctx;
+
+		if (cmd->index == cmd->num_tokens) {
+			// xil_printf("\nDONE\n");
+			return ctx;
+		}
 
 	}
+
 }
 
 
