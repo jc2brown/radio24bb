@@ -72,40 +72,40 @@ wire [31:0] dds_step;
 
 
 wire signed [3:0] am_mux;
-wire signed [31:0] am_raw;
+wire signed [7:0] am_raw;
 wire signed [31:0] am_gain;
 wire signed [31:0] am_offset;
       
 wire signed [3:0] fm_mux;
-wire signed [31:0] fm_raw;
+wire signed [7:0] fm_raw;
 wire signed [31:0] fm_gain;
 wire signed [31:0] fm_offset;
       
 wire signed [3:0] pm_mux;
-wire signed [15:0] pm_raw;
+wire signed [7:0] pm_raw;
 wire signed [19:0] pm_gain;
 wire signed [11:0] pm_offset;
 
     
-wire signed [15:0] am_data = (am_mux == 0) ? am_raw :
-                             (am_mux == 1) ? ina_data : 
-                             (am_mux == 2) ? inb_data :
-                             (am_mux == 3) ? ddsa_data :
-                             (am_mux == 4) ? ddsb_data :
+wire signed [15:0] am_data = (am_mux == 0) ? signed'(am_raw) :
+                             (am_mux == 1) ? signed'(ina_data) : 
+                             (am_mux == 2) ? signed'(inb_data) :
+                             (am_mux == 3) ? signed'(ddsa_data) :
+                             (am_mux == 4) ? signed'(ddsb_data) :
                              0;
                              
-wire signed [15:0] fm_data = (fm_mux == 0) ? fm_raw :
-                             (fm_mux == 1) ? ina_data : 
-                             (fm_mux == 2) ? inb_data :
-                             (fm_mux == 3) ? ddsa_data :
-                             (fm_mux == 4) ? ddsb_data :
+wire signed [15:0] fm_data = (fm_mux == 0) ? signed'(fm_raw) :
+                             (fm_mux == 1) ? signed'(ina_data) : 
+                             (fm_mux == 2) ? signed'(inb_data) :
+                             (fm_mux == 3) ? signed'(ddsa_data) :
+                             (fm_mux == 4) ? signed'(ddsb_data) :
                              0;
 
-wire signed [15:0] pm_data = (pm_mux == 0) ? pm_raw :
-                             (pm_mux == 1) ? ina_data : 
-                             (pm_mux == 2) ? inb_data :
-                             (pm_mux == 3) ? ddsa_data :
-                             (pm_mux == 4) ? ddsb_data :
+wire signed [15:0] pm_data = (pm_mux == 0) ? signed'(pm_raw) :
+                             (pm_mux == 1) ? signed'(ina_data) : 
+                             (pm_mux == 2) ? signed'(inb_data) :
+                             (pm_mux == 3) ? signed'(ddsa_data) :
+                             (pm_mux == 4) ? signed'(ddsb_data) :
                              0;
                                   
                                  
@@ -129,13 +129,13 @@ dds_am_gain_offset (
     .out_valid()
 );         
   
-wire signed [23:0] scaled_fm_data;
+wire signed [31:0] scaled_fm_data;
 
 gain_offset_clamp
 #(
     .IN_WIDTH(16),
     .GAIN_WIDTH(32),
-    .GAIN_RADIX(8),
+    .GAIN_RADIX(0),
     .OFFSET_WIDTH(32),
     .OUT_WIDTH(32)
 )
@@ -227,13 +227,29 @@ prbs_gain_offset (
 );
 
 
-reg signed [7:0] dac_data;
-always @(posedge clk) dac_data <= scaled_prbs_data + 
+reg signed [9:0] dac_data;
+always @(posedge clk) dac_data <= 
+    scaled_prbs_data + (
         (mux == 0) ? raw :
         (mux == 1) ? dds_data :
         (mux == 2) ? ina_data : 
         (mux == 3) ? inb_data : 
-        0;
+        0); // n.b parens are req'd around mux
+        
+    
+                    
+reg signed [7:0] clamped_dac_data;   
+always @(posedge clk) begin
+    if (dac_data >= signed'(127)) begin
+        clamped_dac_data <= signed'(127);
+    end
+    else if (dac_data <= signed'(-128)) begin
+        clamped_dac_data <= signed'(-128);
+    end
+    else begin
+        clamped_dac_data <= dac_data;
+    end    
+end        
                                
                                                
 wire signed [7:0] modulated_dac_data;
@@ -248,7 +264,7 @@ gain_offset_clamp
 )
 am_modulator (
     .clk(clk),
-    .in(dac_data),
+    .in(clamped_dac_data[7:0]),
     .in_valid(1),
     .gain(scaled_am_data),
     .offset(0),

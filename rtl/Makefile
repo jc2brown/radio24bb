@@ -25,13 +25,13 @@ RTL_FILES:=$(addprefix $(RTL_ROOT)/hdl/,$(shell cat $(RTL_ROOT)/hdl/hdl_sources.
 XDC_FILES:=$(addprefix $(RTL_ROOT)/xdc/,$(shell cat $(RTL_ROOT)/xdc/xdc_sources.lst))
 
 define print_sources =
-	$(info )
-	$(info HDL FILES)
-	$(foreach e,$(RTL_FILES),$(info $(e)))
-	$(info )
-	$(info XDC FILES)
-	$(foreach e,$(XDC_FILES),$(info $(e)))
-	$(info )
+$(info )
+$(info HDL FILES)
+$(foreach e,$(RTL_FILES),$(info $(e)))
+$(info )
+$(info XDC FILES)
+$(foreach e,$(XDC_FILES),$(info $(e)))
+$(info )
 endef
 
 
@@ -65,7 +65,7 @@ $(info -  BIT_FILE=$(BIT_FILE))
 $(info -  HDF_FILE=$(HDF_FILE))
 $(info -  INFO_FILE=$(INFO_FILE))
 $(info )
-$(call print_sources)
+#$(call print_sources)
 $(info )
 
 

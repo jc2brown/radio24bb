@@ -1,0 +1,1 @@
+Add saturation logic to dds_block where PRBS is added to DDS signal

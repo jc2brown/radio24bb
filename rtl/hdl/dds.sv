@@ -12,16 +12,16 @@ module dds (
     input signed [31:0] fm_data,    
     input signed [11:0] pm_data,
     
-    output reg signed [31:0] out,
+    output reg signed [7:0] out,
     output reg signed out_valid
 
 );
     
 
 
-reg [7:0] dds_data;
-reg dds_data_valid;
-wire empty;
+//reg [7:0] dds_data;
+//reg dds_data_valid;
+//wire empty;
 
 wire run = (step != 0);    
 
@@ -48,6 +48,7 @@ end
     
     
 reg [31:0] accum;
+wire [11:0] rom_addr = accum[31:20]+pm_data[11:0];
     
 always @(posedge clk) begin
     if (reset) begin
@@ -68,7 +69,7 @@ always @(posedge clk) begin
     end
     else begin
         if (run) begin        
-            out <= lut[accum[31:20]+pm_data[11:0]];
+            out <= lut[rom_addr];
             out_valid <= 1'b1;
         end
         else begin

@@ -24,8 +24,10 @@ void init_dds_channel(struct dds_channel *channel) {
 }
 
 
-
-
+#define SAMPLE_RATE 99.99888e6
+uint32_t calc_step_size(double freq) {
+	return ((1ULL<<32) / SAMPLE_RATE) * freq;
+}
 
 void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
@@ -42,22 +44,24 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 		regs->rom = (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
 	}
 
-	regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
+	// regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
+	regs->step = calc_step_size(10.7e6);
 
 	regs->am_mux = 0;
-	regs->am_raw = 256;
-	regs->am_gain = 128; //((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
-	regs->am_offset = 64;
+	regs->am_raw = 127;
+	regs->am_gain = 256;
+	regs->am_offset = 0;
 
 	regs->fm_mux = 0;
 	regs->fm_raw = 0;
-	regs->fm_gain = ((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
-	regs->fm_gain = 1<<22; //((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	// regs->fm_gain = 956301; // 5.7MHz FS dev. @ 5MHz fc & 100MSps
+	regs->fm_gain = 33554; // 200kHz FS dev. @ 10.7MHz fc & 100MSps
 	regs->fm_offset = 0;
+	
 
-	regs->pm_mux = 1;
+	regs->pm_mux = 0;
 	regs->pm_raw = 0;
-	regs->pm_gain = 256;//((1ULL<<32) / 99.99888e6) * 0.95e3; // 100kHz / 0.5V ADC
+	regs->pm_gain = 4096;
 	regs->pm_offset = 0;
 
 	regs->prbs_gain = 0;

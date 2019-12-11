@@ -31,7 +31,17 @@ ifeq ($(BOARD),zcu102)
 endif
 
 
+
+
+ifeq ($(shell uname), windows32)
 RM:=$(FW_ROOT)/bin/rm -rf
+else
+RM:=rm -rf
+endif
+
+
+
+
 
 
 LD_SRCS += $(FW_ROOT)/lscript/lscript_$(TARGET_CPU).ld
