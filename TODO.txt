@@ -1,1 +1,2 @@
 Add saturation logic to dds_block where PRBS is added to DDS signal
+Add DDS support for lower sample rates, e.g. enable signal+pulse gen.  Alternatively, add bits to PRBS

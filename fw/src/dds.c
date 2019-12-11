@@ -97,23 +97,6 @@ void handle_dds_raw_cmd(void *arg, struct command *cmd) {
 }
 
 
-void handle_dds_fm_raw_cmd(void *arg, struct command *cmd) {
-	struct dds_channel *channel = (struct dds_channel *)arg;
-	channel->regs->fm_raw = atoi(cmd->tokens[cmd->index++]);
-}
-
-
-void handle_dds_fm_gain_cmd(void *arg, struct command *cmd) {
-	struct dds_channel *channel = (struct dds_channel *)arg;
-	channel->regs->fm_gain = atoi(cmd->tokens[cmd->index++]);
-}
-
-
-void handle_dds_fm_offset_cmd(void *arg, struct command *cmd) {
-	struct dds_channel *channel = (struct dds_channel *)arg;
-	channel->regs->fm_offset = atoi(cmd->tokens[cmd->index++]);
-}
-
 
 void dds_stat(struct dds_channel *channel) {
 	channel->regs->stat_cfg = 1;
@@ -143,29 +126,49 @@ void handle_dds_freq_cmd(void *arg, struct command *cmd) {
 
 
 
-    /*
-wire signed [15:0] am_data = (am_mux == 0) ? signed'(am_raw) :
-                             (am_mux == 1) ? signed'(ina_data) : 
-                             (am_mux == 2) ? signed'(inb_data) :
-                             (am_mux == 3) ? signed'(ddsa_data) :
-                             (am_mux == 4) ? signed'(ddsb_data) :
-                             0;
-                             
-wire signed [15:0] fm_data = (fm_mux == 0) ? signed'(fm_raw) :
-                             (fm_mux == 1) ? signed'(ina_data) : 
-                             (fm_mux == 2) ? signed'(inb_data) :
-                             (fm_mux == 3) ? signed'(ddsa_data) :
-                             (fm_mux == 4) ? signed'(ddsb_data) :
-                             0;
 
-wire signed [15:0] pm_data = (pm_mux == 0) ? signed'(pm_raw) :
-                             (pm_mux == 1) ? signed'(ina_data) : 
-                             (pm_mux == 2) ? signed'(inb_data) :
-                             (pm_mux == 3) ? signed'(ddsa_data) :
-                             (pm_mux == 4) ? signed'(ddsb_data) :
-                             0;
 
-*/
+void handle_dds_am_src_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	static char *dds_am_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb" };
+	char *src = cmd->tokens[cmd->index++];
+	if (!strcmp(src, "help")) {
+		for (int i = 0; i < sizeof(dds_am_srcs)/sizeof(*dds_am_srcs); ++i) {
+			xil_printf("%d:%s  ", i, dds_am_srcs[i]);
+		}
+		xil_printf("\n");
+		return;
+	}
+	for (int i = 0; i < sizeof(dds_am_srcs)/sizeof(*dds_am_srcs); ++i) {
+		if (!strcmp(src, dds_am_srcs[i])) {
+			xil_printf("am_mux<=%d\n", i);
+			channel->regs->am_mux = i;
+		}
+	}
+}
+
+void handle_dds_am_raw_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->am_raw = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_am_gain_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->am_gain = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_am_offset_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->am_offset = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+
+
+
+
 
 
 
@@ -188,6 +191,87 @@ void handle_dds_fm_src_cmd(void *arg, struct command *cmd) {
 	}
 }
 
+void handle_dds_fm_raw_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->fm_raw = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_fm_gain_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->fm_gain = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_fm_offset_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->fm_offset = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+
+
+
+
+
+
+
+
+void handle_dds_pm_src_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	static char *dds_pm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb" };
+	char *src = cmd->tokens[cmd->index++];
+	if (!strcmp(src, "help")) {
+		for (int i = 0; i < sizeof(dds_pm_srcs)/sizeof(*dds_pm_srcs); ++i) {
+			xil_printf("%d:%s  ", i, dds_pm_srcs[i]);
+		}
+		xil_printf("\n");
+		return;
+	}
+	for (int i = 0; i < sizeof(dds_pm_srcs)/sizeof(*dds_pm_srcs); ++i) {
+		if (!strcmp(src, dds_pm_srcs[i])) {
+			xil_printf("pm_mux<=%d\n", i);
+			channel->regs->pm_mux = i;
+		}
+	}
+}
+
+void handle_dds_pm_raw_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->pm_raw = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_pm_gain_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->pm_gain = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_dds_pm_offset_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->pm_offset = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+
+
+
+
+
+
+
+
+void handle_prbs_gain_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->prbs_gain = atoi(cmd->tokens[cmd->index++]);
+}
+
+
+void handle_prbs_offset_cmd(void *arg, struct command *cmd) {
+	struct dds_channel *channel = (struct dds_channel *)arg;
+	channel->regs->prbs_offset = atoi(cmd->tokens[cmd->index++]);
+}
 
 
 
@@ -197,21 +281,39 @@ void init_dds_channel_context(char *name, void* arg, struct cmd_context *parent_
 
 	struct cmd_context *dds_channel_ctx = make_cmd_context(name, arg);
 	add_subcontext(parent_ctx, dds_channel_ctx);
-
 	add_command(dds_channel_ctx, "src", handle_dds_src_cmd);
 	add_command(dds_channel_ctx, "stat", handle_dds_stat_cmd);
 	add_command(dds_channel_ctx, "freq", handle_dds_freq_cmd);
 
 
+	struct cmd_context *am_ctx = make_cmd_context("am", arg);
+	add_subcontext(dds_channel_ctx, am_ctx);
+	add_command(am_ctx, "src", handle_dds_am_src_cmd);
+	add_command(am_ctx, "raw", handle_dds_am_raw_cmd);
+	add_command(am_ctx, "gain", handle_dds_am_gain_cmd);
+	add_command(am_ctx, "offset", handle_dds_am_offset_cmd);
+
+
 	struct cmd_context *fm_ctx = make_cmd_context("fm", arg);
 	add_subcontext(dds_channel_ctx, fm_ctx);
-
 	add_command(fm_ctx, "src", handle_dds_fm_src_cmd);
 	add_command(fm_ctx, "raw", handle_dds_fm_raw_cmd);
 	add_command(fm_ctx, "gain", handle_dds_fm_gain_cmd);
 	add_command(fm_ctx, "offset", handle_dds_fm_offset_cmd);
 
 
+	struct cmd_context *pm_ctx = make_cmd_context("pm", arg);
+	add_subcontext(dds_channel_ctx, pm_ctx);
+	add_command(pm_ctx, "src", handle_dds_pm_src_cmd);
+	add_command(pm_ctx, "raw", handle_dds_pm_raw_cmd);
+	add_command(pm_ctx, "gain", handle_dds_pm_gain_cmd);
+	add_command(pm_ctx, "offset", handle_dds_pm_offset_cmd);
+
+
+	struct cmd_context *prbs_ctx = make_cmd_context("prbs", arg);
+	add_subcontext(dds_channel_ctx, prbs_ctx);
+	add_command(prbs_ctx, "gain", handle_prbs_gain_cmd);
+	add_command(prbs_ctx, "offset", handle_prbs_offset_cmd);
 
 
 

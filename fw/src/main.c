@@ -27,9 +27,71 @@
 #include "command.h"
 
 
+
+
+
+
 void tonea_handler(void *arg, struct command *cmd) {
-	issue_command("outa src ddsa", NULL);
 	issue_command("ddsa src dds", NULL);
+	issue_command("ddsa freq 19.7e6", NULL);
+	issue_command("outa src ddsa", NULL);
+}
+
+
+void amtonea_handler(void *arg, struct command *cmd) {
+	
+
+	issue_command("ddsb src dds", NULL);
+	issue_command("ddsb freq 1e3", NULL);
+	issue_command("ddsb fm src raw", NULL);
+
+	issue_command("ddsa src dds", NULL);
+	issue_command("ddsa freq 19.7e6", NULL);
+	issue_command("ddsa fm src raw", NULL);
+	issue_command("ddsa am src ddsb", NULL);
+	issue_command("ddsa am gain 127", NULL);
+	issue_command("ddsa am offset 64", NULL);
+
+	issue_command("outa src ddsa", NULL);
+
+}
+
+
+void fmtonea_handler(void *arg, struct command *cmd) {
+	
+
+	issue_command("ddsb src dds", NULL);
+	issue_command("ddsb freq 1e3", NULL);
+	issue_command("ddsb fm src raw", NULL);
+
+	issue_command("ddsa src dds", NULL);
+	issue_command("ddsa freq 19.7e6", NULL);
+	issue_command("ddsa fm src ddsb", NULL);
+	issue_command("ddsa fm gain 10000", NULL);
+	issue_command("ddsa fm offset 0", NULL);
+
+	issue_command("outa src ddsa", NULL);
+
+}
+
+
+
+void pmtonea_handler(void *arg, struct command *cmd) {
+	
+
+	issue_command("ddsb src dds", NULL);
+	issue_command("ddsb freq 1e3", NULL);
+	issue_command("ddsb fm src raw", NULL);
+
+	issue_command("ddsa src dds", NULL);
+	issue_command("ddsa freq 19.7e6", NULL);
+	issue_command("ddsa fm src raw", NULL);
+	issue_command("ddsa am src raw", NULL);
+	issue_command("ddsa pm src ddsb", NULL);
+	issue_command("ddsa pm gain 16", NULL);
+
+	issue_command("outa src ddsa", NULL);
+
 }
 
 
@@ -164,6 +226,9 @@ int main()
 
 
 	add_command(NULL, "tonea", tonea_handler);
+	add_command(NULL, "amtonea", amtonea_handler);
+	add_command(NULL, "fmtonea", fmtonea_handler);
+	add_command(NULL, "pmtonea", pmtonea_handler);
 	add_command(NULL, "loopa", loopa_handler);
 	add_command(NULL, "info", info_handler);
 	add_command(NULL, "led", led_handler);
