@@ -7,7 +7,7 @@
 
 
 #include "stringmap.h"
-
+#include <stdbool.h>
 
 
 
@@ -38,7 +38,7 @@ struct cmd_context *make_cmd_context(const char *name, void *arg);
 void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx);
 void add_command(struct cmd_context *ctx, const char *name, handler_fcn);
 
-
+void print_cmd_responses(bool print_responses);
 
 
 void init_root_context();
@@ -51,6 +51,11 @@ struct cmd_context * issue_command(const char *cmd_str, struct cmd_context *ctx)
 void handle_command();
 
 
+
+#define run_script(script)  _run_script((script), sizeof((script))/sizeof(*(script)))
+
+
+void _run_script(char **script, int num_lines);
 
 
 //void stub_handler();

@@ -56,6 +56,23 @@ void tokenize_command(const char *cmd_str, struct command *cmd) {
 
 
 
+static bool print_cmd_ok = false;
+
+
+void print_cmd_responses(bool print_responses) {
+	print_cmd_ok = print_responses;
+}
+
+
+// TODO: add context
+void _run_script(char **script, int num_lines) {
+	print_cmd_ok = false;
+	for (int i = 0; i < num_lines; ++i) {
+		issue_command(script[i], NULL);
+	}
+	print_cmd_ok = true;
+}
+
 
 
 
@@ -110,7 +127,9 @@ struct cmd_context *dispatch_command(struct cmd_context *ctx, struct command *cm
 			if (handler != NULL) {
 				// xil_printf("\nCMD %s\n", token);
 				handler(ctx->arg, cmd);
-				///xil_printf(" OK\n");
+				if (print_cmd_ok) {
+					xil_printf(" OK\n");
+				}
 	//			xil_printf("Calling command: %s\n", token);
 				valid_token = true;
 				ctx = orig_ctx;
@@ -128,7 +147,9 @@ struct cmd_context *dispatch_command(struct cmd_context *ctx, struct command *cm
 
 
 		if (!valid_token) {
-			// xil_printf("Unrecognized command: %s\n", token);
+			if (print_cmd_ok) {
+				xil_printf(" Unrecognized command: %s\n", token);
+			}
 			return orig_ctx;
 		}
 

@@ -141,7 +141,6 @@ void handle_dds_am_src_cmd(void *arg, struct command *cmd) {
 	}
 	for (int i = 0; i < sizeof(dds_am_srcs)/sizeof(*dds_am_srcs); ++i) {
 		if (!strcmp(src, dds_am_srcs[i])) {
-			xil_printf("am_mux<=%d\n", i);
 			channel->regs->am_mux = i;
 		}
 	}
@@ -185,7 +184,6 @@ void handle_dds_fm_src_cmd(void *arg, struct command *cmd) {
 	}
 	for (int i = 0; i < sizeof(dds_fm_srcs)/sizeof(*dds_fm_srcs); ++i) {
 		if (!strcmp(src, dds_fm_srcs[i])) {
-			xil_printf("fm_mux<=%d\n", i);
 			channel->regs->fm_mux = i;
 		}
 	}
@@ -230,7 +228,6 @@ void handle_dds_pm_src_cmd(void *arg, struct command *cmd) {
 	}
 	for (int i = 0; i < sizeof(dds_pm_srcs)/sizeof(*dds_pm_srcs); ++i) {
 		if (!strcmp(src, dds_pm_srcs[i])) {
-			xil_printf("pm_mux<=%d\n", i);
 			channel->regs->pm_mux = i;
 		}
 	}

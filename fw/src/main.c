@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include "roe.h"
 
@@ -38,61 +39,114 @@ void tonea_handler(void *arg, struct command *cmd) {
 }
 
 
-void amtonea_handler(void *arg, struct command *cmd) {
+
+
+
+char *amtone_script[] = {
+
+	"ddsb src dds",
+	"ddsb freq 1e3",
+	"ddsb fm src raw",
+
+
+	"ddsa am src raw",	
+	"ddsa am raw 127",	
+	"ddsa am gain 256",	
+	"ddsa am offset 0",
+	"ddsa fm gain 0",	
+	"ddsa fm offset 0",
+	"ddsa pm gain 0",	
+	"ddsa pm offset 0",
+
+
+
+	"ddsa src dds",
+	"ddsa freq 19.7e6",
+	"ddsa am src ddsb",
+	"ddsa am gain 127",
+	"ddsa am offset 64",
+
+	"outa src ddsa",
+	"outb src ddsa",
+
+};
+
+
+
+
+
+char *fmtone_script[] = {
+
+	"ddsb src dds",
+	"ddsb freq 1e3",
+	"ddsb fm src raw",
+
+	"ddsa am src raw",	
+	"ddsa am raw 127",	
+	"ddsa am gain 256",	
+	"ddsa am offset 0",
+	"ddsa fm gain 0",	
+	"ddsa fm offset 0",
+	"ddsa pm gain 0",	
+	"ddsa pm offset 0",
+
+	"ddsa src dds",
+	"ddsa freq 19.7e6",
+	"ddsa fm src ddsb",
+	"ddsa fm gain 10000",
+	"ddsa fm offset 0",
+
+	"outa src ddsa",
+	"outb src ddsa",
+
+};
+
+
+
+
+
+char *pmtone_script[] = {
+
+	"ddsb src dds",
+	"ddsb freq 1e3",
+	"ddsb fm src raw",
+
+	"ddsa am src raw",	
+	"ddsa am raw 127",	
+	"ddsa am gain 256",	
+	"ddsa am offset 0",
+	"ddsa fm gain 0",	
+	"ddsa fm offset 0",
+	"ddsa pm gain 0",	
+	"ddsa pm offset 0",
+
+	"ddsa src dds",
+	"ddsa freq 19.7e6",
+	"ddsa fm src raw",
+	"ddsa am src raw",
+	"ddsa pm src ddsb",
+	"ddsa pm gain 2048",
+
+	"outa src ddsa",
+	"outb src ddsa",
+
+};
+
+
+
+void amtone_handler(void *arg, struct command *cmd) {
+	run_script(amtone_script);
+}
+	
+void fmtone_handler(void *arg, struct command *cmd) {
+	run_script(fmtone_script);
+}
+	
+void pmtone_handler(void *arg, struct command *cmd) {
+	run_script(pmtone_script);
+}
 	
 
-	issue_command("ddsb src dds", NULL);
-	issue_command("ddsb freq 1e3", NULL);
-	issue_command("ddsb fm src raw", NULL);
-
-	issue_command("ddsa src dds", NULL);
-	issue_command("ddsa freq 19.7e6", NULL);
-	issue_command("ddsa fm src raw", NULL);
-	issue_command("ddsa am src ddsb", NULL);
-	issue_command("ddsa am gain 127", NULL);
-	issue_command("ddsa am offset 64", NULL);
-
-	issue_command("outa src ddsa", NULL);
-
-}
-
-
-void fmtonea_handler(void *arg, struct command *cmd) {
-	
-
-	issue_command("ddsb src dds", NULL);
-	issue_command("ddsb freq 1e3", NULL);
-	issue_command("ddsb fm src raw", NULL);
-
-	issue_command("ddsa src dds", NULL);
-	issue_command("ddsa freq 19.7e6", NULL);
-	issue_command("ddsa fm src ddsb", NULL);
-	issue_command("ddsa fm gain 10000", NULL);
-	issue_command("ddsa fm offset 0", NULL);
-
-	issue_command("outa src ddsa", NULL);
-
-}
-
-
-
-void pmtonea_handler(void *arg, struct command *cmd) {
-	
-
-	issue_command("ddsb src dds", NULL);
-	issue_command("ddsb freq 1e3", NULL);
-	issue_command("ddsb fm src raw", NULL);
-
-	issue_command("ddsa src dds", NULL);
-	issue_command("ddsa freq 19.7e6", NULL);
-	issue_command("ddsa fm src raw", NULL);
-	issue_command("ddsa am src raw", NULL);
-	issue_command("ddsa pm src ddsb", NULL);
-	issue_command("ddsa pm gain 16", NULL);
-
-	issue_command("outa src ddsa", NULL);
-
-}
 
 
 void loopa_handler(void *arg, struct command *cmd) {
@@ -226,9 +280,9 @@ int main()
 
 
 	add_command(NULL, "tonea", tonea_handler);
-	add_command(NULL, "amtonea", amtonea_handler);
-	add_command(NULL, "fmtonea", fmtonea_handler);
-	add_command(NULL, "pmtonea", pmtonea_handler);
+	add_command(NULL, "amtone", amtone_handler);
+	add_command(NULL, "fmtone", fmtone_handler);
+	add_command(NULL, "pmtone", pmtone_handler);
 	add_command(NULL, "loopa", loopa_handler);
 	add_command(NULL, "info", info_handler);
 	add_command(NULL, "led", led_handler);
@@ -258,75 +312,17 @@ int main()
 	init_dds_channel_context("ddsb", ddsb, NULL);
 
 
-//	struct dac_channel_regs *outa_regs = (struct dac_channel_regs *)OUTA_REGS;
-//	struct dac_channel_regs *outb_regs = (struct dac_channel_regs *)OUTB_REGS;
-//
-//	init_adc_channel_context("ina", ina, NULL);
-//	init_adc_channel_context("inb", inb, NULL);
 
 
 
-//	init_adc_channel_regs(ina_regs);
-//	init_adc_channel_regs(inb_regs);
-
-//	init_dac_channel_regs(outa_regs);
-//	init_dac_channel_regs(outb_regs);
-
-
-/*
-	*((volatile uint32_t*)0x43C02000ULL) = 255;
-	*((volatile uint32_t*)0x43C02004ULL) = 0;
-
-
-	*((volatile uint32_t*)0x43C0200CULL) = 4;
-	*((volatile uint32_t*)0x43C02010ULL) = 0;
-
-	for (int i = 0; i < 21; ++i) {
-		*((volatile uint32_t*)0x43C02008ULL) = (uint32_t)(outa_filter0_coef[i] * (double)(1<<23));
-	}
-
-
-
-	*((volatile uint32_t*)0x43C02018ULL) = 0;//((1ULL<<32) / 99.99888e6) * 10.7e6;
-
-	for (int i = 0; i < 4096; ++i) {
-		//regs->dds_cfg = (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
-
-		*((volatile uint32_t*)0x43C02014ULL) = i;// (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
-
-	}
-
-	//regs->dds_step = 4000000;//((1ULL<<32) / 99.99888e6) * 10.7e6;
-	*((volatile uint32_t*)0x43C02018ULL) = 0;//((1ULL<<32) / 99.99888e6) * 10.7e6;
-*/
+	issue_command("outa att 0", NULL);
+	issue_command("outb att 3", NULL);
 
 
 
 
 
 
-
-
-
-
-/*
-	INA_GAIN = 255;
-	INB_GAIN = 1;
-	*/
-
-/*
-
-	for (int i = 0; i < 21; ++i) {
-		INA_FILTER_COEF = (uint32_t)(ina_filter2_coef[20-i] * (double)(1<<23));
-	}*/
-
-/*
-	INA_FILTER_COEF = 1<<22;
-	INA_FILTER_COEF = 1<<22;
-
-	INB_FILTER_COEF = 1<<22;
-	INB_FILTER_COEF = 1<<22;
-*/
 
 	DAC_DCE = 0;
 	usleep(100000);
@@ -336,59 +332,9 @@ int main()
 
 	LEDS = 3;
 
-	//*((volatile uint32_t*)(0x43C01000ULL)) = 0xFFFFFFFF;
 
-/*
-	for (uint32_t i = 0x43C00000; i < 0x43D00000; i=i+4) {
-
-		*((volatile uint32_t*)(i)) = 0xFFFFFFFF;
-	}*/
-
-
-
-
-//#define REG_OUTA_DDS_CFG	*((volatile uint32_t*)0x43C01600)
-//#define REG_OUTA_DDS_STEP	*((volatile uint32_t*)0x43C01604)
-
-
-
-//
-//	REG_OUTA_DDS_STEP = 0;
-//
-//	for (int i = 0; i < 4096; ++i) {
-//		REG_OUTA_DDS_CFG = (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
-//	}
-//
-//	REG_OUTA_DDS_STEP = ((1ULL<<32) / 99.99888e6) * 10.7e6;
-//
-
-
-//
-//
-//	REG_OUTA_DDS_STEP = 0;
-//
-//	for (int i = 0; i < 4096; ++i) {
-//		REG_OUTA_DDS_CFG = (int8_t)(  63.0*sin((9.0*2.0*3.141*(double)i)/4096.0)   +   63.0*sin((10.0*2.0*3.141*(double)i)/4096.0)  );
-//	}
-//
-//
-//	REG_OUTA_DDS_STEP = ((1ULL<<32) / 99.99888e6) * 10.7e6/9.5;
-//
-
-
-
-	XGpioPs_WritePin(gpiops_ptr, 72, 1);	// OUTA ATT0
-	XGpioPs_WritePin(gpiops_ptr, 71, 1);	// OUTA ATT1
-//
-//
-//	OUTA_MUX = 4;
-//	OUTA_RAW = 0;
-
-
-
-//	char line[1024];
-//	char *tokens[16];
-
+	// XGpioPs_WritePin(gpiops_ptr, 72, 1);	// OUTA ATT0
+	// XGpioPs_WritePin(gpiops_ptr, 71, 1);	// OUTA ATT1
 
 
 
@@ -399,7 +345,7 @@ int main()
 	issue_command("led", NULL);
 
 
-
+	print_cmd_responses(true);
 
 	while (1) {
 
@@ -415,29 +361,7 @@ int main()
 	return 0;
 }
 
-
-//		XGpioPs_WritePin(gpiops_ptr, 67, !XGpioPs_ReadPin(gpiops_ptr, 57)); // INB_R on DORB
-//		XGpioPs_WritePin(gpiops_ptr, 68, !XGpioPs_ReadPin(gpiops_ptr, 61)); // INA_R on DORA
-
-
-
-
-		/*
-
-		fgets(line, 1024, stdin);
-		int i = 0;
-		tokens[i++] = line;
-		for (char *c = line+1; *c != '\0'; ++c) {
-			if (*c == ' ') {
-				tokens[i++] = c+1;
-			}
-			if (*c == ' ' || *c == '\n') {
-				*c = '\0';
-			}
-		}
-
-		xil_printf("%d tokens\n", i);
-
+/*
 
 		if (!strncmp(tokens[0], "power", 5)) {
 			int vled_mv;
@@ -453,34 +377,6 @@ int main()
 
 
 
-		if (!strcmp(tokens[0], "ina")) {
-			if (!strcmp(tokens[1], "gain")) {
-				xil_printf("INA_GAIN <= %d\n", INA_GAIN = strtoul(tokens[2], NULL, 0));
-			}
-			if (!strcmp(tokens[1], "offset")) {
-				xil_printf("INA_OFFSET <= %d\n", INA_OFFSET = strtoul(tokens[2], NULL, 0));
-			}
-			if (!strcmp(tokens[1], "att")) {
-				int att = ~strtoul(tokens[2], NULL, 0);
-				XGpioPs_WritePin(gpiops_ptr, 58, att&0x01);
-				XGpioPs_WritePin(gpiops_ptr, 59, (att>>1)&0x01);
-				//xil_printf("INA_ATT0 <= %d\n", INA_ATT0 = strtoul(tokens[2], NULL, 0));
-			}
-
-
-			if (!strcmp(tokens[1], "stat")) {
-				INA_STAT_CFG = 0x01;
-				INA_STAT_CFG = 0x00;
-				INA_STAT_LIMIT = 1000000000;
-				INA_STAT_CFG = 0x02;
-				usleep(100000);
-				INA_STAT_CFG = 0x00;
-
-				xil_printf("INA_STAT_MIN: %d\n", (int8_t)INA_STAT_MIN);
-				xil_printf("INA_STAT_MAX: %d\n", (int8_t)INA_STAT_MAX);
-				xil_printf("INA_STAT_COUNT: %d\n", INA_STAT_COUNT);
-
-			}
 			if (!strcmp(tokens[1], "filt")) {
 
 				switch (atoi(tokens[2])) {
@@ -519,50 +415,6 @@ int main()
 
 
 
-			if (!strcmp(tokens[1], "opt")) {
-
-				INA_OFFSET = 0;
-				INA_GAIN = 256;
-
-				INA_STAT_CFG = 0x01;
-				INA_STAT_CFG = 0x00;
-				INA_STAT_LIMIT = 1000000000;
-				INA_STAT_CFG = 0x02;
-				usleep(100000);
-				INA_STAT_CFG = 0x00;
-
-				int min = (int8_t)INA_STAT_MIN;
-				int max = (int8_t)INA_STAT_MAX;
-				int ampl = max - min;
-				int avg = (min + max) / 2;
-
-
-				xil_printf("INA_GAIN <= %d\n", INA_GAIN = (256UL * 128UL) / ampl);
-
-				xil_printf("INA_OFFSET <= %d\n", INA_OFFSET = -avg);
-
-
-
-			}
-
-
-		}
-
-		if (!strcmp(tokens[0], "outa")) {
-			if (!strcmp(tokens[1], "raw")) {
-				xil_printf("OUTA_RAW <= %d\n", OUTA_RAW = strtoul(tokens[2], NULL, 0));
-			}
-			if (!strcmp(tokens[1], "mux")) {
-				xil_printf("OUTA_MUX <= %d\n", OUTA_MUX = strtoul(tokens[2], NULL, 0));
-			}
-			if (!strcmp(tokens[1], "count")) {
-				xil_printf("REG_OUTA_WR_COUNT: %d\n", REG_OUTA_WR_COUNT);
-			}
-
-
-
-		}
-
 		if (!strcmp(tokens[0], "dac")) {
 			if (!strcmp(tokens[1], "cfg")) {
 				xil_printf("DAC_CFG <= %d\n", DAC_CFG = strtoul(tokens[2], NULL, 0));
@@ -580,12 +432,6 @@ int main()
 			}
 		}
 
-		if (!strcmp(tokens[0], "outb")) {
-			if (!strcmp(tokens[1], "count")) {
-				xil_printf("REG_OUTB_WR_COUNT: %d\n", REG_OUTB_WR_COUNT);
-			}
-
-		}
 
 */
 
@@ -638,33 +484,6 @@ int main()
 
 		//USB_WR_DATA = c++;
 
-
-
-		/*
-		xil_printf("Hi\r\n");
-		XGpioPs_Write(gpiops_ptr, 0, 0x0);
-		XGpioPs_Write(gpiops_ptr, 1, 0x0);
-		XGpioPs_Write(gpiops_ptr, 2, 0x0);
-		XGpioPs_Write(gpiops_ptr, 3, 0x0);
-		usleep(500000);
-		XGpioPs_Write(gpiops_ptr, 0, 0xFFFFFFFF);
-		XGpioPs_Write(gpiops_ptr, 1, 0xFFFFFFFF);
-		XGpioPs_Write(gpiops_ptr, 2, 0xFFFFFFFF);
-		XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
-		usleep(500000);
-		*/
-
-
-
-/*
-	while (1) {
-		xil_printf("Hi\r\n");
-		XGpioPs_WritePin(gpiops_ptr, 56, 0);
-		usleep(500000);
-		XGpioPs_WritePin(gpiops_ptr, 56, 1);
-		usleep(500000);
-	}
-	*/
 
 
 
