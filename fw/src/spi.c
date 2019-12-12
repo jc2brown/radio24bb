@@ -18,7 +18,7 @@ int spi_init() {
 	);
 
 	XSpiPs_SetClkPrescaler(xspips_ptr, XSPIPS_CLK_PRESCALE_64);
-	XSpiPs_SetSlaveSelect(xspips_ptr, 1);
+	XSpiPs_SetSlaveSelect(xspips_ptr, 0x7);
 	return XST_SUCCESS;
 
 }
