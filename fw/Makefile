@@ -68,6 +68,7 @@ OUT_DIR:=$(FW_ROOT)/out
 OBJ_DIR:=$(FW_ROOT)/obj
 WORKSPACE_DIR:=$(FW_ROOT)/workspace
 HW_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_hw
+FSBL_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_fsbl
 BSP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_bsp
 APP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_app
 SRC_DIR:=$(FW_ROOT)/src
@@ -90,6 +91,10 @@ BOOT_STAMP:=$(FW_ROOT)/.$(PROJECT_TOP).boot.done
 
 BIT_FILE?=$(FW_ROOT)/$(PROJECT_TOP).bit
 HDF_FILE?=$(FW_ROOT)/$(PROJECT_TOP).hdf
+
+BIF_FILE?=$(OUT_DIR)/$(PROJECT_TOP).bif
+BIN_FILE?=$(OUT_DIR)/BOOT.bin
+FSBL_ELF?=$(FSBL_DIR)/Debug/$(PROJECT_TOP)_fsbl.elf
 
 ELF_FILE?=$(OUT_DIR)/$(PROJECT_TOP).elf
 ELFSIZE_FILE?=$(OUT_DIR)/$(PROJECT_TOP).elf.size
@@ -154,12 +159,13 @@ $(BSP_GEN_STAMP): $(HDF_FILE)
 	rm -rf $(WORKSPACE_DIR)	
 	mv $(SRC_DIR)_ $(SRC_DIR)
 	$(XSCT) $(FW_ROOT)/tools/gen_hw_bsp.tcl $(BSP_GEN_STAMP) $(HDF_FILE) $(WORKSPACE_DIR) $(TARGET_CPU) $(PROJECT_TOP)
-	#rm -rf $(APP_DIR)/src
+	rm -rf $(APP_DIR)/src
 ifeq ($(UNAME), windows32)
 	cmd /c "$(shell cygpath -a -w $(FW_ROOT)/tools/linksrc.bat) $(shell cygpath -a -w $(APP_DIR)/src) $(shell cygpath -a -w $(FW_ROOT)/src) "
 else ifeq ($(UNAME), Linux)
 	cd $(APP_DIR) && ln -s ../../src src
 endif
+
 
 
 $(BSP_BUILD_STAMP): $(BSP_GEN_STAMP)
@@ -201,16 +207,29 @@ $(FW_ROOT)/clean:
 	-$(RM) $(BSP_BUILD_STAMP)
 	-$(RM) $(OUT_DIR)
 	-$(RM) $(OBJ_DIR)
+	-$(RM) $(BIN_FILE)
 	-$(RM) $(WORKSPACE_DIR)
 	-$(RM) $(FW_ROOT)/.Xil
 	-$(RM) $(FW_ROOT)/*.log
 	-$(RM) $(FW_ROOT)/.*.done
 
 
+
+$(FW_ROOT)/sd: $(BIT_FILE) $(ELF_FILE)
+	echo "" > $(BIF_FILE)
+	echo "//arch = zynq; split = false; format = BIN" >> $(BIF_FILE)
+	echo "the_ROM_image:" >> $(BIF_FILE)
+	echo "{" >> $(BIF_FILE)
+	echo "  [bootloader]$(FSBL_ELF)" >> $(BIF_FILE)
+	echo "  $(BIT_FILE)" >> $(BIF_FILE)
+	echo "  $(ELF_FILE)" >> $(BIF_FILE)
+	echo "}" >> $(BIF_FILE)
+	$(XSCT) $(FW_ROOT)/tools/build_project.tcl $(BIF_FILE) $(BIN_FILE) 
+
+
 .PHONY: $(FW_ROOT)/boot
 $(FW_ROOT)/boot: $(BIT_FILE) $(ELF_FILE)
 	$(XSCT) $(FW_ROOT)/tools/init_$(BOARD).tcl $(BIT_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(INIT_STAMP)
 	$(XSCT) $(FW_ROOT)/tools/boot_$(BOARD).tcl $(ELF_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(BOOT_STAMP)
-
 
 
