@@ -1,7 +1,7 @@
 `timescale 1ps / 1ps
 
 
-module siggen 
+module gen_fm
 #(
      parameter real AMPL = 1.0,
      parameter real FREQ = 10e6,   

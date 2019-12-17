@@ -1,7 +1,7 @@
 `timescale 1ps / 1ps
 
 
-module siggen2 
+module gen_tone
 #(
      parameter real AMPL = 1.0,
      parameter real FREQ = 10e6,   
@@ -30,8 +30,8 @@ always #(SIG_CLK_PER/2) sigclk <= !sigclk;
 reg noiseclk = 1'b0;
 always #(NOISE_CLK_PER/2) noiseclk <= !noiseclk;
 
-reg reset_n = 1'b0;
-initial #10000 @(posedge noiseclk) reset_n <= 1'b1;
+reg reset = 1'b1;
+initial #10000 @(posedge noiseclk) reset <= 1'b0;
 
 reg enable = 1'b0;
 initial #100000 @(posedge noiseclk) enable <= 1'b1;
@@ -42,34 +42,34 @@ wire [16:0] cm_noise_raw;
 wire [16:0] dm_p_noise_raw;
 wire [16:0] dm_n_noise_raw;
 
-s3_prbs #(
+prbs #(
     .SEED(23'b1111_1111_1111_0000_0000_001)
 ) cm_noisegen (
-    .clk_i(noiseclk),                 
-    .reset_n_i(reset_n),             
-    .en_i(enable),                  
-    .init_i(0),                
-    .data_o(cm_noise_raw)
+    .clk(noiseclk),                 
+    .reset(reset),             
+    .en(enable),                  
+    .init(0),                
+    .data(cm_noise_raw)
 );
 
-s3_prbs #(
+prbs #(
     .SEED(23'b1111_1111_1111_0000_0000_010)
 ) dm_n_noisegen (
-    .clk_i(noiseclk),               
-    .reset_n_i(reset_n),             
-    .en_i(enable),                  
-    .init_i(0),                
-    .data_o(dm_n_noise_raw)
+    .clk(noiseclk),               
+    .reset(reset),             
+    .en(enable),                  
+    .init(0),                
+    .data(dm_n_noise_raw)
 );
     
-s3_prbs #(
+prbs #(
    .SEED(23'b1111_1111_1111_0000_0000_100)
 ) dm_p_noisegen (
-    .clk_i(noiseclk),               
-    .reset_n_i(reset_n),             
-    .en_i(enable),                  
-    .init_i(0),                
-    .data_o(dm_p_noise_raw)
+    .clk(noiseclk),               
+    .reset(reset),             
+    .en(enable),                  
+    .init(0),                
+    .data(dm_p_noise_raw)
 );
 
 

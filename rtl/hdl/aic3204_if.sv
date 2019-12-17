@@ -22,21 +22,21 @@ module aic3204_if(
     input wire mclk,
     input wire reset,
     
-    output wire [31:0] nw_fifo_rd_data,
+    output wire [15:0] nw_fifo_rd_data,
     output wire nw_fifo_rd_valid,
     input wire nw_fifo_rd_en,
     output wire nw_fifo_empty,
     
-    output wire [31:0] pw_fifo_rd_data,
+    output wire [15:0] pw_fifo_rd_data,
     output wire pw_fifo_rd_valid,
     input wire pw_fifo_rd_en,
     output wire pw_fifo_empty,
         
-    output wire [31:0] nw_fifo_wr_data,
+    output wire [15:0] nw_fifo_wr_data,
     input wire nw_fifo_wr_en,
     output wire nw_fifo_full,
     
-    output wire [31:0] pw_fifo_wr_data,
+    output wire [15:0] pw_fifo_wr_data,
     input wire pw_fifo_wr_en,
     output wire pw_fifo_full
 
@@ -44,18 +44,35 @@ module aic3204_if(
 );
 
 
-reg bclk;
-always @(posedge clk) bclk <= aic3204_bclk;
+assign aic3204_din = aic3204_dout;
+
+
+wire bclk = aic3204_bclk;
+wire wclk = aic3204_wclk;
+
 
 reg bclk_d1;
-always @(posedge clk) bclk_d1 <= bclk;
+always @(posedge aic3204_mclk) bclk_d1 <= bclk;
 
-reg bclk_posedge;
-always @(posedge clk) bclk_posedge <= bclk && !bclk_d1;
+wire bclk_posedge = bclk && !bclk_d1;
 
-reg bclk_negedge;
-always @(posedge clk) bclk_negedge <= !bclk && bclk_d1;
+wire bclk_negedge = !bclk && bclk_d1;
 
+
+reg wclk_d1;
+always @(posedge aic3204_mclk) wclk_d1 <= wclk; 
+
+
+reg wclk_posedge;
+always @(posedge aic3204_mclk) wclk_posedge <= wclk && !wclk_d1;
+
+reg wclk_negedge;
+always @(posedge aic3204_mclk) wclk_negedge <= !wclk && wclk_d1;
+
+
+
+
+/*
 
 reg wclk;
 always @(posedge clk) wclk <= aic3204_wclk;
@@ -69,7 +86,7 @@ always @(posedge clk) wclk_posedge <= wclk && !wclk_d1;
 reg wclk_negedge;
 always @(posedge clk) wclk_negedge <= !wclk && wclk_d1;
 
-
+*/
 
 /////////////////////////////////////////////////////////////
 //
@@ -106,8 +123,8 @@ xpm_fifo_async #(
     .FIFO_MEMORY_TYPE("block"), // String
     .FIFO_READ_LATENCY(1),     // DECIMAL
     .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(32),      // DECIMAL
-    .WRITE_DATA_WIDTH(32)     // DECIMAL
+    .READ_DATA_WIDTH(16),      // DECIMAL
+    .WRITE_DATA_WIDTH(16)     // DECIMAL
 )
 out_nw_fifo_inst (
 
@@ -130,8 +147,8 @@ xpm_fifo_async #(
     .FIFO_MEMORY_TYPE("block"), // String
     .FIFO_READ_LATENCY(1),     // DECIMAL
     .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(32),      // DECIMAL
-    .WRITE_DATA_WIDTH(32)     // DECIMAL
+    .READ_DATA_WIDTH(16),      // DECIMAL
+    .WRITE_DATA_WIDTH(16)     // DECIMAL
 )
 out_pw_fifo_inst (
 
@@ -154,27 +171,27 @@ out_pw_fifo_inst (
 //
 /////////////////////////////////////////////////////////////
 
-reg [31:0] pw = 'h0; // positive-wclk shift register 
-reg [31:0] nw = 'h0; // negative-wclk shift register 
+reg [15:0] pw = 'h0; // positive-wclk shift register 
+reg [15:0] nw = 'h0; // negative-wclk shift register 
 
-always @(posedge clk) begin
-    if (bclk_posedge) begin
+always @(posedge mclk) begin
+    if (bclk_negedge) begin
         if (!wclk) begin
-            pw <= 32'h00;
+            pw <= 16'h00;
         end
         else begin 
-            pw <= {aic3204_dout, pw[31:1]};
+            pw <= {pw[14:0], aic3204_dout};
         end
     end
 end
 
-always @(posedge clk) begin
-    if (bclk_posedge) begin
+always @(posedge mclk) begin
+    if (bclk_negedge) begin
         if (wclk) begin
-            nw <= 32'h00;
+            nw <= 16'h00;
         end
         else begin 
-            nw <= {aic3204_dout, nw[31:1]};
+            nw <= {nw[14:0], aic3204_dout};
         end
     end
 end
@@ -194,8 +211,8 @@ xpm_fifo_async #(
     .FIFO_MEMORY_TYPE("block"), // String
     .FIFO_READ_LATENCY(1),     // DECIMAL
     .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(32),      // DECIMAL
-    .WRITE_DATA_WIDTH(32)     // DECIMAL
+    .READ_DATA_WIDTH(16),      // DECIMAL
+    .WRITE_DATA_WIDTH(16)     // DECIMAL
 )
 in_nw_fifo_inst (
 
@@ -221,8 +238,8 @@ xpm_fifo_async #(
     .FIFO_MEMORY_TYPE("block"), // String
     .FIFO_READ_LATENCY(1),     // DECIMAL
     .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(32),      // DECIMAL
-    .WRITE_DATA_WIDTH(32)     // DECIMAL
+    .READ_DATA_WIDTH(16),      // DECIMAL
+    .WRITE_DATA_WIDTH(16)     // DECIMAL
 )
 in_pw_fifo_inst (
 

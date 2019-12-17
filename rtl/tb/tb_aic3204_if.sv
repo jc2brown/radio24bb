@@ -49,6 +49,50 @@ wire pw_fifo_full;
 
 
 
+
+/*
+
+wire [31:0] out_l_uv;
+wire [31:0] out_r_uv;
+
+    
+gen_tone
+#(
+    .AMPL(32767e-6),
+    .FREQ(10e3),
+    .VCM(0),
+    .CM_NOISE_AMPL(0),
+    .DM_NOISE_AMPL(0),
+    .SAMPLE_RATE(480000)
+)
+gen_tone_out_l 
+(
+    .sig_p_uv(out_l_uv)
+);
+
+
+gen_tone
+#(
+    .AMPL(32767e-6),
+    .FREQ(10e3),
+    .VCM(0),
+    .CM_NOISE_AMPL(0),
+    .DM_NOISE_AMPL(0),
+    .SAMPLE_RATE(480000)
+)
+gen_tone_out_r 
+(
+    .sig_p_uv(out_r_uv)
+);
+
+*/
+
+
+
+
+
+
+
     
     
     
@@ -109,8 +153,9 @@ aic3204_if aic3204_if_inst (
     
 wire [31:0] in_l_uv;
 wire [31:0] in_r_uv;
+
     
-siggen2
+gen_tone
 #(
     .AMPL(0.4),
     .FREQ(10e3),
@@ -119,13 +164,13 @@ siggen2
     .DM_NOISE_AMPL(0.005),
     .SAMPLE_RATE(480000)
 )
-siggen_in_l 
+gen_tone_in_l 
 (
     .sig_p_uv(in_l_uv)
 );
 
 
-siggen2
+gen_tone
 #(
     .AMPL(0.4),
     .FREQ(10e3),
@@ -134,10 +179,12 @@ siggen2
     .DM_NOISE_AMPL(0.005),
     .SAMPLE_RATE(480000)
 )
-siggen_in_r 
+gen_tone_in_r 
 (
     .sig_p_uv(in_r_uv)
 );
+
+
 
 
 
@@ -159,9 +206,17 @@ aic3204 aic3204_inst
     .out_r_uv(out_r_uv)
 
 );
+
    
    
-   
+always @(posedge clk) begin
+    if (reset) begin
+    
+    end
+    else begin
+        
+    end
+end
    
     
 endmodule

@@ -98,7 +98,7 @@ wire phone_out_det;
 wire [31:0] siga_p_uv;
 wire [31:0] siga_n_uv;
     
-siggen
+gen_tone
 #(
     .AMPL(0.4),
     .FREQ(10.7e6),
@@ -106,7 +106,7 @@ siggen
     .CM_NOISE_AMPL(0.2),
     .DM_NOISE_AMPL(0.05)
 )
-siggen_a 
+gen_tone_a 
 (
     .sig_p_uv(siga_p_uv),
     .sig_n_uv(siga_n_uv)
