@@ -1,7 +1,0 @@
-clocks.xdc
-io_drive_slew.xdc
-iostandard_jx1.xdc
-iostandard_jx2.xdc
-package_pins_jx1.xdc
-package_pins_jx2.xdc
-r24bb.xdc
