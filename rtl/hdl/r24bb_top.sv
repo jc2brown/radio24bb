@@ -922,7 +922,7 @@ dds_block ddsa (
     .inb_data(inb_data),
     .ddsa_data(ddsa_data),
     .ddsb_data(ddsb_data),
-    .aud_in(aud_in[15:8]),
+    .aud_in(aud_in),
     
     .dds_data_out(ddsa_data)                                             
 );
@@ -947,7 +947,7 @@ dds_block ddsb (
     .inb_data(inb_data),
     .ddsa_data(ddsa_data),
     .ddsb_data(ddsb_data),
-    .aud_in(aud_in[15:8]),
+    .aud_in(aud_in),
     
     .dds_data_out(ddsb_data)                                             
 );

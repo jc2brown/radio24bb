@@ -17,7 +17,7 @@ module dds_block (
     input signed [7:0] inb_data,
     input signed [7:0] ddsa_data,
     input signed [7:0] ddsb_data,
-    input signed [7:0] aud_in
+    input signed [15:0] aud_in
                     
 //    input [31:0] usb_rd_data,
 //    input usb_rd_data_valid,

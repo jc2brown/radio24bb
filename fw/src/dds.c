@@ -73,7 +73,7 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 void handle_dds_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_srcs[] = { "raw", "dds", "ina", "inb" };
+	static char *dds_srcs[] = { "raw", "dds", "ina", "inb", "aud" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_srcs)/sizeof(*dds_srcs); ++i) {
@@ -130,7 +130,7 @@ void handle_dds_freq_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_am_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_am_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb" };
+	static char *dds_am_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_am_srcs)/sizeof(*dds_am_srcs); ++i) {
@@ -173,7 +173,7 @@ void handle_dds_am_offset_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_fm_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_fm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb" };
+	static char *dds_fm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_fm_srcs)/sizeof(*dds_fm_srcs); ++i) {
