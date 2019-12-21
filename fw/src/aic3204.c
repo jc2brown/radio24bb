@@ -38,9 +38,8 @@ void select_page(uint8_t page) {
 
 void read_register(uint8_t page, uint8_t reg, uint8_t *data_out) {
 	select_page(page);
-	reg = (reg << 1) | 0x01;
-	transfer(reg, 0, data_out);
-	xil_printf("rd reg %d: %d\n", reg>>1, *data_out);
+	transfer((reg<<1)|1, 0, data_out);
+	xil_printf("rd reg 0x%02X: %d\n", reg, *data_out);
 
 }
 
@@ -48,15 +47,14 @@ void read_register(uint8_t page, uint8_t reg, uint8_t *data_out) {
 
 void _write_register(uint8_t page, uint8_t reg, uint8_t wr_data, int verify) {
 	select_page(page);
-	reg = reg << 1;
-	transfer(reg, wr_data, NULL);
-	xil_printf("wr reg %d <= %d\n", reg>>1, wr_data);
+	transfer(reg<<1, wr_data, NULL);
+	xil_printf("wr reg%02X <= %02X\n", reg, wr_data);
 
 	if (verify) {
 		uint8_t rd_data;
-		read_register(page, reg, &rd_data);
+		transfer((reg<<1)|1, NULL, &rd_data);
 		if (rd_data != wr_data) {
-			xil_printf("READBACK ERROR: expected 0x%02X from pg%d reg%d but got 0x%02X\n", (int)wr_data, (int)page, (int)reg, (int)rd_data);
+			xil_printf("READBACK ERROR: expected 0x%02X from pg%d reg%02X but got 0x%02X\n", (int)wr_data, (int)page, (int)reg>>1, (int)rd_data);
 		} else {
 			xil_printf("Readback OK\n");			
 		}
@@ -83,6 +81,8 @@ void write_register_noverify(uint8_t page, uint8_t reg, uint8_t data_in) {
 #define P0_R12 0x0C
 #define P0_R13 0x0D
 #define P0_R14 0x0E
+#define P0_R18 0x12
+#define P0_R19 0x13
 #define P0_R20 0x14
 #define P0_R27 0x1B
 #define P0_R28 0x1C
@@ -106,7 +106,7 @@ void set_ndac_divider(int n) {
 	// Always power on
 	n |= 0x80;
 
-	write_register(0, 0x0b, (uint8_t)n); 	
+	write_register(0, P0_R11, (uint8_t)n); 	
 }
 
 
@@ -118,8 +118,33 @@ void set_mdac_divider(int n) {
 	n |= 0x80;
 
 	n &= 0xFF;
-	write_register(0, 0x0b, (uint8_t)n); 	
+	write_register(0, P0_R12, (uint8_t)n); 	
 }
+
+
+
+void set_nadc_divider(int n) {
+	if (n == 128) {
+		n = 0;
+	}
+	// Always power on
+	n |= 0x80;
+
+	write_register(0, P0_R18, (uint8_t)n); 	
+}
+
+
+void set_madc_divider(int n) {
+	if (n == 128) {
+		n = 0;
+	}
+	// Always power on
+	n |= 0x80;
+
+	n &= 0xFF;
+	write_register(0, P0_R19, (uint8_t)n); 	
+}
+
 
 
 void set_dac_osr(int n) {
@@ -414,15 +439,16 @@ void adc_unmute() {
 
 void init_aic3204_adc_404() {	
 	aic3204_reset();
-	set_ndac_divider(1);
-	set_mdac_divider(2);
-	set_if_config();
+	set_nadc_divider(1);
+	set_madc_divider(2);
+	//set_if_config();
 	set_adc_osr(128);
 	set_adc_prb(1);
 	set_weak_vdd(0);
 	set_ldo_ctrl();
 	set_cm();
-	set_mic_pga_startup_delay(P1_R71_PWRUP_TIME_3100US);
+	set_power_tune();
+	set_mic_pga_startup_delay(P1_R71_PWRUP_TIME_6400US);
 	set_ref_charge_time();
 	set_left_mic_pga_pos_src();
 	set_left_mic_pga_neg_src();
@@ -431,6 +457,7 @@ void init_aic3204_adc_404() {
 	set_floating_inputs();
 	set_left_mic_pga_gain(6);
 	set_right_mic_pga_gain(6);
+	adc_channel_setup();
 	adc_unmute();
 }
 

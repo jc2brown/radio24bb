@@ -21,19 +21,8 @@ ifeq ($(BOARD),zcu102)
 endif
 
 
-# RTL_FILES:=$(addprefix $(RTL_ROOT)/hdl/,$(shell cat $(RTL_ROOT)/hdl/hdl_sources.lst))
-# XDC_FILES:=$(addprefix $(RTL_ROOT)/xdc/,$(shell cat $(RTL_ROOT)/xdc/xdc_sources.lst))
-
-
-# define print_sources =
-# $(info )
-# $(info HDL FILES)
-# $(foreach e,$(RTL_FILES),$(info $(e)))
-# $(info )
-# $(info XDC FILES)
-# $(foreach e,$(XDC_FILES),$(info $(e)))
-# $(info )
-# endef
+RTL_FILES:=$(wildcard $(RTL_ROOT)/hdl/*.sv)
+XDC_FILES:=$(wildcard $(RTL_ROOT)/xdc/*.xdc)
 
 
 PROJECT_DIR:=$(RTL_ROOT)/syn

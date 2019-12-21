@@ -76,8 +76,8 @@ module r24bb_top(
     /////////////////////////////////////////////
     
     output CODEC_MCLK,
-    input CODEC_BCLK,
-    input CODEC_WCLK,
+    output CODEC_BCLK,
+    output CODEC_WCLK,
     output CODEC_DIN,
     input CODEC_DOUT,
     
@@ -815,7 +815,7 @@ rx
     .mclk(clk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
-    .din(CODEC_DIN),
+    .din(CODEC_DOUT),
     
     .rx_data_l(aud_in_l),
     .rx_data_r(aud_in_r),
@@ -839,7 +839,7 @@ tx
     .mclk(clk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
-    .dout(CODEC_DOUT),
+    .dout(CODEC_DIN),
     
     .tx_data_l(aud_out_l),
     .tx_data_r(aud_out_r),

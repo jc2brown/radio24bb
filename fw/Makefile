@@ -156,7 +156,7 @@ $(FW_ROOT)/bsp: $(SDK_DEPS)
 
 $(BSP_GEN_STAMP): $(HDF_FILE)
 	mv $(SRC_DIR) $(SRC_DIR)_
-	rm -rf $(WORKSPACE_DIR)	
+	-$(RM) $(WORKSPACE_DIR)	
 	mv $(SRC_DIR)_ $(SRC_DIR)
 	$(XSCT) $(FW_ROOT)/tools/gen_hw_bsp.tcl $(BSP_GEN_STAMP) $(HDF_FILE) $(WORKSPACE_DIR) $(TARGET_CPU) $(PROJECT_TOP)
 	rm -rf $(APP_DIR)/src
