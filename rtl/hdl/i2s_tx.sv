@@ -1,7 +1,7 @@
 `timescale 1ps / 1ps
 
 
-module i2c_tx
+module i2s_tx
 #(
     parameter SAMPLE_DEPTH = 16
 )    
@@ -12,10 +12,9 @@ module i2c_tx
     input wire bclk,
     output wire dout,
     
-    input wire [15:0] in_l,
-    input wire [15:0] in_r,
-    input wire valid,
-    output wire full
+    input wire [15:0] tx_data_l,
+    input wire [15:0] tx_data_r,
+    input wire tx_data_valid
     
 );
 
@@ -48,12 +47,6 @@ reg [15:0] in_r_reg;
 reg in_r_full = 0;
 
 
-reg [7:0] bit_count;
-
-assign full = in_l_full || in_r_full;
-
-
-
 reg load_l = 0;
 reg load_r = 0;
 
@@ -63,19 +56,15 @@ always @(posedge mclk) begin
         in_r_full <= 1'b0;
     end
     else begin
-        if (bclk_posedge) begin
-            if (valid && !full) begin
-                in_l_reg <= in_l;
-                in_l_full <= 1'b1;
-                in_r_reg <= in_r;
-                in_r_full <= 1'b1;
-            end
-            else if (load_l) begin  
-                in_l_full <= 1'b0;
-            end
-            else if (load_r) begin  
-                in_r_full <= 1'b0;
-            end
+        if (load_l) begin  
+            in_l_full <= 1'b0;
+        end
+        if (load_r) begin  
+            in_r_full <= 1'b0;
+        end
+        if (tx_data_valid) begin
+            in_l_reg <= tx_data_l;
+            in_r_reg <= tx_data_r;
         end
     end
 end

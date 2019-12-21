@@ -18,6 +18,7 @@ module dac_channel (
         input [7:0] inb_data,
         input [7:0] ddsa_data,
         input [7:0] ddsb_data,
+        input [7:0] aud_in,
                         
         input [31:0] usb_rd_data,
         input usb_rd_data_valid,
@@ -79,6 +80,7 @@ wire [7:0] dac_data =   (mux == 0) ? raw :
                         (mux == 3) ? ddsa_data : 
                         (mux == 4) ? ddsb_data : 
                         (mux == 5) ? usb_data : 
+                        (mux == 6) ? aud_in : 
                         0; 
   
   

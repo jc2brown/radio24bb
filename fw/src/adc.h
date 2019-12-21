@@ -137,5 +137,5 @@ struct adc_channel_regs {
 
 void init_adc_channel_regs(struct adc_channel_regs *regs);
 
-
+void adc_stat(struct adc_channel *channel);
 #endif

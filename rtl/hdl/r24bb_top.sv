@@ -157,6 +157,18 @@ wire usb_rd_fifo_empty;
 
 
 
+/////////////////////////////////////////////////////////////
+//
+// AUDIO
+//
+/////////////////////////////////////////////////////////////
+
+wire signed [15:0] aud_in_l;
+wire signed [15:0] aud_in_r;
+wire signed [15:0] aud_in = aud_in_l + aud_in_r;
+wire rx_data_valid;
+
+
 
 /////////////////////////////////////////////////////////////
 //
@@ -505,6 +517,7 @@ dac_channel outa_dac_channel (
         .inb_data(inb_data),
         .ddsa_data(ddsa_data),
         .ddsb_data(ddsb_data),
+        .aud_in(aud_in[15:8]),
                         
         .usb_rd_data(usb_rd_data),
         .usb_rd_data_valid(usb_rd_valid),
@@ -544,6 +557,8 @@ dac_channel outb_dac_channel (
         .inb_data(inb_data),
         .ddsa_data(ddsa_data),
         .ddsb_data(ddsb_data),
+        .aud_in(aud_in[15:8]),
+        
                         
         .usb_rd_data(usb_rd_data),
         .usb_rd_data_valid(usb_rd_valid),
@@ -716,7 +731,7 @@ ft601_if ft601_if_inst (
 //
 /////////////////////////////////////////////////////////////
     
-
+/*
 wire [31:0] nw_fifo_rd_data;
 wire nw_fifo_rd_en;
 wire nw_fifo_empty;
@@ -732,7 +747,7 @@ wire nw_fifo_full;
 wire [31:0] pw_fifo_wr_data;
 wire pw_fifo_wr_en;
 wire pw_fifo_full;
-    
+    */
     
 wire [15:0] codec_io = GPIO_0_0_tri_o[63:48];
 /*
@@ -774,6 +789,71 @@ i2c_ioexp codec_i2c_ioexp (
 
 
 
+
+
+i2s_ctrl ctrl (
+
+    .clk(clk),
+    .reset(reset),
+    
+    .mclk(CODEC_MCLK),
+    .bclk(CODEC_BCLK),
+    .wclk(CODEC_WCLK)
+
+);
+
+
+
+
+i2s_rx
+#(
+    .SAMPLE_DEPTH(16)
+)    
+rx
+(
+    .reset(reset),
+    .mclk(clk),
+    .wclk(CODEC_WCLK),
+    .bclk(CODEC_BCLK),
+    .din(CODEC_DIN),
+    
+    .rx_data_l(aud_in_l),
+    .rx_data_r(aud_in_r),
+    .rx_data_valid(rx_data_valid)
+    
+);
+
+
+wire [15:0] aud_out_l = aud_in_l;
+wire [15:0] aud_out_r = aud_in_r;
+wire tx_data_valid = rx_data_valid;
+
+
+i2s_tx
+#(
+    .SAMPLE_DEPTH(16)
+)    
+tx
+(
+    .reset(reset),
+    .mclk(clk),
+    .wclk(CODEC_WCLK),
+    .bclk(CODEC_BCLK),
+    .dout(CODEC_DOUT),
+    
+    .tx_data_l(aud_out_l),
+    .tx_data_r(aud_out_r),
+    .tx_data_valid(tx_data_valid)
+    
+    
+);
+
+
+
+
+
+
+/*
 aic3204_if aic3204_if_inst(
     
     /////////////////////////////////////////////
@@ -813,7 +893,7 @@ aic3204_if aic3204_if_inst(
 
 
 );
-
+*/
 
 
 
@@ -907,15 +987,6 @@ r24bb_bd r24bb_bd_inst (
 );
 
 
-    
-assign GPIO_0_0_tri_i[0] = (^nw_fifo_rd_data) ^ (^pw_fifo_rd_data);
-
-assign nw_fifo_wr_data = GPIO_0_0_tri_i;
-assign pw_fifo_wr_data = GPIO_0_0_tri_i;
-    
-assign nw_fifo_wr_en = 1'b1;
-assign pw_fifo_wr_en = 1'b1;
-    
     
    
     

@@ -2,7 +2,7 @@
 
 
 
-module i2c_rx
+module i2s_rx
 #(
     parameter SAMPLE_DEPTH = 16
 )    
@@ -13,10 +13,9 @@ module i2c_rx
     input wire bclk,
     input wire din,
     
-    output wire [15:0] out_l,
-    output wire [15:0] out_r,
-    output wire valid,
-    input wire full
+    output reg [15:0] rx_data_l,
+    output reg [15:0] rx_data_r,
+    output reg rx_data_valid
     
 );
 
@@ -45,35 +44,57 @@ always @(posedge mclk) wclk_negedge <= !wclk && wclk_d1;
 
 
 
-
-
-
-reg [15:0] pw = 'h0; // positive-wclk shift register 
-reg [15:0] nw = 'h0; // negative-wclk shift register 
+reg peow;
+reg neow;
 
 always @(posedge mclk) begin
-    if (bclk_negedge) begin
-        if (!wclk) begin
-            pw <= 16'h00;
-        end
-        else begin 
-            pw <= {pw[14:0], din};
-        end
+    if (wclk_negedge) begin
+        peow <= 1;
     end
-end
-
-always @(posedge mclk) begin
-    if (bclk_negedge) begin
-        if (wclk) begin
-            nw <= 16'h00;
-        end
-        else begin 
-            nw <= {nw[14:0], din};
-        end
+    if (wclk_posedge) begin
+        neow <= 1;
+    end
+    if (bclk_posedge) begin
+        peow <= 0;
+        neow <= 0;
     end
 end
 
 
 
+
+
+reg [SAMPLE_DEPTH:0] pw = 'h0; // positive-wclk shift register 
+reg [SAMPLE_DEPTH:0] nw = 'h0; // negative-wclk shift register 
+
+
+always @(posedge mclk) begin
+    if (bclk_posedge) begin
+        pw <= {pw[SAMPLE_DEPTH-1:0], din};
+        nw <= {nw[SAMPLE_DEPTH-1:0], din};
+    end
+end
+
+
+reg [15:0] rx_data_l_tmp;
+
+always @(posedge mclk) begin
+    if (reset) begin
+        rx_data_l_tmp <= 0;
+    end
+    else begin
+        rx_data_valid <= 0;
+        if (bclk_posedge) begin
+            if (neow) begin
+                rx_data_r <= {nw[SAMPLE_DEPTH-1:0], din};
+                rx_data_l <= rx_data_l_tmp;
+                rx_data_valid <= 1;
+            end
+            if (peow) begin
+                rx_data_l_tmp <= {pw[SAMPLE_DEPTH-1:0], din};
+            end
+        end
+    end
+end
 
 endmodule
