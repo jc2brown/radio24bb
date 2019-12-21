@@ -225,8 +225,8 @@ void set_weak_vdd(int en) {
 
 void set_ldo_ctrl() {
 	// 1.72V AVDD DVDD LDOs
-	// Analog block power enabled
-	write_register(1, P1_R2, 0); 
+	// Analog block power enabled, AVDD LDO enabled
+	write_register(1, P1_R2, 1); 
 }
 
 
@@ -351,8 +351,8 @@ void set_right_mic_pga_neg_src() {
 void set_floating_inputs() {
 
 	uint8_t buf = 
-		((0b0) << 7) | // IN1L <- InfOhm <- CM
-		((0b0) << 6) | // IN1R <- InfOhm <- CM
+		((0b1) << 7) | // IN1L <- weak <- CM
+		((0b1) << 6) | // IN1R <- weak <- CM
 		((0b1) << 5) | // IN2L <- weak <- CM
 		((0b1) << 4) | // IN2R <- weak <- CM
 		((0b1) << 3) | // IN3L <- weak <- CM
@@ -437,6 +437,19 @@ void adc_unmute() {
 
 
 
+
+
+void aic3204_dump() {
+	uint8_t buf;
+	for (int i = 0; i < 128; ++i) {
+		read_register(0, i, &buf); 
+	}
+}
+
+
+
+
+
 void init_aic3204_adc_404() {	
 	aic3204_reset();
 	set_nadc_divider(1);
@@ -459,20 +472,11 @@ void init_aic3204_adc_404() {
 	set_right_mic_pga_gain(6);
 	adc_channel_setup();
 	adc_unmute();
+	aic3204_dump();
 }
 
 
 
 void init_aic3204_dac_401() {	
-}
-
-
-
-
-void aic3204_dump() {
-	uint8_t buf;
-	for (int i = 0; i < 128; ++i) {
-		read_register(0, i, &buf); 
-	}
 }
 

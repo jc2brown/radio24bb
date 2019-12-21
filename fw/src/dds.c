@@ -217,7 +217,7 @@ void handle_dds_fm_offset_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_pm_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_pm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb" };
+	static char *dds_pm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_pm_srcs)/sizeof(*dds_pm_srcs); ++i) {
