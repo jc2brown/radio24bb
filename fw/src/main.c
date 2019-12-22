@@ -213,8 +213,7 @@ int main()
 	_return_if_error_(i2c_config());
 	_return_if_error_(ina219_config());
 
-
-	init_aic3204_adc_404();
+	init_aic3204();
 
 	XGpioPs gpiops_inst;
 	XGpioPs *gpiops_ptr = &gpiops_inst;

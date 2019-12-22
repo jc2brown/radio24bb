@@ -86,6 +86,7 @@ void write_register_noverify(uint8_t page, uint8_t reg, uint8_t data_in) {
 #define P0_R20 0x14
 #define P0_R27 0x1B
 #define P0_R28 0x1C
+#define P0_R60 0x3C
 #define P0_R61 0x3D
 #define P1_R1  0x01
 #define P1_R2  0x02
@@ -204,13 +205,20 @@ void set_if_config() {
 
 
 void set_adc_prb(int n) {
-	if (n == 0 || n > 18) {
+	if (n < 1 || n > 18) {
 		return;
 	}
 	uint8_t buf = n;
 	write_register(0, P0_R61, buf); 
 }
 
+void set_dac_prb(int n) {
+	if (n < 1 || n > 25) {
+		return;
+	}
+	uint8_t buf = n;
+	write_register(0, P0_R60, buf); 
+}
 
 
 void set_weak_vdd(int en) {
@@ -248,6 +256,33 @@ void set_cm() {
 void set_power_tune() {
 	// PTM_R4
 	write_register(1, P1_R61, 0); 
+}
+
+#define P1_R3 0x03
+
+void set_left_playback_config() {
+
+	uint8_t buf = 
+		((0b00) << 6) |  // DACL class AB
+		((0b0) << 5) |   // Reserved
+		((0b000) << 2) | // DACL in PTM 3,4
+		((0b00) << 0);   // Reserved
+
+	write_register(1, P1_R3, buf); 
+}
+
+
+#define P1_R4 0x04
+
+void set_right_playback_config() {
+
+	uint8_t buf = 
+		((0b00) << 6) |  // DACR class AB
+		((0b0) << 5) |   // Reserved
+		((0b000) << 2) | // DACR in PTM 3,4
+		((0b00) << 0);   // Reserved
+
+	write_register(1, P1_R4, buf); 
 }
 
 
@@ -346,6 +381,143 @@ void set_right_mic_pga_neg_src() {
 
 
 
+
+
+
+
+#define P1_R12 0x0C
+
+void set_left_hp_src() {
+	
+	uint8_t buf = 
+		((0b0000) << 4) | // Reserved
+		((0b1) << 3) |   // DACL+ -> 0hm -> HPL
+		((0b0) << 2) |   // IN1L -> InfOhm -> HPL
+		((0b0) << 1) |   // MAL -> InfOhm -> HPL
+		((0b0) << 0);    // MAR -> InfOhm -> HPL
+
+	write_register(1, P1_R12, buf); 
+}
+
+
+#define P1_R13 0x0D
+
+void set_right_hp_src() {
+	
+	uint8_t buf = 
+		((0b000) << 5) | // Reserved
+		((0b0) << 4) |   // DACL- -> InfOhm -> HPR
+		((0b1) << 3) |   // DACL- -> 0hm -> HPR
+		((0b0) << 2) |   // IN1R+ -> InfOhm -> HPR
+		((0b0) << 1) |   // MAR -> InfOhm -> HPR
+		((0b0) << 0);    // HPL -> InfOhm -> HPR
+
+	write_register(1, P1_R13, buf); 
+}
+
+
+
+
+
+
+
+#define P1_R14 0x0E
+
+void set_left_lo_src() {
+	
+	uint8_t buf = 
+		((0b000) << 5) | // Reserved
+		((0b0) << 4) |   // DACR- -> InfOhm -> LOL
+		((0b1) << 3) |   // DACL -> 0hm -> LOL
+		((0b0) << 2) |   // IN1L -> InfOhm -> LOL
+		((0b0) << 1) |   // MAL -> InfOhm -> LOL
+		((0b0) << 0);    // MAR -> InfOhm -> LOL
+
+	write_register(1, P1_R14, buf); 
+}
+
+
+#define P1_R15 0x0F
+
+void set_right_lo_src() {
+	
+	uint8_t buf = 
+		((0b0000) << 4) | // Reserved
+		((0b1) << 3) |    // DACR -> 0hm -> HPR
+		((0b0) << 2) |    // Reserved
+		((0b0) << 1) |    // MAR -> InfOhm -> HPR
+		((0b0) << 0);     // Reserved
+
+	write_register(1, P1_R15, buf); 
+}
+
+
+
+
+
+
+
+#define P1_R16 0x10
+
+void set_left_hp_gain() {
+	
+	uint8_t buf = 
+		((0b0) << 7) | // Reserved
+		((0b0) << 6) | // Unmute
+		((0x00) << 0); // 0dB gain
+
+	write_register(1, P1_R16, buf); 
+}
+
+
+#define P1_R17 0x11
+
+void set_right_hp_gain() {
+	
+	uint8_t buf = 
+		((0b0) << 7) | // Reserved
+		((0b0) << 6) | // Unmute
+		((0x00) << 0); // 0dB gain
+
+	write_register(1, P1_R17, buf); 
+}
+
+
+
+
+
+
+
+#define P1_R18 0x12
+
+void set_left_lo_gain() {
+	
+	uint8_t buf = 
+		((0b0) << 7) | // Reserved
+		((0b0) << 6) | // Unmute
+		((0x00) << 0); // 0dB gain
+
+	write_register(1, P1_R18, buf); 
+}
+
+
+#define P1_R19 0x13
+
+void set_right_lo_gain() {
+	
+	uint8_t buf = 
+		((0b0) << 7) | // Reserved
+		((0b0) << 6) | // Unmute
+		((0x00) << 0); // 0dB gain
+
+	write_register(1, P1_R19, buf); 
+}
+
+
+
+
+
+
 #define P1_R58 0x3A
 
 void set_floating_inputs() {
@@ -364,6 +536,29 @@ void set_floating_inputs() {
 
 
 }
+
+
+
+
+#define P1_R9 0x09
+
+void set_driver_power() {
+
+	uint8_t buf = 
+		((0b00) << 6) | // Reserved
+		((0b1) << 5) |  // HPL powered
+		((0b1) << 4) |  // HPR powered
+		((0b1) << 3) |  // LOL powered
+		((0b1) << 2) |  // LOR powered
+		((0b1) << 1) |  // MAL powered
+		((0b1) << 0);   // MAR powered
+
+	write_register(1, P1_R9, buf); 
+
+}
+
+
+
 
 
 #define P1_R59 0x3B
@@ -421,6 +616,26 @@ void adc_channel_setup() {
 
 
 
+
+#define P0_R63 0x3F
+
+void dac_channel_setup() {
+
+	uint8_t buf = 
+		((0b1) << 7) |  // Left DAC power up
+		((0b1) << 6) |  // Right DAC power up
+		((0b01) << 4) | // Left DAC data Left Channel Audio Interface Data
+		((0b01) << 2) | // Right DAC data Left Channel Audio Interface Data
+		((0b00) << 0);  // Soft-step ADC volume 1 word clock per step
+
+	write_register(0, P0_R63, buf); 
+
+}
+
+
+
+
+
 #define P0_R82 0x52
 
 void adc_unmute() {
@@ -439,6 +654,17 @@ void adc_unmute() {
 
 
 
+#define P0_R64 0x40
+
+void dac_unmute() {
+
+	write_register(0, P0_R64, 0); 
+
+}
+
+
+
+
 void aic3204_dump() {
 	uint8_t buf;
 	for (int i = 0; i < 128; ++i) {
@@ -448,21 +674,35 @@ void aic3204_dump() {
 
 
 
-
-
-void init_aic3204_adc_404() {	
-	aic3204_reset();
+void adc_pre_init() {	
 	set_nadc_divider(1);
 	set_madc_divider(2);
-	//set_if_config();
 	set_adc_osr(128);
 	set_adc_prb(1);
+}
+
+
+void dac_pre_init() {
+	set_ndac_divider(1);
+	set_mdac_divider(2);
+	set_dac_osr(128);
+	set_dac_prb(8);
+}
+
+
+
+
+void core_init() {	
 	set_weak_vdd(0);
 	set_ldo_ctrl();
 	set_cm();
 	set_power_tune();
 	set_mic_pga_startup_delay(P1_R71_PWRUP_TIME_6400US);
 	set_ref_charge_time();
+}
+
+
+void adc_post_init() {	
 	set_left_mic_pga_pos_src();
 	set_left_mic_pga_neg_src();
 	set_right_mic_pga_pos_src();
@@ -472,11 +712,37 @@ void init_aic3204_adc_404() {
 	set_right_mic_pga_gain(6);
 	adc_channel_setup();
 	adc_unmute();
-	aic3204_dump();
+}
+
+
+void dac_post_init() {
+	set_left_hp_src();
+	set_right_hp_src();
+	set_left_lo_src();
+	set_right_lo_src();
+	set_driver_power();
+	set_left_playback_config();
+	set_right_playback_config();
+	set_left_hp_gain();
+	set_right_hp_gain();
+	set_left_lo_gain();
+	set_right_lo_gain(); 
+	set_driver_power();
+	usleep(3000000);
+	dac_channel_setup();
+	dac_unmute();
 }
 
 
 
-void init_aic3204_dac_401() {	
+
+void init_aic3204() {	
+	aic3204_reset();
+	adc_pre_init();
+	dac_pre_init();
+	core_init();
+	adc_post_init();
+	dac_post_init();
+	aic3204_dump();
 }
 
