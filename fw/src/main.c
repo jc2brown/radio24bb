@@ -232,6 +232,47 @@ void led_handler(void *arg, struct command *cmd) {
 }
 
 
+
+
+void aud_rate_handler(void *arg, struct command *cmd) {
+
+	int aud_rate = atoi(cmd->tokens[cmd->index++]);
+	if (aud_rate == 0) {
+		AUD_RATE = 0;		
+		set_adc_osr(128);
+		set_adc_prb(3);
+		set_dac_osr(128);
+		set_dac_prb(17);
+	}
+	if (aud_rate == 11) {
+		set_adc_prb(1);
+	}
+	if (aud_rate == 12) {
+		set_adc_prb(2);
+	}
+	if (aud_rate == 13) {
+		set_adc_prb(3);
+	}
+	if (aud_rate == 1) {
+		AUD_RATE = 1;		
+		set_adc_osr(64);
+		set_adc_prb(14); //??
+		set_dac_osr(64);
+		set_dac_prb(8);  //??
+	}
+	if (aud_rate == 2) {
+		AUD_RATE = 2;		
+		set_adc_osr(32);
+		set_adc_prb(14);
+		set_dac_osr(32);
+		set_dac_prb(8);
+	}
+
+}
+
+
+
+
 int main()
 {
 
@@ -244,7 +285,7 @@ int main()
 	_return_if_error_(i2c_config());
 	_return_if_error_(ina219_config());
 
-	AUD_RATE = 0;
+	AUD_RATE = 2;
 	init_aic3204();
 
 	XGpioPs gpiops_inst;
@@ -323,6 +364,12 @@ int main()
 
 
 
+	struct cmd_context * aud = make_cmd_context("aud", NULL);	
+	add_command(aud, "rate", aud_rate_handler);
+
+	add_subcontext(NULL, aud);
+
+
 
 	struct adc_channel *ina = make_adc_channel(INA_REGS);
 	struct adc_channel *inb = make_adc_channel(INB_REGS);
@@ -349,8 +396,6 @@ int main()
 	struct mpx_channel *mpx = make_mpx_channel(MPX_REGS);
 
 	init_mpx_channel_context("mpx", mpx, NULL);
-
-
 
 
 	issue_command("outa att 0", NULL);

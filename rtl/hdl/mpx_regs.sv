@@ -65,7 +65,7 @@ begin
         if (penable && psel && pwrite) begin
             case ({paddr[11:2], 2'b00})                
                                           
-                REG_PILOT_GAIN:     pilot_gain <= pwdata[3:0];  
+                REG_PILOT_GAIN:     pilot_gain <= pwdata;  
                 
                 REG_ROM: 
                     begin
