@@ -15,7 +15,8 @@ module i2s_rx
     
     output reg [15:0] rx_data_l,
     output reg [15:0] rx_data_r,
-    output reg rx_data_valid
+    output reg rx_data_valid,
+    output reg rx_data_valid_180
     
 );
 
@@ -84,6 +85,7 @@ always @(posedge mclk) begin
     end
     else begin
         rx_data_valid <= 0;
+        rx_data_valid_180 <= 0;
         if (bclk_posedge) begin
             if (neow) begin
                 rx_data_r <= {nw[SAMPLE_DEPTH-1:0], din};
@@ -92,6 +94,7 @@ always @(posedge mclk) begin
             end
             if (peow) begin
                 rx_data_l_tmp <= {pw[SAMPLE_DEPTH-1:0], din};
+                rx_data_valid_180 <= 1;
             end
         end
     end

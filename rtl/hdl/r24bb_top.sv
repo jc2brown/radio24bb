@@ -170,6 +170,7 @@ wire signed [15:0] aud_in_l;
 wire signed [15:0] aud_in_r;
 wire signed [15:0] aud_in = aud_in_l + aud_in_r;
 wire rx_data_valid;
+wire rx_data_valid_180;
 
 
 
@@ -889,6 +890,7 @@ i2s_ctrl ctrl (
 wire [15:0] aud_in_l_m;
 wire [15:0] aud_in_r_m;
 wire rx_data_valid_m;
+wire rx_data_valid_180_m;
 
 
 i2s_rx
@@ -905,7 +907,8 @@ rx
     
     .rx_data_l(aud_in_l_m),
     .rx_data_r(aud_in_r_m),
-    .rx_data_valid(rx_data_valid_m)
+    .rx_data_valid(rx_data_valid_m),
+    .rx_data_valid(rx_data_valid_180_m)
     
 );
 
@@ -927,7 +930,21 @@ rx_aud_cdc (
   .src_send(rx_data_valid_m)
 );
 
-
+xpm_cdc_handshake #(
+  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
+  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
+  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
+  .WIDTH(1)           // DECIMAL; range: 1-1024
+)
+rx_aud_cdc2 (
+  .dest_out(),
+  .dest_req(rx_data_valid_180),
+  .src_rcv(/*full*/),
+  .dest_clk(clk),
+  .src_clk(mclk),
+  .src_in(0),
+  .src_send(rx_data_valid_180_m)
+);
 
 
 wire [15:0] aud_out_l = aud_in_l;
@@ -1054,6 +1071,7 @@ stereo_mpx mpx_inst (
     .in_l(aud_in_l),
     .in_r(aud_in_r),
     .in_valid(rx_data_valid),    
+    .in_valid_180(rx_data_valid_180),
     
     .mpx_out(mpx),
     .mpx_valid(mpx_valid)

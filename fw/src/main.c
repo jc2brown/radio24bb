@@ -58,7 +58,7 @@ char *stereo_script[] = {
 
 	"ddsa src dds",
 	"ddsa freq 10.7e6",
-	"ddsa fm src aud",
+	"ddsa fm src mpx",
 	"ddsa fm gain 300",
 	"ddsa fm offset 0",
 
@@ -382,8 +382,8 @@ int main()
 	issue_command("led", NULL);
 
 
-	issue_command("fmtone", NULL);
-	//issue_command("stereo", NULL);
+	//issue_command("fmtone", NULL);
+	issue_command("stereo", NULL);
 
 
 
