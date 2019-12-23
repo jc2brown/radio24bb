@@ -245,7 +245,8 @@ always @(posedge clk) dac_data <=
         (mux == 1) ? dds_data :
         (mux == 2) ? ina_data : 
         (mux == 3) ? inb_data : 
-        (mux == 4) ? aud_in[15:8] : 
+        (mux == 4) ? signed'(aud_in[15:8]) : 
+        (mux == 5) ? signed'(mpx_in[15:8]) : 
         0); // n.b parens are req'd around mux
         
     

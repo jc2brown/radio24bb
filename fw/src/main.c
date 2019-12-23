@@ -382,8 +382,8 @@ int main()
 	issue_command("led", NULL);
 
 
-
-	issue_command("mpx", NULL);
+	issue_command("fmtone", NULL);
+	//issue_command("stereo", NULL);
 
 
 
