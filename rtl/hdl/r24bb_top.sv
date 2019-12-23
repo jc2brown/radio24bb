@@ -996,6 +996,35 @@ aic3204_if aic3204_if_inst(
     
 /////////////////////////////////////////////////////////////
 //
+// Stereo multiplexer
+//
+/////////////////////////////////////////////////////////////
+
+wire [15:0] mpx;
+wire mpx_valid;
+
+stereo_mpx stereo_mpx_inst (
+
+    .clk(clk),
+    .reset(reset),
+    
+    .in_l(aud_in_l),
+    .in_r(aud_in_r),
+    .in_valid(rx_data_valid),    
+    
+    .mpx_out(mpx),
+    .mpx_valid(mpx_valid)
+   
+
+);
+
+
+
+
+
+    
+/////////////////////////////////////////////////////////////
+//
 // DDS Blocks
 //
 /////////////////////////////////////////////////////////////
@@ -1019,6 +1048,7 @@ dds_block ddsa (
     .ddsa_data(ddsa_data),
     .ddsb_data(ddsb_data),
     .aud_in(aud_in),
+    .mpx_in(mpx),
     
     .dds_data_out(ddsa_data)                                             
 );
@@ -1044,6 +1074,7 @@ dds_block ddsb (
     .ddsa_data(ddsa_data),
     .ddsb_data(ddsb_data),
     .aud_in(aud_in),
+    .mpx_in(mpx),
     
     .dds_data_out(ddsb_data)                                             
 );

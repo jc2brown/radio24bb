@@ -17,7 +17,8 @@ module dds_block (
     input signed [7:0] inb_data,
     input signed [7:0] ddsa_data,
     input signed [7:0] ddsb_data,
-    input signed [15:0] aud_in
+    input signed [15:0] aud_in,
+    input signed [15:0] mpx_in
                     
 //    input [31:0] usb_rd_data,
 //    input usb_rd_data_valid,
@@ -57,6 +58,11 @@ wire [31:0] stat_count;
 //    .dout(usb_data),  
 //    .rd_en(1)
 //);
+
+
+
+ 
+
 
 
 wire [15:0] gain;  
@@ -102,6 +108,7 @@ wire signed [15:0] fm_data = (fm_mux == 0) ? signed'(fm_raw) :
                              (fm_mux == 3) ? signed'(ddsa_data) :
                              (fm_mux == 4) ? signed'(ddsb_data) :
                              (fm_mux == 5) ? signed'(aud_in) :
+                             (fm_mux == 6) ? signed'(mpx_in) :
                              0;
 
 wire signed [15:0] pm_data = (pm_mux == 0) ? signed'(pm_raw) :
@@ -238,7 +245,7 @@ always @(posedge clk) dac_data <=
         (mux == 1) ? dds_data :
         (mux == 2) ? ina_data : 
         (mux == 3) ? inb_data : 
-        (mux == 4) ? aud_in : 
+        (mux == 4) ? aud_in[15:8] : 
         0); // n.b parens are req'd around mux
         
     
