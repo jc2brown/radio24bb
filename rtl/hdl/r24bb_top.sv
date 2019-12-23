@@ -848,6 +848,29 @@ i2c_ioexp codec_i2c_ioexp (
 
 
 
+wire reset_m;
+
+
+xpm_cdc_sync_rst #(
+    .DEST_SYNC_FF(4),   // DECIMAL; range: 2-10
+    .INIT(1),           // DECIMAL; 0=initialize synchronization registers to 0, 1=initialize synchronization
+                      // registers to 1
+    .INIT_SYNC_FF(0),   // DECIMAL; 0=disable simulation init values, 1=enable simulation init values
+    .SIM_ASSERT_CHK(0)  // DECIMAL; 0=disable simulation messages, 1=enable simulation messages
+)
+xpm_cdc_sync_rst_inst (
+  .dest_rst(reset_m), // 1-bit output: src_rst synchronized to the destination clock domain. This output
+                       // is registered.
+
+  .dest_clk(mclk), // 1-bit input: Destination clock.
+  .src_rst(reset)    // 1-bit input: Source reset signal.
+);
+
+
+
+
+
+
 
 
 i2s_ctrl ctrl (

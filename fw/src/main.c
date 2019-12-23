@@ -22,6 +22,7 @@
 #include "adc.h"
 #include "dac.h"
 #include "dds.h"
+#include "mpx.h"
 
 #include "aic3204.h"
 
@@ -31,13 +32,40 @@
 
 
 
-
+/*
 void tonea_handler(void *arg, struct command *cmd) {
 	issue_command("ddsa src dds", NULL);
-	issue_command("ddsa freq 19.7e6", NULL);
+	issue_command("ddsa freq 10.7e6", NULL);
+	issue_command("ddsa fm src aud", NULL);
+	issue_command("ddsa fm gain 300", NULL);
 	issue_command("outa src ddsa", NULL);
 }
+*/
 
+
+
+
+char *stereo_script[] = {
+
+	"ddsa am src raw",	
+	"ddsa am raw 127",	
+	"ddsa am gain 256",	
+	"ddsa am offset 0",
+	"ddsa fm gain 0",	
+	"ddsa fm offset 0",
+	"ddsa pm gain 0",	
+	"ddsa pm offset 0",
+
+	"ddsa src dds",
+	"ddsa freq 10.7e6",
+	"ddsa fm src aud",
+	"ddsa fm gain 300",
+	"ddsa fm offset 0",
+
+	"outa src ddsa",
+	"outb src ddsa",
+
+};
 
 
 
@@ -133,6 +161,9 @@ char *pmtone_script[] = {
 };
 
 
+void stereo_handler(void *arg, struct command *cmd) {
+	run_script(stereo_script);
+}
 
 void amtone_handler(void *arg, struct command *cmd) {
 	run_script(amtone_script);
@@ -271,6 +302,8 @@ int main()
 #define DDSA_REGS 0x43C05000UL
 #define DDSB_REGS 0x43C06000UL
 
+#define MPX_REGS 0x43C07000UL
+
 //	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
 
@@ -278,7 +311,8 @@ int main()
 	//xil_printf()
 
 
-	add_command(NULL, "tonea", tonea_handler);
+	//add_command(NULL, "tonea", tonea_handler);
+	add_command(NULL, "stereo", stereo_handler);
 	add_command(NULL, "amtone", amtone_handler);
 	add_command(NULL, "fmtone", fmtone_handler);
 	add_command(NULL, "pmtone", pmtone_handler);
@@ -311,6 +345,10 @@ int main()
 	init_dds_channel_context("ddsb", ddsb, NULL);
 
 
+	struct mpx_channel *mpx = make_mpx_channel(MPX_REGS);
+
+	init_mpx_channel_context("mpx", mpx, NULL);
+
 
 
 
@@ -342,6 +380,11 @@ int main()
 
 
 	issue_command("led", NULL);
+
+
+
+	issue_command("mpx", NULL);
+
 
 
 	print_cmd_responses(true);

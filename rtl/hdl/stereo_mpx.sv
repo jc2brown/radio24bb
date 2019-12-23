@@ -111,7 +111,7 @@ sigstat_inst (
     .reset(stat_cfg[0]),   
     .enable(stat_cfg[1]),
     
-    .sig(mpx_out),
+    .sig(mpx_out[15:8]),
     .sig_valid(mpx_valid),
     .limit(stat_limit),
     .min(stat_min),

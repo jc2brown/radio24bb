@@ -6,6 +6,7 @@ dds.c
 i2c.c  
 ina219.c  
 list.c
+mpx.c
 spi.c 
 stringmap.c
 main.c
