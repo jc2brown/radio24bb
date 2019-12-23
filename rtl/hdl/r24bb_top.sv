@@ -189,13 +189,13 @@ wire signed [7:0] ddsb_data;
 //
 /////////////////////////////////////////////////////////////
 
-wire clkout0;
-wire clkout1;
-wire clkout2;
+//wire clkout0;
+//wire clkout1;
+//wire clkout2;
 
 wire adc_dclk = pl_clk0;
 wire dac_dclk = pl_clk0;
-wire mclk = clkout2;
+wire mclk;
 
 wire clkfb;
 wire locked;
@@ -203,7 +203,7 @@ wire locked;
 wire clk = pl_clk0;
 wire reset = !pl_reset_n;
 
-
+/*
 MMCME2_BASE #(
     //.CLKIN1_PERIOD(52.083), // 19.2MHz 
     .CLKIN1_PERIOD(10.000), // 100MHz 
@@ -225,6 +225,51 @@ MMCME2_BASE_inst (
     .PWRDWN(1'b0),     
     .RST(1'b0)      
 );
+*/
+
+
+MMCME2_BASE #(
+    .REF_JITTER1(0.01), // 0.01UI = 100ps
+    .CLKIN1_PERIOD(10.000), // 100MHz 
+    .BANDWIDTH("OPTIMIZED"),   // Jitter programming (OPTIMIZED, HIGH, LOW)  
+    .DIVCLK_DIVIDE(6),
+    .CLKFBOUT_MULT_F(51.875), // 100MHz in -> 864.583MHz VCO
+    .CLKOUT0_DIVIDE_F(88.875)    // 864.583MHz VCO -> 9.728MHz MCLK 
+)
+MMCME2_BASE_inst (
+//    .CLKIN1(TCXO_19M2), 
+    .CLKIN1(clk), 
+    .CLKFBOUT(clkfb),  
+    .CLKFBIN(clkfb),    
+    .CLKOUT0(mclk),     
+    .LOCKED(locked), 
+    .PWRDWN(1'b0),     
+    .RST(1'b0)      
+);
+
+
+/*
+assign clk <= clkout0;
+assign mclk <= clkout1; 
+MMCME2_BASE #(
+    .CLKIN1_PERIOD(52.083), // 19.2MHz 
+    .BANDWIDTH("OPTIMIZED"),   // Jitter programming (OPTIMIZED, HIGH, LOW)
+    .CLKFBOUT_MULT_F(38.0), // 19.2MHz in -> 729.6MHz VCO  
+    .CLKOUT0_DIVIDE_F(7.5),    // 729.6MHz VCO -> 97.28MHz DAC/ADC clk 
+    .CLKOUT1_DIVIDE(75)     // 1000MHz VCO -> 9.728MHz MCLK clk
+)
+MMCME2_BASE_inst (
+//    .CLKIN1(TCXO_19M2), 
+    .CLKIN1(clk), 
+    .CLKFBOUT(clkfb),  
+    .CLKFBIN(clkfb),    
+    .CLKOUT0(clkout0),   
+    .CLKOUT1(clkout1),   
+    .LOCKED(locked), 
+    .PWRDWN(1'b0),     
+    .RST(1'b0)      
+);
+*/
 
 
 /////////////////////////////////////////////////////////////
@@ -793,7 +838,7 @@ i2c_ioexp codec_i2c_ioexp (
 
 i2s_ctrl ctrl (
 
-    .clk(clk),
+    .clk(mclk),
     .reset(reset),
     
     .mclk(CODEC_MCLK),
@@ -804,6 +849,10 @@ i2s_ctrl ctrl (
 
 
 
+wire [15:0] aud_in_l_m;
+wire [15:0] aud_in_r_m;
+wire rx_data_valid_m;
+
 
 i2s_rx
 #(
@@ -812,7 +861,7 @@ i2s_rx
 rx
 (
     .reset(reset),
-    .mclk(clk),
+    .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
     .din(CODEC_DOUT),
@@ -824,9 +873,37 @@ rx
 );
 
 
+
+xpm_cdc_handshake #(
+  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
+  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
+  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
+  .WIDTH(32)           // DECIMAL; range: 1-1024
+)
+rx_aud_cdc (
+  .dest_out({aud_in_l, aud_in_r}),
+  .dest_req(rx_data_valid),
+  .src_rcv(/*full*/),
+  .dest_clk(mclk),
+  .src_clk(clk),
+  .src_in({aud_in_l_m, aud_in_r_m}),
+  .src_send(rx_data_valid_m)
+);
+
+
+
+
 wire [15:0] aud_out_l = aud_in_l;
 wire [15:0] aud_out_r = aud_in_r;
 wire tx_data_valid = rx_data_valid;
+
+
+
+
+
+wire [15:0] aud_out_l_m;
+wire [15:0] aud_out_r_m;
+wire tx_data_valid_m;
 
 
 i2s_tx
@@ -836,19 +913,38 @@ i2s_tx
 tx
 (
     .reset(reset),
-    .mclk(clk),
+    .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
     .dout(CODEC_DIN),
     
-    .tx_data_l(aud_out_l),
-    .tx_data_r(aud_out_r),
-    .tx_data_valid(tx_data_valid)
+    .tx_data_l(aud_out_l_m),
+    .tx_data_r(aud_out_r_m),
+    .tx_data_valid(tx_data_valid_m)
     
     
 );
 
 
+
+xpm_cdc_handshake #(
+  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
+  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
+  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
+  .WIDTH(32)           // DECIMAL; range: 1-1024
+)
+tx_aud_cdc (
+  .dest_out({aud_out_l_m, aud_out_r_m}),
+  .dest_req(tx_data_valid_m),
+  .src_rcv(/*full*/),
+  .dest_clk(mclk),
+  .src_clk(clk),
+  .src_in({aud_out_l, aud_out_r}),
+  .src_send(tx_data_valid)
+);
+
+   
+   
 
 
 

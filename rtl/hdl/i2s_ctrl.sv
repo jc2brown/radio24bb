@@ -37,10 +37,15 @@ always @(posedge clk) begin
 end
 
 
+// If clk == 100MHz
+//assign mclk = count[2];
+//assign bclk = count[5];
+//assign wclk = count[10];
 
-assign mclk = count[2];
-assign bclk = count[5];
-assign wclk = count[10];
+// If clk == 9.728MHz
+assign mclk = clk;
+assign bclk = count[2];
+assign wclk = count[7];
 
 
 
