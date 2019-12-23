@@ -73,7 +73,7 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 void handle_dds_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_srcs[] = { "raw", "dds", "ina", "inb", "aud" };
+	static char *dds_srcs[] = { "raw", "dds", "ina", "inb", "aud", "mpx" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_srcs)/sizeof(*dds_srcs); ++i) {

@@ -302,7 +302,7 @@ int main()
 #define DDSA_REGS 0x43C05000UL
 #define DDSB_REGS 0x43C06000UL
 
-#define MPX_REGS 0x43C07000UL
+#define MPX_REGS 0x43C10000UL
 
 //	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);

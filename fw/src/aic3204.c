@@ -728,7 +728,7 @@ void dac_post_init() {
 	set_left_lo_gain();
 	set_right_lo_gain(); 
 	set_driver_power();
-	usleep(3000000);
+	//usleep(3000000);
 	dac_channel_setup();
 	dac_unmute();
 }

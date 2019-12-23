@@ -23,7 +23,7 @@ endif
 
 RTL_FILES:=$(wildcard $(RTL_ROOT)/hdl/*.sv)
 XDC_FILES:=$(wildcard $(RTL_ROOT)/xdc/*.xdc)
-
+BD_SCRIPT:=$(wildcard $(RTL_ROOT)/bd/$(BLOCK_DESIGN).tcl)
 
 PROJECT_DIR:=$(RTL_ROOT)/syn
 PROJECT_FILE:=$(PROJECT_DIR)/$(PROJECT_NAME).xpr
@@ -41,6 +41,8 @@ $(info RTL BUILD CONFIGURATION OVERVIEW)
 $(info ----------------------------)
 $(info )
 $(info -  RTL_ROOT=$(RTL_ROOT))
+$(info )
+$(info -  BD_SCRIPT=$(BD_SCRIPT))
 $(info )
 $(info -  PROJECT_NAME=$(PROJECT_NAME))
 $(info -  PROJECT_TOP=$(PROJECT_TOP))
@@ -68,7 +70,7 @@ $(PROJECT_FILE):
 	$(PREFIX) vivado -mode batch -source ../scripts/create_project.tcl -tclargs $(PROJECT_NAME) $(PROJECT_TOP) $(FPGA_PART) ../hdl ../xdc ../tb $(POSTFIX)
 
 
-$(BD_FILE): $(BD) | $(PROJECT_FILE)
+$(BD_FILE): $(BD_SCRIPT) | $(PROJECT_FILE)
 	@cd $(PROJECT_DIR) && \
 	$(PREFIX) vivado -mode batch -source ../scripts/create_bd.tcl -tclargs $(PROJECT_NAME) ../bd/$(BLOCK_DESIGN).tcl $(POSTFIX)
 

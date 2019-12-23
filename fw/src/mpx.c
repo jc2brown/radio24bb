@@ -24,7 +24,7 @@ void init_mpx_channel(struct mpx_channel *channel) {
 }
 
 
-#define SAMPLE_RATE 99.99888e6
+#define SAMPLE_RATE 9.728e6
 uint32_t calc_mpx_step_size(double freq) {
 	return ((1ULL<<32) / SAMPLE_RATE) * freq;
 }
@@ -41,10 +41,9 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 		regs->rom = (int8_t)(127.0*sin((2.0*3.141*(double)i)/4096.0));
 	}
 
-	// regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
 	regs->step = calc_mpx_step_size(19e3);
 
-	regs->pilot_gain = 256;
+	regs->pilot_gain = 127;
 
 }
 

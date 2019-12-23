@@ -1,6 +1,7 @@
     
 module stereo_mpx (
 
+    input mclk,
     input clk,
     input reset,
         
@@ -46,7 +47,7 @@ wire [31:0] stat_count;
 
  
 
-always @(posedge clk) begin
+always @(posedge mclk) begin
     if (reset) begin
         mpx_sel <= 0;
         mpx_out <= 0;
@@ -54,8 +55,8 @@ always @(posedge clk) begin
     end
     else begin
         mpx_valid <= in_valid || in_valid_180;
+        mpx_out <= signed'(64)/*todo remove this 64?*/ *scaled_pilot + (mpx_sel ? in_l : in_r);
         if (in_valid || in_valid_180) begin
-            mpx_out <= signed'(256)*scaled_pilot + (mpx_sel ? in_l : in_r);
             mpx_sel <= !mpx_sel;
         end
     end
@@ -66,7 +67,7 @@ end
                     
 dds dds_inst (
 
-    .clk(clk),
+    .clk(mclk),
     .reset(reset),
     
     .cfg(dds_cfg),
@@ -86,13 +87,13 @@ dds dds_inst (
 gain_offset_clamp
 #(
     .IN_WIDTH(8),
-    .GAIN_WIDTH(16),
+    .GAIN_WIDTH(24),
     .GAIN_RADIX(8),
-    .OFFSET_WIDTH(8),
+    .OFFSET_WIDTH(16),
     .OUT_WIDTH(16)
 )
 am_modulator (
-    .clk(clk),
+    .clk(mclk),
     .in(pilot),
     .in_valid(1),
     .gain(pilot_gain),
@@ -107,7 +108,7 @@ am_modulator (
 sigstat #( .WIDTH(8) )
 sigstat_inst (
 
-    .clk(clk),
+    .clk(mclk),
         
     .reset(stat_cfg[0]),   
     .enable(stat_cfg[1]),
@@ -129,7 +130,7 @@ sigstat_inst (
 
 mpx_regs regs_inst (
     
-    .clk(clk),
+    .clk(mclk),
     .reset(reset),
     
     .penable(penable),

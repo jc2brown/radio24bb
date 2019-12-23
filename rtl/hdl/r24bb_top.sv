@@ -109,7 +109,8 @@ wire [31:0] inb_prdata;
 wire [31:0] outa_prdata;
 wire [31:0] outb_prdata;
 wire [31:0] regs_prdata;
-wire [31:0] mpx_prdata;
+
+wire [31:0] mpx_mprdata;
 
 
 
@@ -131,6 +132,14 @@ wire pwrite;
 wire [31:0] pwdata;
 wire [31:0] prdata;
     
+wire mpenable;
+wire mpsel;
+wire [31:0] mpaddr;
+wire mpwrite;
+wire [31:0] mpwdata;
+wire [31:0] mprdata;
+
+
 wire [1:0] usb_wr_mux;    
     
 wire [7:0] dac_cfg;
@@ -1058,15 +1067,15 @@ aic3204_if aic3204_if_inst(
     
 stereo_mpx mpx_inst (
             
-    .clk(clk),
-    .reset(reset),
+    .clk(mclk),
+    .reset(reset_m),
         
-    .penable(penable),
-    .psel(paddr[31:12] == 20'h43C07),
-    .paddr(paddr),
-    .pwrite(pwrite),
-    .pwdata(pwdata),
-    .prdata(mpx_prdata),        
+    .penable(mpenable),
+    .psel(mpaddr[31:12] == 20'h43C10),
+    .paddr(mpaddr),
+    .pwrite(mpwrite),
+    .pwdata(mpwdata),
+    .prdata(mpx_mprdata),        
     
     .in_l(aud_in_l),
     .in_r(aud_in_r),
@@ -1151,15 +1160,21 @@ assign prdata =
         ( paddr[15:12] == 4'h4 ) ? regs_prdata :
         ( paddr[15:12] == 4'h5 ) ? ddsa_prdata :
         ( paddr[15:12] == 4'h6 ) ? ddsb_prdata :
-        ( paddr[15:12] == 4'h7 ) ? mpx_prdata :
         'h0;  
 
+
+assign mprdata = 
+        ( paddr[15:12] == 4'h0 ) ? mpx_mprdata :
+        'h0;  
 
 
 r24bb_bd r24bb_bd_inst (
 
     .pl_clk0(clk),
     .pl_reset_n(pl_reset_n),
+    
+    .mclk(mclk),
+    .mresetn(!reset_m),
     
     .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
     .GPIO_0_0_tri_o(GPIO_0_0_tri_o),
@@ -1172,7 +1187,16 @@ r24bb_bd r24bb_bd_inst (
     .apb_psel(psel),
     .apb_pslverr(1'b0),
     .apb_pwdata(pwdata),
-    .apb_pwrite(pwrite)        
+    .apb_pwrite(pwrite),     
+        
+    .mapb_paddr(mpaddr),
+    .mapb_penable(mpenable),
+    .mapb_prdata(mprdata),
+    .mapb_pready(1'b1),
+    .mapb_psel(mpsel),
+    .mapb_pslverr(1'b0),
+    .mapb_pwdata(mpwdata),
+    .mapb_pwrite(mpwrite)     
 
 );
 

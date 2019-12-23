@@ -15,7 +15,7 @@ setws ${hw_dir}
 createhw -name ${project_name}_hw -hwspec ${hdf}
 
 createapp -name ${project_name}_fsbl -app {Zynq FSBL} -hwproject ${project_name}_hw -proc ${targetcpu}
-project -build
+#project -build
 
 # This by default generates a standalone BSP.
 # There are hooks to change the defaults, but it might work better to
