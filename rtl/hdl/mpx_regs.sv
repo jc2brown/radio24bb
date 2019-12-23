@@ -90,7 +90,7 @@ begin
     prdata = 32'h0;
 
     case ({paddr[11:2], 2'b00})
-            
+        
         REG_STAT_MIN:   prdata = stat_min;        
         REG_STAT_MAX:   prdata = stat_max;        
         REG_STAT_COUNT: prdata = stat_count;       

@@ -1,9 +1,11 @@
     
 module stereo_mpx (
 
-    input mclk,
     input clk,
     input reset,
+    
+    input mclk,
+    input mreset,
         
     input penable,
     input psel,
@@ -11,6 +13,7 @@ module stereo_mpx (
     input pwrite,
     input [31:0] pwdata,
     output [31:0] prdata,
+    output pready,
         
     
     input [15:0] in_l,
@@ -48,7 +51,7 @@ wire [31:0] stat_count;
  
 
 always @(posedge mclk) begin
-    if (reset) begin
+    if (mreset) begin
         mpx_sel <= 0;
         mpx_out <= 0;
         mpx_valid <= 0;
@@ -68,8 +71,10 @@ end
 dds dds_inst (
 
     .clk(mclk),
-    .reset(reset),
+    .reset(mreset),
     
+    .cfg_clk(clk),
+    .cfg_reset(reset),
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
     
@@ -130,8 +135,10 @@ sigstat_inst (
 
 mpx_regs regs_inst (
     
-    .clk(mclk),
+    .clk(clk),
     .reset(reset),
+    
+    
     
     .penable(penable),
     .psel(psel),

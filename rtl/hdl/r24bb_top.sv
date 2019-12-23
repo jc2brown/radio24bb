@@ -109,8 +109,7 @@ wire [31:0] inb_prdata;
 wire [31:0] outa_prdata;
 wire [31:0] outb_prdata;
 wire [31:0] regs_prdata;
-
-wire [31:0] mpx_mprdata;
+wire [31:0] mpx_prdata;
 
 
 
@@ -131,13 +130,6 @@ wire [31:0] paddr;
 wire pwrite;
 wire [31:0] pwdata;
 wire [31:0] prdata;
-    
-wire mpenable;
-wire mpsel;
-wire [31:0] mpaddr;
-wire mpwrite;
-wire [31:0] mpwdata;
-wire [31:0] mprdata;
 
 
 wire [1:0] usb_wr_mux;    
@@ -858,7 +850,7 @@ i2c_ioexp codec_i2c_ioexp (
 
 
 
-wire reset_m;
+wire mreset;
 
 
 xpm_cdc_sync_rst #(
@@ -869,7 +861,7 @@ xpm_cdc_sync_rst #(
     .SIM_ASSERT_CHK(0)  // DECIMAL; 0=disable simulation messages, 1=enable simulation messages
 )
 xpm_cdc_sync_rst_inst (
-  .dest_rst(reset_m), // 1-bit output: src_rst synchronized to the destination clock domain. This output
+  .dest_rst(mreset), // 1-bit output: src_rst synchronized to the destination clock domain. This output
                        // is registered.
 
   .dest_clk(mclk), // 1-bit input: Destination clock.
@@ -886,7 +878,7 @@ xpm_cdc_sync_rst_inst (
 i2s_ctrl ctrl (
 
     .clk(mclk),
-    .reset(reset_m),
+    .reset(mreset),
     
     .mclk(CODEC_MCLK),
     .bclk(CODEC_BCLK),
@@ -908,7 +900,7 @@ i2s_rx
 )    
 rx
 (
-    .reset(reset_m),
+    .reset(mreset),
     .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
@@ -975,7 +967,7 @@ i2s_tx
 )    
 tx
 (
-    .reset(reset_m),
+    .reset(mreset),
     .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
@@ -1063,28 +1055,49 @@ aic3204_if aic3204_if_inst(
 //
 /////////////////////////////////////////////////////////////
 
-
+wire [15:0] mpx_m;
+wire mpx_valid_m;
     
 stereo_mpx mpx_inst (
             
-    .clk(mclk),
-    .reset(reset_m),
+    .mclk(mclk),
+    .mreset(mreset),
         
-    .penable(mpenable),
-    .psel(mpaddr[31:12] == 20'h43C10),
-    .paddr(mpaddr),
-    .pwrite(mpwrite),
-    .pwdata(mpwdata),
-    .prdata(mpx_mprdata),        
+    .clk(clk),
+    .reset(reset),
     
-    .in_l(aud_in_l),
-    .in_r(aud_in_r),
-    .in_valid(rx_data_valid),    
-    .in_valid_180(rx_data_valid_180),
+    .penable(penable),
+    .psel(paddr[31:12] == 20'h43C07),
+    .paddr(paddr),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .prdata(mpx_prdata),        
     
-    .mpx_out(mpx),
-    .mpx_valid(mpx_valid)
+    .in_l(aud_in_l_m),
+    .in_r(aud_in_r_m),
+    .in_valid(rx_data_valid_m),    
+    .in_valid_180(rx_data_valid_180_m),
     
+    .mpx_out(mpx_m),
+    .mpx_valid(mpx_valid_m)
+    
+);
+
+
+xpm_cdc_handshake #(
+  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
+  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
+  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
+  .WIDTH(16)           // DECIMAL; range: 1-1024
+)
+mpx_cdc (
+  .dest_out(mpx),
+  .dest_req(mpx_valid),
+  .src_rcv(/*full*/),
+  .dest_clk(clk),
+  .src_clk(mclk),
+  .src_in(mpx_m),
+  .src_send(mpx_valid_m)
 );
 
 
@@ -1160,21 +1173,15 @@ assign prdata =
         ( paddr[15:12] == 4'h4 ) ? regs_prdata :
         ( paddr[15:12] == 4'h5 ) ? ddsa_prdata :
         ( paddr[15:12] == 4'h6 ) ? ddsb_prdata :
+        ( paddr[15:12] == 4'h7 ) ? ddsb_prdata :
         'h0;  
 
-
-assign mprdata = 
-        ( paddr[15:12] == 4'h0 ) ? mpx_mprdata :
-        'h0;  
 
 
 r24bb_bd r24bb_bd_inst (
 
     .pl_clk0(clk),
     .pl_reset_n(pl_reset_n),
-    
-    .mclk(mclk),
-    .mresetn(!reset_m),
     
     .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
     .GPIO_0_0_tri_o(GPIO_0_0_tri_o),
@@ -1187,16 +1194,7 @@ r24bb_bd r24bb_bd_inst (
     .apb_psel(psel),
     .apb_pslverr(1'b0),
     .apb_pwdata(pwdata),
-    .apb_pwrite(pwrite),     
-        
-    .mapb_paddr(mpaddr),
-    .mapb_penable(mpenable),
-    .mapb_prdata(mprdata),
-    .mapb_pready(1'b1),
-    .mapb_psel(mpsel),
-    .mapb_pslverr(1'b0),
-    .mapb_pwdata(mpwdata),
-    .mapb_pwrite(mpwrite)     
+    .apb_pwrite(pwrite)   
 
 );
 

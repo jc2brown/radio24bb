@@ -4,6 +4,8 @@ module dds (
     input clk,
     input reset,
     
+    input cfg_clk,
+    input cfg_reset, 
     input [7:0] cfg,
     input cfg_ce, 
     
@@ -30,8 +32,8 @@ reg [7:0] lut [0:4095];
 
 reg [11:0] lut_addr;
 
-always @(posedge clk) begin
-    if (reset) begin
+always @(posedge cfg_clk) begin
+    if (cfg_reset) begin
         lut_addr <= 'h0;
     end
     else begin

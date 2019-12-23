@@ -189,6 +189,8 @@ dds dds_inst (
     .clk(clk),
     .reset(reset),
     
+    .cfg_clk(clk),
+    .cfg_reset(reset),
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
     
