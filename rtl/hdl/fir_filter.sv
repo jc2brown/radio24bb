@@ -8,6 +8,9 @@ module fir_filter
     input reset,
     input clk,
 
+    input cfg_clk,
+    input cfg_reset,
+
     input [24:0] cfg_din,
     input cfg_ce,
     
@@ -39,8 +42,8 @@ assign result[0] = 'h0;
          
 
 assign out = 
-    signed'(result[LEN][47:23]) <= signed'(-128) ? -128 :
-         signed'(result[LEN][47:23]) >= signed'(127) ? 127 :
+    //signed'(result[LEN][47:23]) <= signed'(-128) ? -128 :
+         //signed'(result[LEN][47:23]) >= signed'(127) ? 127 :
               result[LEN][30:23];
    
     
@@ -51,8 +54,8 @@ generate
 for (i=1; i<=LEN; i=i+1) begin
     
     
-    always @(posedge clk) begin
-        if (reset) begin
+    always @(posedge cfg_clk) begin
+        if (cfg_reset) begin
             coef[i] = 32'h0080;
         end
         else if (cfg_ce) begin            
@@ -60,8 +63,8 @@ for (i=1; i<=LEN; i=i+1) begin
         end
     end
     
-    always @(posedge clk) begin
-        if (reset) begin
+    always @(posedge cfg_clk) begin
+        if (cfg_reset) begin
             in_del[i] = 0;
         end
         else begin            

@@ -240,7 +240,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 	if (aud_rate == 0) {
 		AUD_RATE = 0;		
 		set_adc_osr(128);
-		set_adc_prb(3);
+		set_adc_prb(1);
 		set_dac_osr(128);
 		set_dac_prb(17);
 	}

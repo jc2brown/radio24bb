@@ -92,6 +92,9 @@ fir_filter_inst (
     .reset(reset),
     .clk(clk),
 
+    .cfg_clk(clk),
+    .cfg_reset(reset),
+
     .cfg_din(filter_cfg_din),
     .cfg_ce(filter_cfg_ce),
     

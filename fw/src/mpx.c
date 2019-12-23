@@ -45,6 +45,12 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 
 	regs->pilot_gain = 127;
 
+
+	for (int i = 0; i < 21; ++i) {
+		regs->filter_coef = (uint32_t)(mpx_filter0_coef[i] * (double)(1<<23));
+	}
+
+
 }
 
 

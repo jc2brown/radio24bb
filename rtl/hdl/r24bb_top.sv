@@ -181,8 +181,8 @@ wire rx_data_valid_180;
 //
 /////////////////////////////////////////////////////////////
 
-wire signed [15:0] mpx;
-wire mpx_valid;
+(* async_reg = "true" *)
+reg signed [15:0] mpx;
 
 
 
@@ -1088,8 +1088,6 @@ stereo_mpx mpx_inst (
 );
 
 
-(* async_reg = "true" *)
-reg signed [15:0] mpx;
 always @(posedge clk) mpx <= mpx_m;
 
 

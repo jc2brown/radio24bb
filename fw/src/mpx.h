@@ -36,7 +36,20 @@ struct mpx_channel_regs {
 	uint32_t stat_limit;
 	uint32_t stat_count;
 
+	uint32_t filter_coef;
 };
+
+
+
+
+static double mpx_filter0_coef[21] = {
+        0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0
+};
+
 
 
 

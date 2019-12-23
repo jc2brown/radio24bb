@@ -29,6 +29,10 @@ module stereo_mpx (
     
     
 
+wire [24:0] filter_cfg_din;
+wire filter_cfg_ce;     
+
+
 wire [7:0] dds_cfg;
 wire dds_cfg_ce;    
 wire [31:0] dds_step;
@@ -49,6 +53,67 @@ wire [31:0] stat_count;
 
 
 
+
+wire signed [15:0] in_l_filtered;
+wire signed [15:0] in_r_filtered;
+
+
+fir_filter #( .LEN(21) ) 
+preemph_l_inst (    
+    .reset(mreset),
+    .clk(mclk),
+
+    .cfg_clk(clk),
+    .cfg_reset(reset),
+
+    .cfg_din(filter_cfg_din),
+    .cfg_ce(filter_cfg_ce),
+    
+    .len(),    
+
+    .in(signed'(in_l)), 
+    .valid_in(in_valid),
+    
+    .out(in_l_filtered),
+    .valid_out()
+
+);
+
+
+
+
+fir_filter #( .LEN(21) ) 
+preemph_r_inst (    
+    .reset(mreset),
+    .clk(mclk),
+
+    .cfg_clk(clk),
+    .cfg_reset(reset),
+
+    .cfg_din(filter_cfg_din),
+    .cfg_ce(filter_cfg_ce),
+    
+    .len(),    
+
+    .in(signed'(in_r)), 
+    .valid_in(in_valid),
+    
+    .out(in_r_filtered),
+    .valid_out()
+
+);
+
+
+
+
+
+
+
+
+
+
+
+
  
 reg signed [15:0] in;
 
@@ -59,7 +124,7 @@ always @(posedge mclk) begin
     end
     else begin    
         if (in_valid || in_valid_180) begin
-            in <= (mpx_sel ? in_l : in_r);
+            in <= (mpx_sel ? in_l_filtered : in_r_filtered);
         end
     end
 end
@@ -123,6 +188,7 @@ am_modulator (
 
 
 
+
 sigstat #( .WIDTH(8) )
 sigstat_inst (
 
@@ -173,7 +239,10 @@ mpx_regs regs_inst (
     .stat_limit(stat_limit),
     .stat_min(stat_min),
     .stat_max(stat_max),
-    .stat_count(stat_count)
+    .stat_count(stat_count),
+
+    .filter_cfg_din(filter_cfg_din),
+    .filter_cfg_ce(filter_cfg_ce)
           
         
 );

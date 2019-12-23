@@ -678,11 +678,11 @@ void adc_pre_init() {
 	set_nadc_divider(1);
 	set_madc_divider(2);
 
-	set_adc_osr(32);
-	set_adc_prb(14);
+	// set_adc_osr(32);
+	// set_adc_prb(14);
 
-	// set_adc_osr(128);
-	// set_adc_prb(1);
+	set_adc_osr(128);
+	set_adc_prb(1);
 }
 
 
@@ -690,11 +690,11 @@ void dac_pre_init() {
 	set_ndac_divider(1);
 	set_mdac_divider(2);
 
-	set_dac_osr(32);
+	// set_dac_osr(32);
 	// set_dac_prb(17);
 
-	// set_dac_osr(128);
-	set_dac_prb(8);
+	set_dac_osr(128);
+	set_dac_prb(17);
 }
 
 

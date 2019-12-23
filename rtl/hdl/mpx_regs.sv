@@ -25,7 +25,10 @@ module mpx_regs (
     output reg [31:0] stat_limit,
     input [7:0] stat_min,
     input [7:0] stat_max,
-    input [31:0] stat_count    
+    input [31:0] stat_count,    
+
+    output reg [24:0] filter_cfg_din,
+    output reg filter_cfg_ce        
         
 );
 
@@ -40,6 +43,8 @@ localparam REG_STAT_MIN     = 12'h10;
 localparam REG_STAT_MAX     = 12'h14;
 localparam REG_STAT_LIMIT   = 12'h18;
 localparam REG_STAT_COUNT   = 12'h1C;
+
+localparam REG_FILTER_COEF  = 12'h20;
 
 
 
@@ -56,11 +61,15 @@ begin
 
         stat_cfg <= 'h1;
         stat_limit <= 'h0;
+
+        filter_cfg_din <= 'h0;
+        filter_cfg_ce <= 'h0;
                    
     end
     else begin
                 
         rom_wr_en <= 1'b0;
+        filter_cfg_ce <= 'h0;
                        
         if (penable && psel && pwrite) begin
             case ({paddr[11:2], 2'b00})                
@@ -77,7 +86,13 @@ begin
                 
                 REG_STAT_CFG: stat_cfg <= pwdata[1:0];                
                 REG_STAT_LIMIT: stat_limit <= pwdata;
-
+                  
+                REG_FILTER_COEF:
+                    begin
+                        filter_cfg_din <= pwdata[24:0];
+                        filter_cfg_ce <= 1'b1;
+                    end         
+                    
             endcase
         end
     end
