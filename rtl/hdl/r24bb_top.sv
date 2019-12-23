@@ -109,6 +109,9 @@ wire [31:0] inb_prdata;
 wire [31:0] outa_prdata;
 wire [31:0] outb_prdata;
 wire [31:0] regs_prdata;
+wire [31:0] mpx_prdata;
+
+
 
 wire [63:0] GPIO_0_0_tri_i;
 wire [63:0] GPIO_0_0_tri_o;
@@ -167,6 +170,17 @@ wire signed [15:0] aud_in_l;
 wire signed [15:0] aud_in_r;
 wire signed [15:0] aud_in = aud_in_l + aud_in_r;
 wire rx_data_valid;
+
+
+
+/////////////////////////////////////////////////////////////
+//
+// Stereo MPX
+//
+/////////////////////////////////////////////////////////////
+
+wire signed [15:0] mpx;
+wire mpx_valid;
 
 
 
@@ -1000,13 +1014,19 @@ aic3204_if aic3204_if_inst(
 //
 /////////////////////////////////////////////////////////////
 
-wire [15:0] mpx;
-wire mpx_valid;
 
-stereo_mpx stereo_mpx_inst (
-
+    
+stereo_mpx mpx_inst (
+            
     .clk(clk),
     .reset(reset),
+        
+    .penable(penable),
+    .psel(paddr[31:12] == 20'h43C07),
+    .paddr(paddr),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .prdata(mpx_prdata),        
     
     .in_l(aud_in_l),
     .in_r(aud_in_r),
@@ -1014,8 +1034,7 @@ stereo_mpx stereo_mpx_inst (
     
     .mpx_out(mpx),
     .mpx_valid(mpx_valid)
-   
-
+    
 );
 
 
@@ -1091,6 +1110,7 @@ assign prdata =
         ( paddr[15:12] == 4'h4 ) ? regs_prdata :
         ( paddr[15:12] == 4'h5 ) ? ddsa_prdata :
         ( paddr[15:12] == 4'h6 ) ? ddsb_prdata :
+        ( paddr[15:12] == 4'h7 ) ? mpx_prdata :
         'h0;  
 
 
