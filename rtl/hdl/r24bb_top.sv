@@ -866,9 +866,9 @@ rx
     .bclk(CODEC_BCLK),
     .din(CODEC_DOUT),
     
-    .rx_data_l(aud_in_l),
-    .rx_data_r(aud_in_r),
-    .rx_data_valid(rx_data_valid)
+    .rx_data_l(aud_in_l_m),
+    .rx_data_r(aud_in_r_m),
+    .rx_data_valid(rx_data_valid_m)
     
 );
 
