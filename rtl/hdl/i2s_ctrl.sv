@@ -4,9 +4,12 @@ module i2s_ctrl (
     input clk,
     input reset,
     
+    input [1:0] aud_rate,
+    
     output mclk,
-    output wclk,
-    output bclk
+    output reg wclk,
+    output reg bclk,
+    output reg mpx_sel
 
 );
 
@@ -43,11 +46,32 @@ end
 //assign wclk = count[10];
 
 // If clk == 9.728MHz
+
 assign mclk = clk;
-assign bclk = count[2];
-assign wclk = count[7];
 
+always @(*) begin
 
+    mpx_sel = count[7];
+    
+    // 38kHz
+    if (aud_rate == 0) begin        
+        bclk = count[2];
+        wclk = count[7];
+    end
+        
+    // 72kHz
+    else if (aud_rate == 1) begin        
+        bclk = count[1];
+        wclk = count[6];
+    end
+                
+    // 152kHz
+    else if (aud_rate == 2) begin        
+        bclk = count[0];
+        wclk = count[5];
+    end
+
+end
 
 
 endmodule

@@ -20,6 +20,7 @@ module stereo_mpx (
     input [15:0] in_r,
     input in_valid,
     input in_valid_180,
+    input mpx_sel,
     
     output reg [15:0] mpx_out,
     output reg mpx_valid
@@ -27,8 +28,6 @@ module stereo_mpx (
 );
     
     
-
-reg mpx_sel;
 
 wire [7:0] dds_cfg;
 wire dds_cfg_ce;    
@@ -48,20 +47,34 @@ wire [7:0] stat_min;
 wire [7:0] stat_max;
 wire [31:0] stat_count;    
 
+
+
+ 
+reg signed [15:0] in;
+
+
+always @(posedge mclk) begin
+    if (mreset) begin
+        in <= 0;
+    end
+    else begin    
+        if (in_valid || in_valid_180) begin
+            in <= (mpx_sel ? in_l : in_r);
+        end
+    end
+end
+   
+ 
  
 
 always @(posedge mclk) begin
     if (mreset) begin
-        mpx_sel <= 0;
         mpx_out <= 0;
         mpx_valid <= 0;
     end
     else begin
         mpx_valid <= in_valid || in_valid_180;
-        mpx_out <= signed'(64)/*todo remove this 64?*/ *scaled_pilot + (mpx_sel ? in_l : in_r);
-        if (in_valid || in_valid_180) begin
-            mpx_sel <= !mpx_sel;
-        end
+        mpx_out <= signed'(64) *scaled_pilot + in;
     end
 end
 

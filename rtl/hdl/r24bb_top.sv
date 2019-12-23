@@ -872,13 +872,16 @@ xpm_cdc_sync_rst_inst (
 
 
 
-
-
+wire [1:0] aud_rate;
+wire mpx_sel;
 
 i2s_ctrl ctrl (
 
     .clk(mclk),
     .reset(mreset),
+    .mpx_sel(mpx_sel),
+    
+    .aud_rate(aud_rate),
     
     .mclk(CODEC_MCLK),
     .bclk(CODEC_BCLK),
@@ -1077,6 +1080,7 @@ stereo_mpx mpx_inst (
     .in_r(aud_in_r_m),
     .in_valid(rx_data_valid_m),    
     .in_valid_180(rx_data_valid_180_m),
+    .mpx_sel(mpx_sel),
     
     .mpx_out(mpx_m),
     .mpx_valid(mpx_valid_m)
@@ -1231,7 +1235,9 @@ regs regs_inst (
     .dac_cfg(dac_cfg),
     .dac_cfg_wr_en(dac_cfg_wr_en),
     
-    .dac_dce(dac_dce)
+    .dac_dce(dac_dce),
+    
+    .aud_rate(aud_rate)
                 
 );    
     

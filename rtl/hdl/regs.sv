@@ -68,7 +68,9 @@ module regs (
     output reg [7:0] dac_cfg,
     output reg dac_cfg_wr_en,
     
-    output reg dac_dce
+    output reg dac_dce,
+    
+    output reg [1:0] aud_rate
     
 //    output reg [31:0] outa_raw,
     
@@ -159,6 +161,9 @@ localparam REG_USB_WR_MUX = 12'h014;
 localparam REG_DAC_CFG = 12'h018;
 localparam REG_DAC_DCE = 12'h01C;
 
+
+localparam REG_AUD_RATE = 12'h020;
+
 //localparam REG_OUTA_RAW = 12'h1400;
 
 //localparam REG_OUTA_WR_COUNT = 12'h1500;
@@ -226,6 +231,8 @@ begin
         dac_cfg_wr_en <= 1'b0;
         
         dac_dce <= 1'b0;
+        
+        aud_rate <= 2'b0;
         
 //        outa_raw <= 'h0;       
 //        outa_mux <= 'h0; 
@@ -314,6 +321,8 @@ begin
                     end
                                        
                 REG_DAC_DCE: dac_dce <= pwdata[0];
+                
+                REG_AUD_RATE: aud_rate <= pwdata[0];
                 
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                

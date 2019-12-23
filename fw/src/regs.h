@@ -51,6 +51,8 @@
 
 #define DAC_DCE	 			*((volatile uint32_t*)0x43C0401C)
 
+#define AUD_RATE 			*((volatile uint32_t*)0x43C04020)
+
 /*
 #define OUTA_RAW	 		*((volatile uint32_t*)0x43C01400)
 
