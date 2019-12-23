@@ -1,4 +1,7 @@
 
+
+// Signed multiply-accumulate with saturation
+
 module gain_offset_clamp
 #(
     parameter IN_WIDTH = 8,
