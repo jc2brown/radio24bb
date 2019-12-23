@@ -16,13 +16,13 @@ module stereo_mpx (
     output pready,
         
     
-    input [15:0] in_l,
-    input [15:0] in_r,
+    input signed [15:0] in_l,
+    input signed [15:0] in_r,
     input in_valid,
     input in_valid_180,
     input mpx_sel,
     
-    output reg [15:0] mpx_out,
+    output reg signed [15:0] mpx_out,
     output reg mpx_valid
     
 );
@@ -74,7 +74,7 @@ always @(posedge mclk) begin
     end
     else begin
         mpx_valid <= in_valid || in_valid_180;
-        mpx_out <= signed'(64) *scaled_pilot + in;
+        mpx_out <= scaled_pilot + in;
     end
 end
 

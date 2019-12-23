@@ -1088,23 +1088,9 @@ stereo_mpx mpx_inst (
 );
 
 
-xpm_cdc_handshake #(
-  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
-  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
-  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
-  .WIDTH(16)           // DECIMAL; range: 1-1024
-)
-mpx_cdc (
-  .dest_out(mpx),
-  .dest_req(mpx_valid),
-  .src_rcv(/*full*/),
-  .dest_clk(clk),
-  .src_clk(mclk),
-  .src_in(mpx_m),
-  .src_send(mpx_valid_m)
-);
-
-
+(* async_reg = "true" *)
+reg signed [15:0] mpx;
+always @(posedge clk) mpx <= mpx_m;
 
 
 
