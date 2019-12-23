@@ -884,8 +884,8 @@ rx_aud_cdc (
   .dest_out({aud_in_l, aud_in_r}),
   .dest_req(rx_data_valid),
   .src_rcv(/*full*/),
-  .dest_clk(mclk),
-  .src_clk(clk),
+  .dest_clk(clk),
+  .src_clk(mclk),
   .src_in({aud_in_l_m, aud_in_r_m}),
   .src_send(rx_data_valid_m)
 );
