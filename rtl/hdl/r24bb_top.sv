@@ -876,7 +876,7 @@ xpm_cdc_sync_rst_inst (
 i2s_ctrl ctrl (
 
     .clk(mclk),
-    .reset(reset),
+    .reset(reset_m),
     
     .mclk(CODEC_MCLK),
     .bclk(CODEC_BCLK),
@@ -897,7 +897,7 @@ i2s_rx
 )    
 rx
 (
-    .reset(reset),
+    .reset(reset_m),
     .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
@@ -949,7 +949,7 @@ i2s_tx
 )    
 tx
 (
-    .reset(reset),
+    .reset(reset_m),
     .mclk(mclk),
     .wclk(CODEC_WCLK),
     .bclk(CODEC_BCLK),
