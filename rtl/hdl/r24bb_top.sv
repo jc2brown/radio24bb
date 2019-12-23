@@ -908,7 +908,7 @@ rx
     .rx_data_l(aud_in_l_m),
     .rx_data_r(aud_in_r_m),
     .rx_data_valid(rx_data_valid_m),
-    .rx_data_valid(rx_data_valid_180_m)
+    .rx_data_valid_180(rx_data_valid_180_m)
     
 );
 

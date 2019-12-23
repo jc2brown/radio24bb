@@ -42,7 +42,7 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 	}
 
 	// regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
-	regs->step = calc_mpx_step_size(19.7e6);
+	regs->step = calc_mpx_step_size(19e3);
 
 	regs->pilot_gain = 256;
 

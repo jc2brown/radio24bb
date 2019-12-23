@@ -55,7 +55,7 @@ always @(posedge clk) begin
     else begin
         mpx_valid <= in_valid || in_valid_180;
         if (in_valid || in_valid_180) begin
-            mpx_out <= scaled_pilot + (mpx_sel ? in_l : in_r);
+            mpx_out <= signed'(256)*scaled_pilot + (mpx_sel ? in_l : in_r);
             mpx_sel <= !mpx_sel;
         end
     end
