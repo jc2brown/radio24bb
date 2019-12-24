@@ -58,7 +58,12 @@ wire signed [15:0] in_l_filtered;
 wire signed [15:0] in_r_filtered;
 
 
-fir_filter #( .LEN(21) ) 
+fir_filter 
+#( 
+    .LEN(21),
+    .UPPER(32767),
+    .LOWER(-32768)
+) 
 preemph_l_inst (    
     .reset(mreset),
     .clk(mclk),
@@ -82,7 +87,12 @@ preemph_l_inst (
 
 
 
-fir_filter #( .LEN(21) ) 
+fir_filter 
+#( 
+    .LEN(21),
+    .UPPER(32767),
+    .LOWER(-32768)
+) 
 preemph_r_inst (    
     .reset(mreset),
     .clk(mclk),

@@ -1,7 +1,9 @@
 
 module fir_filter 
 #(
-    parameter LEN = 21
+    parameter LEN = 21,
+    parameter signed UPPER = 127,
+    parameter signed LOWER = -128
 )
 (
     
@@ -16,10 +18,10 @@ module fir_filter
     
     output [31:0] len,    
 
-    input [17:0] in,
+    input signed [17:0] in,
     input valid_in,
     
-    output [17:0] out,
+    output signed [17:0] out,
     output valid_out
 
 );
@@ -42,9 +44,9 @@ assign result[0] = 'h0;
          
 
 assign out = 
-    //signed'(result[LEN][47:23]) <= signed'(-128) ? -128 :
-         //signed'(result[LEN][47:23]) >= signed'(127) ? 127 :
-              result[LEN][30:23];
+    signed'(result[LEN][47:23]) <= LOWER ? LOWER :
+    signed'(result[LEN][47:23]) >= UPPER ? UPPER :
+    result[LEN][39:23];
    
     
     

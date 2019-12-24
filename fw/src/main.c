@@ -59,11 +59,18 @@ char *stereo_script[] = {
 	"ddsa src dds",
 	"ddsa freq 10.7e6",
 	"ddsa fm src mpx",
-	"ddsa fm gain 300",
+	"ddsa fm gain 400",
 	"ddsa fm offset 0",
 
+	"mpx pilot 1000",
+
 	"outa src ddsa",
-	"outb src ddsa",
+
+	"outb src ddsb",
+	"outb att 0",
+
+	"ddsb src mpx"
+
 
 };
 
