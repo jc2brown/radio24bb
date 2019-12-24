@@ -47,7 +47,7 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 
 
 	for (int i = 0; i < 21; ++i) {
-		regs->filter_coef = (uint32_t)(mpx_filter0_coef[i] * (double)(1<<23));
+		regs->filter_coef = (uint32_t)(mpx_filter1_coef[i] * (double)(1<<19));
 	}
 
 
@@ -93,6 +93,29 @@ void handle_mpx_pilot_gain_cmd(void *arg, struct command *cmd) {
 
 
 
+void handle_mpx_filt_cmd(void *arg, struct command *cmd) {
+	struct mpx_channel *channel = (struct mpx_channel *)arg;
+	int filt = atoi(cmd->tokens[cmd->index++]);
+	if (filt == 0) {
+		for (int i = 0; i < 21; ++i) {
+			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter0_coef[i] * (double)(1<<19));
+		}
+	}
+	if (filt == 1) {
+		for (int i = 0; i < 21; ++i) {
+			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter1_coef[i] * (double)(1<<19));
+		}
+	}
+	if (filt == 2) {
+		for (int i = 0; i < 21; ++i) {
+			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter2_coef[i] * (double)(1<<19));
+		}
+	}
+}
+
+
+
+
 
 void init_mpx_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
 
@@ -101,6 +124,7 @@ void init_mpx_channel_context(char *name, void* arg, struct cmd_context *parent_
 	add_command(mpx_channel_ctx, "pilot", handle_mpx_pilot_gain_cmd);
 	add_command(mpx_channel_ctx, "stat", handle_mpx_stat_cmd);
 	add_command(mpx_channel_ctx, "freq", handle_mpx_freq_cmd);
+	add_command(mpx_channel_ctx, "filt", handle_mpx_filt_cmd);
 
 
 }

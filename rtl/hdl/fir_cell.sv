@@ -8,13 +8,16 @@ module fir_cell(
     input valid_in,
     input valid_out,
     
-    input [24:0] mult_coef,
-    input [17:0] mult_in,
-    input [47:0] acc_in,
-    output [47:0] result
+    input signed [24:0] mult_coef,
+    input signed [17:0] mult_in,
+    input signed [47:0] acc_in,
+    output signed [47:0] result
                        
 );
     
+
+/*
+
 
 reg [2:0] valid_sr;
 always @(posedge clk) begin
@@ -54,6 +57,58 @@ MACC_MACRO #(
     .LOAD(valid_sr[0]), // 1-bit active high input load accumulator enable
     .LOAD_DATA(acc_in) // Load accumulator input data, width determined by WIDTH_P parameter
 );
+
+*/
+
+
+
+
+//
+// Stage 1
+//
+
+reg valid_d1;
+always @(posedge clk) valid_d1 <= valid_in;
+
+reg signed [17:0] mult_d1;
+always @(posedge clk) if (valid_in) mult_d1 <= mult_in;
+
+reg signed [24:0] coef_d1;
+always @(posedge clk) if (valid_in) coef_d1 <= mult_coef;
+
+reg signed [47:0] acc_d1;
+always @(posedge clk) if (valid_in) acc_d1 <= acc_in;
+
+
+// 
+// Stage 2
+//
+
+reg valid_d2;
+always @(posedge clk) valid_d2 <= valid_d1;
+
+reg signed [47:0] acc_d2;
+always @(posedge clk) if (valid_d1) acc_d2 <= acc_d1;
+
+reg signed [47:0] product_d2;
+always @(posedge clk) if (valid_d1) product_d2 <= mult_d1 * coef_d1;
+
+
+// 
+// Stage 3
+//
+
+reg valid_d3;
+always @(posedge clk) valid_d3 <= valid_d2;
+
+reg signed [47:0] sum_d3;
+always @(posedge clk) if (valid_d2) sum_d3 <= product_d2 + acc_d2;
+
+
+assign result = sum_d3;
+assign valid_out = valid_d3;
+
+
 
 
     
