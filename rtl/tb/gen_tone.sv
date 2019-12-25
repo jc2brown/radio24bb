@@ -10,7 +10,7 @@ module gen_tone
      parameter real DM_NOISE_AMPL = 0.0,
 //     parameter real SIG_CLK_PER = 1e12 / (51*FREQ), // 51 samples per signal period
 //     parameter real NOISE_CLK_PER = SIG_CLK_PER / 3 // 3 noise samples per signal sample   
-     parameter real SAMPLE_RATE = 1e6 
+     parameter real SAMPLE_RATE = 100e6 
 )
 (
     output wire [31:0] sig_p_uv,
