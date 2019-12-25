@@ -156,7 +156,12 @@ end
 
 
                     
-dds dds_inst (
+dds 
+#(
+    .SYNC_MASK(32'h80000000)
+)
+
+dds_inst (
 
     .clk(mclk),
     .reset(mreset),
@@ -165,6 +170,8 @@ dds dds_inst (
     .cfg_reset(reset),
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
+    
+    .sync(in_valid),
     
     .step(dds_step),    
     .fm_data(0),

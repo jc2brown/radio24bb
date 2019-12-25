@@ -1,5 +1,10 @@
 
-module dac_channel (
+module dac_channel 
+#(
+    parameter FAST_FIR = "true"
+)
+
+(
 
         
         input clk,
@@ -66,7 +71,7 @@ fifo_inst (
 
 
 wire [15:0] gain;  
-wire [15:0] offset;  
+wire signed [15:0] offset;  
 wire [24:0] filter_cfg_din;
 wire filter_cfg_ce;         
             
@@ -74,7 +79,7 @@ wire [2:0] mux;
 wire [31:0] raw;
       
           
-wire [7:0] dac_data =   (mux == 0) ? raw :
+wire signed [7:0] dac_data =   (mux == 0) ? raw :
                         (mux == 1) ? ina_data : 
                         (mux == 2) ? inb_data :
                         (mux == 3) ? ddsa_data : 
@@ -84,30 +89,59 @@ wire [7:0] dac_data =   (mux == 0) ? raw :
                         0; 
   
   
-wire [7:0] dac_data_filtered;
+wire signed [7:0] dac_data_filtered;
 
 
-fast_fir_filter
-fast_fir_filter_inst (    
-    .reset(reset),
-    .clk(clk),
+generate
+if (FAST_FIR == "true") begin
 
-    .cfg_clk(clk),
-    .cfg_reset(reset),
-
-    .cfg_din(filter_cfg_din),
-    .cfg_ce(filter_cfg_ce),
+    fast_fir_filter
+    fast_fir_filter_inst (    
+        .reset(reset),
+        .clk(clk),
     
-    .len(),    
-
-    .in(signed'(dac_data)), 
-    .valid_in(1),
+        .cfg_clk(clk),
+        .cfg_reset(reset),
     
-    .out(dac_data_filtered),
-    .valid_out()
+        .cfg_din(filter_cfg_din),
+        .cfg_ce(filter_cfg_ce),
+        
+        .len(),    
+    
+        .in(dac_data), 
+        .valid_in(1),
+        
+        .out(dac_data_filtered),
+        .valid_out()
+    
+    );
+    
+end
+else begin
 
-);
+    fir_filter
+    fir_filter_inst (    
+        .reset(reset),
+        .clk(clk),
+    
+        .cfg_clk(clk),
+        .cfg_reset(reset),
+    
+        .cfg_din(filter_cfg_din),
+        .cfg_ce(filter_cfg_ce),
+        
+        .len(),    
+    
+        .in(dac_data), 
+        .valid_in(1),
+        
+        .out(dac_data_filtered),
+        .valid_out()
+    
+    );
 
+end
+endgenerate
 
 
 gain_offset_clamp

@@ -33,7 +33,7 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 	regs->offset = 0;
 
 	for (int i = 0; i < 21; ++i) {
-		regs->filter_coef = (uint32_t)(ina_filter0_coef[i] * (double)(1<<19));
+		regs->filter_coef = (uint32_t)(ina_filter1_coef[i] * (double)(1<<19));
 	}
 
 	regs->stat_cfg = 0;

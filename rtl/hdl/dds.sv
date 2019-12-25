@@ -1,5 +1,9 @@
 
-module dds (
+module dds 
+#( 
+    parameter SYNC_MASK = 32'h00000000
+)
+(
 
     input clk,
     input reset,
@@ -8,6 +12,8 @@ module dds (
     input cfg_reset, 
     input [7:0] cfg,
     input cfg_ce, 
+    
+    input sync,
     
     input [31:0] step,
         
@@ -57,6 +63,9 @@ always @(posedge clk) begin
         accum <= 'h0;
     end
     else begin  
+        if (sync) begin
+            accum <= accum & SYNC_MASK;
+        end
         if (run) begin
             accum <= signed'(accum) + signed'(step) + signed'(fm_data);
         end

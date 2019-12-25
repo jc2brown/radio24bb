@@ -194,6 +194,8 @@ dds dds_inst (
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
     
+    .sync(0),
+    
     .step(dds_step),    
     .fm_data(scaled_fm_data),
     .pm_data(scaled_pm_data),

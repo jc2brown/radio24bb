@@ -1,5 +1,9 @@
 
-module adc_channel(
+module adc_channel
+#(
+    parameter FAST_FIR = "true"
+)
+(
 
     input clk,
     input reset,
@@ -104,7 +108,7 @@ sigstat_inct (
 
 
 
-wire [7:0] in_clamped;
+wire signed [7:0] in_clamped;
 wire in_clamped_valid;
 
 gain_offset_clamp
@@ -138,25 +142,56 @@ dac_gain_offset (
 
 
   
-fast_fir_filter
-fast_fir_filter_inst (    
-    .reset(reset),
-    .clk(clk),
+generate
+if (FAST_FIR == "true") begin
 
-    .cfg_din(filter_cfg_din),
-    .cfg_ce(filter_cfg_ce),
+    fast_fir_filter
+    fast_fir_filter_inst (    
+        .reset(reset),
+        .clk(clk),
+            
+        .cfg_clk(clk),
+        .cfg_reset(reset),
     
-    .len(),    
-
-    .in({{10{in_clamped[7]}}, in_clamped[7:0]}),
-    .valid_in(in_clamped_valid),
+        .cfg_din(filter_cfg_din),
+        .cfg_ce(filter_cfg_ce),
+        
+        .len(),    
     
-    .out(in_filtered),
-    .valid_out(in_filtered_valid)
+        .in(in_clamped),
+        .valid_in(in_clamped_valid),
+        
+        .out(in_filtered),
+        .valid_out(in_filtered_valid)
+    
+    );
 
-);
+end
+else begin
 
+    fir_filter
+    fir_filter_inst (    
+        .reset(reset),
+        .clk(clk),
+            
+        .cfg_clk(clk),
+        .cfg_reset(reset),
+    
+        .cfg_din(filter_cfg_din),
+        .cfg_ce(filter_cfg_ce),
+        
+        .len(),    
+    
+        .in(in_clamped),
+        .valid_in(in_clamped_valid),
+        
+        .out(in_filtered),
+        .valid_out(in_filtered_valid)
+    
+    );
 
+end
+endgenerate
 
 
 
@@ -188,7 +223,7 @@ fifo_inst (
 //always @(posedge clk) out <= dout;
 always @(posedge clk) out <= in_filtered;
 //always @(posedge clk) valid_out <= !empty;
-always @(posedge clk) valid_out <= in_filtered_valid;
+always @(posedge clk) valid_out <= 1;
 
 
 

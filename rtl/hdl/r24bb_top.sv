@@ -462,7 +462,7 @@ wire [7:0] inb_data;
 //wire inb_valid;
 
 
-adc_channel inb_adc_channel (
+adc_channel #(.FAST_FIR("false")) inb_adc_channel (
 
     .clk(clk),
     .reset(reset),
@@ -599,7 +599,7 @@ dac_channel outa_dac_channel (
 wire [7:0] outb_data_out;
 wire outb_usb_rd_full;
     
-dac_channel outb_dac_channel (
+dac_channel #(.FAST_FIR("false")) outb_dac_channel (
 
         
         .clk(clk),

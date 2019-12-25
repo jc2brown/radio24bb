@@ -47,7 +47,7 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 
 
 	for (int i = 0; i < 21; ++i) {
-		regs->filter_coef = (uint32_t)(mpx_filter1_coef[i] * (double)(1<<19));
+		regs->filter_coef = (uint32_t)(10.0*mpx_filter1_coef[i] * (double)(1<<19));
 	}
 
 
@@ -98,17 +98,17 @@ void handle_mpx_filt_cmd(void *arg, struct command *cmd) {
 	int filt = atoi(cmd->tokens[cmd->index++]);
 	if (filt == 0) {
 		for (int i = 0; i < 21; ++i) {
-			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter0_coef[i] * (double)(1<<19));
+			channel->regs->filter_coef = (uint32_t)(10.0*mpx_filter0_coef[i] * (double)(1<<19));
 		}
 	}
 	if (filt == 1) {
 		for (int i = 0; i < 21; ++i) {
-			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter1_coef[i] * (double)(1<<19));
+			channel->regs->filter_coef = (uint32_t)(10.0*mpx_filter1_coef[i] * (double)(1<<19));
 		}
 	}
 	if (filt == 2) {
 		for (int i = 0; i < 21; ++i) {
-			channel->regs->filter_coef = 16*(uint32_t)(mpx_filter2_coef[i] * (double)(1<<19));
+			channel->regs->filter_coef = (uint32_t)(10.0*mpx_filter2_coef[i] * (double)(1<<19));
 		}
 	}
 }
