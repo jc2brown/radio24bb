@@ -58,7 +58,7 @@ wire signed [15:0] in_l_filtered;
 wire signed [15:0] in_r_filtered;
 
 
-fir_filter 
+fast_fir_filter 
 #( 
     .LEN(21),
     .UPPER(32767),
@@ -87,7 +87,7 @@ preemph_l_inst (
 
 
 
-fir_filter 
+fast_fir_filter 
 #( 
     .LEN(21),
     .UPPER(32767),
