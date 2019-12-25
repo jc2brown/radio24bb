@@ -31,10 +31,12 @@ assign len = LEN;
     
    
 // n.b. these signal arrays are 1-indexed
-wire valid [0:LEN];
-assign valid[0] = valid_in;
-assign valid_out = 1'b1;//valid[LEN];
-reg [24:0] coef [0:LEN];
+reg valid_del [0:LEN];
+always @* valid_del[0] <= valid_in;
+//assign valid_out = 1'b1;
+wire valid_out_del [0:LEN];
+assign valid_out = valid_out_del[LEN];
+reg signed [24:0] coef [0:LEN];
 always @* coef[0] <= cfg_din;
 reg [17:0] in_del [0:LEN];
 always @* in_del[0] <= in; 
@@ -80,8 +82,8 @@ for (i=1; i<=LEN; i=i+1) begin
         .clk(clk),
         .reset(reset),
         
-        .valid_in(valid[i-1]),
-        .valid_out(valid[i]),
+        .valid_in(valid_del[i-1]),
+        .valid_out(valid_out_del[i]),
         
         .mult_coef(coef[i]),
         .mult_in(in_del[i-1]),
