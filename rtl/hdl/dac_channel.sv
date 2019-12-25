@@ -87,8 +87,8 @@ wire [7:0] dac_data =   (mux == 0) ? raw :
 wire [7:0] dac_data_filtered;
 
 
-fir_filter #( .LEN(21) ) 
-fir_filter_inst (    
+fast_fir_filter
+fast_fir_filter_inst (    
     .reset(reset),
     .clk(clk),
 

@@ -25,8 +25,9 @@ module fast_fir_filter
 
 );
 
+genvar i;
 
-localparam LEN = 32;
+localparam LEN = 21;
     
 // Connect len to a CPU-accessible register so SW can find out how many taps it needs to load
 assign len = LEN;
@@ -42,7 +43,14 @@ reg signed [24:0] coef [0:LEN];
 always @* coef[0] <= cfg_din;
 reg signed [17:0] in_del [0:LEN];
 always @* in_del[0] <= in; 
-wire signed [47:0] result [0:LEN];
+wire signed [47:0] result [0:32];
+
+
+for (i=LEN+1; i<=32; i=i+1) begin
+    assign result[i] = 0;
+end
+
+
 assign result[0] = 'h0;
 //assign out = result[LEN][30:23];
          
@@ -64,7 +72,6 @@ assign out =
 
 
 // n.b. this generate block is 1-indexed
-genvar i;
 generate
 for (i=1; i<=LEN; i=i+1) begin
     
