@@ -117,32 +117,87 @@ always begin
         
         for (j=0; j<8192; ) begin
             @(posedge clk) begin
-                _wr_valid <= 1;
-            
-                                 /*
-                        
-                            if (wr_full) begin
-                                _wr_valid <= 1'b0;
-                            end
-                            else begin
-                            */
-            
+            /*
+                _wr_valid <= 1;            
                 if (wr_valid && !wr_full) begin
-                    wr_data <= j+1;          
+                    wr_data <= j;          
                     wr_be <= {wr_be[2:0], wr_be[3]};           
                     //_wr_valid <= 1'b1;
                     j=j+1;
                 end
+                */
+                
+                     
+                _wr_valid <= 1;//!wr_full;
+                if (!wr_full) begin
+                    wr_data <= j;          
+                    wr_be <= {wr_be[2:0], wr_be[3]};     
+                    j=j+1;
+                end
+                
+                
+                
             end
         end
         @(posedge clk) begin
+            j = 0;
             wr_data <= 32'hX;
             wr_be <= 4'bX;        
             _wr_valid <= 1'b0;   
+            wr_valid <= 0;
         end
         
         #($urandom_range(400, 400)*1us);
        // #($urandom_range(50, 50)*1us);
+       
+       
+       
+       
+               
+       wr_data <= 32'h00;
+       wr_be <= 4'b1000;     
+       _wr_valid <= 1'b0;
+       
+       for (j=0; j<1024; ) begin
+           @(posedge clk) begin
+           
+//               _wr_valid <= 1;           
+//               if (wr_valid && !wr_full) begin
+               
+               
+               
+               _wr_valid <= 1;//!wr_full;
+               if (!wr_full) begin
+                   wr_data <= j;          
+                   wr_be <= {wr_be[2:0], wr_be[3]};           
+                   //_wr_valid <= 1'b1;
+                   j=j+1;
+               end
+           end
+       end
+       @(posedge clk) begin
+           wr_data <= 32'hX;
+           wr_be <= 4'bX;        
+           _wr_valid <= 1'b0;   
+           wr_push <= 1;
+       end
+      @(posedge clk) begin
+          wr_push <= 0;
+      end
+       
+       #($urandom_range(400, 400)*1us);
+      // #($urandom_range(50, 50)*1us);
+      
+      
+      
+      
+       
+       
+       
+       
+       
+       
+       
         
     end
 end
