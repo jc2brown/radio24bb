@@ -10,7 +10,6 @@ module ft601_wr_buf
     input wr_ce,
     input wr_en,
     input wr_push,
-    output wr_afull, 
     output reg writeable,
     output almost_unwriteable,
     
@@ -27,21 +26,15 @@ module ft601_wr_buf
 );
     
 
-wire wr_full;
-//reg rd_pending;
 wire rd_done;
-
-reg [12:0] wr_data_count;
-wire [12:0] rd_data_count;
 
 wire rd_en = !ft_txe_n && !ft_wr_n && rd_ce;
 
-//assign writeable = !(wr_afull || rd_pending);
+reg [12:0] wr_data_count;
 
 wire full = (wr_data_count == 4096);
 wire almost_full = (wr_data_count >= 4095);
 
-//assign writeable = !full && !rd_pending;
 assign almost_unwriteable = almost_full;
 
 reg rd_done_d1;
@@ -53,7 +46,6 @@ always @(posedge wr_clk) begin
         writeable <= 1;
     end
     else begin
-    //     wr_afull || (wr_push && wr_ce)) 
         if (wr_ce && ((almost_full && wr_en) || wr_push)) begin
             writeable <= 0;
         end
@@ -87,8 +79,6 @@ xpm_fifo_async #(
     .FIFO_WRITE_DEPTH(4096),   // DECIMAL
     .READ_DATA_WIDTH(36),      // DECIMAL
     .WRITE_DATA_WIDTH(36),     // DECIMAL
-    .RD_DATA_COUNT_WIDTH(13),
-    .WR_DATA_COUNT_WIDTH(13),
     .USE_ADV_FEATURES("1F0F") // Enable almost_empty, almost_full, and data_valid
 )
 wr_fifo (
@@ -98,30 +88,28 @@ wr_fifo (
     .wr_clk(wr_clk),
     .din(wr_data),      
     .wr_en(wr_en && wr_ce),    
-    .full(wr_full),
-    .almost_full(wr_afull),
-    .wr_data_count(),
     
     .rd_clk(!rd_clk), 
     .dout(rd_data),  
     .data_valid(rd_valid),
     .rd_en(rd_en),
     .empty(rd_empty),
-    .almost_empty(rd_aempty),
-    .rd_data_count(rd_data_count)
+    .almost_empty(rd_aempty)
 );
 
     
 wire rd_pending;
+
 reg rd_pending_d1;
 always @(negedge rd_clk) rd_pending_d1 <= rd_pending;
+    
     
 always @(posedge wr_clk) begin
     if (rd_reset) begin
         readable <= 0;
     end
     else begin
-        if (/*(rd_data_count == 4096) || */(rd_pending && !rd_pending_d1)) begin
+        if (rd_pending && !rd_pending_d1) begin
             readable <= 1;
         end
         else if (rd_empty) begin
@@ -131,9 +119,6 @@ always @(posedge wr_clk) begin
 end
 
 
-
-
-
 xpm_cdc_single rd_done_cdc (
     .src_clk(!rd_clk),
     .src_in(rd_empty),
@@ -141,8 +126,6 @@ xpm_cdc_single rd_done_cdc (
     .dest_out(rd_done)
 );
 
-
-//assign readable = rd_pending && !rd_empty;  
 
 xpm_cdc_single ready_cdc (
     .src_clk(wr_clk),
