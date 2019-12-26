@@ -86,6 +86,9 @@ ft601_if2 dut (
 );
 
 
+reg _wr_valid;
+always @(*) wr_valid <= _wr_valid && !wr_full; //? 0 : (_wr_valid : 0; 
+
 
 integer j;
 always begin
@@ -96,7 +99,7 @@ always begin
         @(posedge clk) begin
             wr_data <= 32'hX;
             wr_be <= 4'bX;      
-            wr_valid <= 1'b0;
+            _wr_valid <= 1'b0;
         end         
          
         #($urandom_range(100, 100)*1us);
@@ -110,25 +113,32 @@ always begin
         
         wr_data <= 32'h00;
         wr_be <= 4'b1000;     
-        wr_valid <= 1'b0;
+        _wr_valid <= 1'b0;
         
-        for (j=0; j<8192; j=j+1) begin
+        for (j=0; j<8192; ) begin
             @(posedge clk) begin
-                if (wr_full) begin
-                    wr_valid <= 1'b0;
-                    j=j-1;
-                end
-                else begin
+                _wr_valid <= 1;
+            
+                                 /*
+                        
+                            if (wr_full) begin
+                                _wr_valid <= 1'b0;
+                            end
+                            else begin
+                            */
+            
+                if (wr_valid && !wr_full) begin
                     wr_data <= j+1;          
                     wr_be <= {wr_be[2:0], wr_be[3]};           
-                    wr_valid <= 1'b1;
+                    //_wr_valid <= 1'b1;
+                    j=j+1;
                 end
             end
         end
         @(posedge clk) begin
             wr_data <= 32'hX;
             wr_be <= 4'bX;        
-            wr_valid <= 1'b0;   
+            _wr_valid <= 1'b0;   
         end
         
         #($urandom_range(400, 400)*1us);
@@ -137,6 +147,10 @@ always begin
     end
 end
 
+
+
+    
+    
 
 
 

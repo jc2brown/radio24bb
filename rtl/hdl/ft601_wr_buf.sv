@@ -10,8 +10,8 @@ module ft601_wr_buf
     input wr_ce,
     input wr_en,
     input wr_push,
-    output wr_busy,
     output wr_afull, 
+    output writeable,
     
     input rd_reset,
     input rd_clk,
@@ -22,7 +22,7 @@ module ft601_wr_buf
     input rd_ce,    
     output rd_empty,
     output rd_aempty,
-    output rd_ready
+    output readable
 );
     
 
@@ -33,7 +33,7 @@ wire push_ack;
 
 wire rd_en = !ft_txe_n && !ft_wr_n && rd_ce;
 
-assign wr_busy = wr_afull || push_req;
+assign writeable = !(wr_afull || push_req);
 
 
 always @(posedge wr_clk) begin
@@ -41,7 +41,7 @@ always @(posedge wr_clk) begin
         push_req <= 0;
     end
     else begin
-        if (wr_push && wr_ce) begin
+        if (wr_afull || (wr_push && wr_ce)) begin
             push_req <= 1;
         end
         else if (push_ack) begin
@@ -83,7 +83,7 @@ wr_fifo (
 
 xpm_cdc_single push_ack_cdc (
     .src_clk(!rd_clk),
-    .src_in(rd_ce),
+    .src_in(rd_empty),
     .dest_clk(wr_clk),
     .dest_out(push_ack)
 );
@@ -91,9 +91,9 @@ xpm_cdc_single push_ack_cdc (
 
 xpm_cdc_single ready_cdc (
     .src_clk(wr_clk),
-    .src_in(wr_busy),
+    .src_in(!writeable),
     .dest_clk(!rd_clk),
-    .dest_out(rd_ready)
+    .dest_out(readable)
 );
 
     
