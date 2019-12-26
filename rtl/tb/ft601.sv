@@ -43,16 +43,9 @@ reg done_read = 1'b0;
 reg done_write = 1'b0;
 
 
-reg read_fifo_we;
 
-
-reg write_fifo_wr_en = 1'b0;
-reg write_fifo_rd_en = 1'b0;
-//reg [31:0] write_fifo_data_in;
-wire write_fifo_empty;
 wire write_fifo_aempty;
 wire write_fifo_full;
-wire write_fifo_afull;
 
 
 
@@ -93,16 +86,9 @@ integer seed = 0;
 
 
 
-
-
-wire read_fifo_afull;
-
 wire read_fifo_re = !rd_n;
 
-
-
 assign txe_n = write_fifo_full || !reset_n;
- 
  
  
 /////////////////////////////////////////////////////////////
@@ -115,8 +101,6 @@ reg [31:0] pc_tx_data;
 reg [3:0] pc_tx_be;
 reg pc_tx_en;
 wire pc_tx_full;
-
-wire [31:0] rd_fifo_dout;
 
 
 
@@ -138,26 +122,12 @@ read_fifo (
     .din({pc_tx_be, pc_tx_data}),      
     .wr_en(pc_tx_en),    
     .full(pc_tx_full),
-    
-    
+        
     .rd_clk(!clk_out),
-//    .dout(rd_fifo_dout),  
     .dout({be_out, data_out}),  
     .rd_en(!rd_n && !rxf_n),    
     .empty(rxf_n)
 );
-
-
-
-
-//always @(posedge clk_out) begin
-//    data_out <= rd_fifo_dout;
-//end
-
-
-
-//reg [31:0] usb_write_data = 32'hZZZZZZZZ;
-//reg usb_write_data_valid;
 
 
 integer k;
@@ -177,8 +147,7 @@ always begin
     else begin
     
         #($urandom_range(500, 500)*1us);
-        
-        
+                
         pc_tx_be <= 4'b1000;     
         
         for (k=0; k<4096; k=k+1) begin
@@ -187,7 +156,7 @@ always begin
             
             @(posedge clk_out) begin
                 pc_tx_en <= 1'b1;  
-                pc_tx_data <= k+1; 
+                pc_tx_data <= k; 
                 pc_tx_be <= {pc_tx_be[2:0], pc_tx_be[3]};
             end
         end
@@ -200,10 +169,6 @@ always begin
                     
     end
 end
-
-
-
-
 
 
 
@@ -242,7 +207,6 @@ write_fifo (
     
     .rd_clk(clk_out),
     .dout({wr_fifo_be, wr_fifo_dout}),
-//    .dout(pc_rx_data),
     .rd_en(!wr_fifo_empty),    
     .empty(wr_fifo_empty),
     .almost_empty(write_fifo_aempty)
@@ -250,50 +214,10 @@ write_fifo (
 
 
 always @(posedge clk_out) begin
-//always @(*) begin
     pc_rx_data <= wr_fifo_dout;
     pc_rx_be <= wr_fifo_be;
     pc_rx_valid <= !wr_fifo_empty;
 end
-
-
-
-/*
-reg [31:0] usb_read_data = 32'hZZZZZZZZ;
-reg [3:0] usb_read_be = 4'hZ;
-reg usb_read_data_valid;
-integer j;
-// USB data source
-initial begin
-
-    forever begin
-        
-        #($urandom_range(10, 100)*1us);
-    
-        if (reset_n) begin
-        
-            
-            usb_read_data <= 32'h00;
-            usb_read_be <= 4'b1000;
-            
-            for (j=0; j<4096; j=j+1) begin
-                @(posedge clk_out) begin
-                    read_fifo_we <= 1'b1;  
-                    usb_read_data <= j+1; 
-                    usb_read_be <= {usb_read_be[2:0], usb_read_be[3]};
-                    
-                end
-            end
-            @(posedge clk_out) begin
-                usb_read_data <= 32'hZZZZZZZZ;
-                usb_read_be <= 4'h0;
-                read_fifo_we <= 1'b0;        
-            end
-        end
-        
-    end
-end
-*/
 
 
 

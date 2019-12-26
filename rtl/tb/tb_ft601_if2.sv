@@ -73,15 +73,13 @@ ft601_if2 dut (
     .wr_data(wr_data),
     .wr_be(wr_be),
     .wr_valid(wr_valid),
-    .wr_fifo_full(),
     .wr_push(wr_push),
     .wr_full(wr_full),
     
     .rd_data(rd_data),
     .rd_be(rd_be),
-    .rd_en(1'b1),
-    .rd_valid(rd_valid),
-    .rd_fifo_empty()
+    .rd_en(1'b0),
+    .rd_valid(rd_valid)
         
 );
 
@@ -102,7 +100,7 @@ always begin
             _wr_valid <= 1'b0;
         end         
          
-        #($urandom_range(100, 100)*1us);
+        #($urandom_range(10000, 10000)*1us);
         
     end
 

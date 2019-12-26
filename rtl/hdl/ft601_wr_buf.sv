@@ -46,7 +46,7 @@ always @(posedge wr_clk) begin
         writeable <= 1;
     end
     else begin
-        if (wr_ce && ((almost_full && wr_en) || wr_push)) begin
+        if (wr_ce && ((almost_full && wr_en) || (wr_push && (wr_en || wr_data_count != 0)))) begin
             writeable <= 0;
         end
         else if (rd_done && !rd_done_d1) begin
@@ -104,7 +104,7 @@ reg rd_pending_d1;
 always @(negedge rd_clk) rd_pending_d1 <= rd_pending;
     
     
-always @(posedge wr_clk) begin
+always @(negedge rd_clk) begin
     if (rd_reset) begin
         readable <= 0;
     end
@@ -127,7 +127,7 @@ xpm_cdc_single rd_done_cdc (
 );
 
 
-xpm_cdc_single ready_cdc (
+xpm_cdc_single rd_pending_cdc (
     .src_clk(wr_clk),
     .src_in(!writeable),
     .dest_clk(!rd_clk),
