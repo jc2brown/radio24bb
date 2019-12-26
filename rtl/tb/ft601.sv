@@ -176,7 +176,7 @@ always begin
     
     else begin
     
-        #($urandom_range(60, 60)*1us);
+        #($urandom_range(500, 500)*1us);
         
         
         pc_tx_be <= 4'b1000;     
