@@ -36,7 +36,7 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 	regs->raw = 0;
 
 	for (int i = 0; i < 21; ++i) {
-		regs->filter_coef = (uint32_t)(32.0*outa_filter0_coef[i] * (double)(1<<19));
+		regs->filter_coef = (uint32_t)(1.0*outa_filter0_coef[i] * (double)(1<<19));
 	}
 
 	regs->stat_cfg = 0;
