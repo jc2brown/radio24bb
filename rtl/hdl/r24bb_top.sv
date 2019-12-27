@@ -1238,11 +1238,11 @@ assign prdata =
 
 
 
-wire [15:0] ADC_m_axis_tdata;
-wire ADC_m_axis_valid;
+wire [15:0] ADC_tdata;
+wire ADC_tvalid;
 
-wire signed [11:0] auxadc_data = ADC_m_axis_tdata[11:0];
-wire auxadc_valid = ADC_m_axis_valid;
+wire signed [11:0] auxadc_data = ADC_tdata[11:0];
+wire auxadc_valid = ADC_tvalid;
 
 
 r24bb_bd r24bb_bd_inst (
@@ -1253,10 +1253,10 @@ r24bb_bd r24bb_bd_inst (
     .VIN_v_n(VN),
     .VIN_v_p(VP),
     
-    .ADC_m_axis_tdata(ADC_m_axis_tdata),
-    .ADC_m_axis_valid(ADC_m_axis_valid),
-    .ADC_m_axis_ready(1),
-    .ADC_m_axis_tid(),
+    .ADC_tdata(ADC_tdata),
+    .ADC_tvalid(ADC_tvalid),
+    .ADC_tready(1),
+    .ADC_tid(),
     
     
     .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
