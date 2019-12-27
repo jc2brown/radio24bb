@@ -1250,8 +1250,8 @@ r24bb_bd r24bb_bd_inst (
     .pl_clk0(clk),
     .pl_reset_n(pl_reset_n),
     
-    .VIN_vn_in(VN),
-    .VIN_vp_in(VP),
+    .VIN_v_n(VN),
+    .VIN_v_p(VP),
     
     .ADC_m_axis_tdata(ADC_m_axis_tdata),
     .ADC_m_axis_valid(ADC_m_axis_valid),
