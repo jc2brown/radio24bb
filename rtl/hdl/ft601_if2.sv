@@ -196,7 +196,7 @@ always @(posedge clk) rd_buf_rd_sel_d1 <= rd_buf_rd_sel;
 
 assign rd_valid = rd_buf_rd_valid[rd_buf_rd_sel_d1];
 
-assign rd_empty = wr_buf_rd_empty[wr_buf_rd_sel];
+assign rd_empty = rd_buf_rd_empty[rd_buf_rd_sel];
 
 assign ft601_wr_n = wr_buf_rd_empty[wr_buf_rd_sel];
 

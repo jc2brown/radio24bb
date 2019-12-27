@@ -110,11 +110,15 @@ always @(posedge clk) begin
             if (in != in_d1) begin 
                 in_d1 <= in;   
                 addr <= 7'h20;
+                wr_data1 <= in[7:0];
+                wr_data2 <= in[15:8];  
                 state <= STATE_UPDATE0;
             end
             else if (in2 != in2_d1) begin 
                 in2_d1 <= in2;   
                 addr <= 7'h21;
+                wr_data1 <= in2[7:0];
+                wr_data2 <= in2[15:8];  
                 state <= STATE_UPDATE0;
             end
         end
@@ -122,8 +126,6 @@ always @(posedge clk) begin
         
         STATE_UPDATE0: begin  
             wr_data0 <= 8'h02;
-            wr_data1 <= in[7:0];
-            wr_data2 <= in[15:8];  
             start <= 1'b1;     
             state <= STATE_UPDATE1;
         end
