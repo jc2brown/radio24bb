@@ -199,6 +199,9 @@ proc create_root_design { parentCell } {
 
   # Create ports
   set pl_clk0 [ create_bd_port -dir O -type clk pl_clk0 ]
+  set_property -dict [ list \
+   CONFIG.ASSOCIATED_BUSIF {ADC} \
+ ] $pl_clk0
   set pl_reset_n [ create_bd_port -dir O -from 0 -to 0 -type rst pl_reset_n ]
 
   # Create instance: axi_apb_bridge_0, and set properties
@@ -737,6 +740,7 @@ proc create_root_design { parentCell } {
 
   # Create address segments
   create_bd_addr_seg -range 0x00010000 -offset 0x43C00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs apb/Reg] SEG_apb_Reg1
+  create_bd_addr_seg -range 0x00010000 -offset 0x43C10000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs xadc_wiz_0/s_axi_lite/Reg] SEG_xadc_wiz_0_Reg
 
 
   # Restore current instance
@@ -753,6 +757,4 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
-
-common::send_msg_id "BD_TCL-1000" "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 
