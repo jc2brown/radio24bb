@@ -444,6 +444,8 @@ int main()
 
 
 	USB_WR_MUX = 2;
+	USB_LED_R = 1;
+	PWR_LED_R = 1;
 
 
 

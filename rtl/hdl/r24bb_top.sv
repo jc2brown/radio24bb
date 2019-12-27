@@ -3,6 +3,8 @@
 
 module r24bb_top(
 
+    input wire VN,
+    input wire VP,
 
     /////////////////////////////////////////////
     // TCXO [2.5V] (1)
@@ -1236,10 +1238,26 @@ assign prdata =
 
 
 
+wire [15:0] ADC_m_axis_tdata;
+wire ADC_m_axis_valid;
+
+wire signed [11:0] auxadc_data = ADC_m_axis_tdata[11:0];
+wire auxadc_valid = ADC_m_axis_valid;
+
+
 r24bb_bd r24bb_bd_inst (
 
     .pl_clk0(clk),
     .pl_reset_n(pl_reset_n),
+    
+    .VIN_vn_in(VN),
+    .VIN_vp_in(VP),
+    
+    .ADC_m_axis_tdata(ADC_m_axis_tdata),
+    .ADC_m_axis_valid(ADC_m_axis_valid),
+    .ADC_m_axis_ready(1),
+    .ADC_m_axis_tid(),
+    
     
     .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
     .GPIO_0_0_tri_o(GPIO_0_0_tri_o),

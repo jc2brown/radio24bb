@@ -84,3 +84,6 @@ set_property PACKAGE_PIN U7 [get_ports "DAC_IO_DATA"];
 set_property PACKAGE_PIN T9 [get_ports "TCXO_19M2"];
 set_property PACKAGE_PIN V7 [get_ports "DAC_IO_CLK"];
 
+
+set_property PACKAGE_PIN K9 [get_ports "VP"];
+set_property PACKAGE_PIN L10 [get_ports "VN"];

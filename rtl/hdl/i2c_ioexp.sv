@@ -28,7 +28,6 @@ module i2c_ioexp
     
 
 reg [2:0] state;
-reg [2:0] post_update_state;
 
 
 localparam STATE_INIT1A = 0;
@@ -58,6 +57,8 @@ reg [6:0] addr;
 always @(posedge clk) begin
     if (reset) begin
         state <= STATE_INIT1A;
+        in_d1 <= !in;
+        in2_d1 <= !in2;
     end
     else begin
         case (state)
@@ -78,8 +79,7 @@ always @(posedge clk) begin
         STATE_INIT1B: begin
             start <= 1'b0;
             if (done) begin
-                post_update_state <= STATE_INIT2A;
-                state <= STATE_UPDATE0;
+                state <= STATE_INIT2A;
             end
         end
                     
@@ -90,7 +90,7 @@ always @(posedge clk) begin
                 wr_data1 <= 8'h00;
                 wr_data2 <= 8'h00;  
                 start <= 1'b1;          
-                state <= STATE_UPDATE0;
+                state <= STATE_INIT2B;
             end
             else begin
                 state <= STATE_IDLE;
@@ -99,14 +99,12 @@ always @(posedge clk) begin
         STATE_INIT2B: begin
             start <= 1'b0;
             if (done) begin
-                post_update_state <= STATE_IDLE;
-                state <= STATE_UPDATE0;
+                state <= STATE_IDLE;
             end
         end
         
         
         STATE_IDLE: begin
-            post_update_state <= STATE_IDLE;
             if (in != in_d1) begin 
                 in_d1 <= in;   
                 addr <= 7'h20;
@@ -132,7 +130,7 @@ always @(posedge clk) begin
         STATE_UPDATE1: begin  
             start <= 1'b0;
             if (done) begin
-                state <= post_update_state;
+                state <= STATE_IDLE;
             end
         end
         endcase
