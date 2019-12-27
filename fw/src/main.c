@@ -19,6 +19,9 @@
 #include "i2c.h"
 #include "ina219.h"
 
+#include "radio24bb.h"
+#include "xadc.h"
+
 #include "adc.h"
 #include "dac.h"
 #include "dds.h"
@@ -29,7 +32,29 @@
 #include "command.h"
 
 
+void usb_handler(void *arg, struct command *cmd) {
 
+	static int n = 0;
+	static char msg[1024];
+
+
+	//USB_WR_PUSH = 1;
+
+
+	sprintf(msg, "Hello #%d\n", n++);
+
+	for (char *c = msg; *c != '\0'; ++c) {
+		USB_WR_DATA = *c;
+	}
+
+	USB_WR_PUSH = 1;
+/*
+
+	for (int i = 0; i < 1024; ++i) {
+		USB_WR_DATA = i;
+	}
+*/
+}
 
 
 /*
@@ -278,6 +303,15 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 }
 
 
+struct radio24bb *r24bb;
+
+
+void adc_handler(void *arg, struct command *cmd) {
+	xadc_report(r24bb->xadc);
+}
+
+
+
 
 
 int main()
@@ -348,6 +382,8 @@ int main()
 #define OUTA_REGS 0x43C02000UL
 #define OUTB_REGS 0x43C03000UL
 
+#define R24BB_REGS 0x43C04000UL
+
 #define DDSA_REGS 0x43C05000UL
 #define DDSB_REGS 0x43C06000UL
 
@@ -360,7 +396,15 @@ int main()
 	//xil_printf()
 
 
+
+	r24bb = make_radio24bb(R24BB_REGS);
+	init_radio24bb(r24bb);
+
+	add_command(NULL, "adc", adc_handler);
+
+
 	//add_command(NULL, "tonea", tonea_handler);
+	add_command(NULL, "usb", usb_handler);
 	add_command(NULL, "stereo", stereo_handler);
 	add_command(NULL, "amtone", amtone_handler);
 	add_command(NULL, "fmtone", fmtone_handler);
@@ -443,7 +487,7 @@ int main()
 	print_cmd_responses(true);
 
 
-	USB_WR_MUX = 2;
+	USB_WR_MUX = 0;
 	USB_LED_R = 1;
 	PWR_LED_R = 1;
 
