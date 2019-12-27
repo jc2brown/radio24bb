@@ -682,9 +682,14 @@ max5851_if max5851_if_inst (
 /////////////////////////////////////////////////////////////
     
     
+    
+wire usb_led_r;
+wire pwr_led_r;
 
-wire [15:0] usb_io = GPIO_0_0_tri_o[47:32];
-/*
+
+wire usb_mmcm_locked;
+
+wire [15:0] usb_io1 = //GPIO_0_0_tri_o[47:32];
 {
     // Port 1 [7:0]
     1'b0, // SN2
@@ -696,23 +701,53 @@ wire [15:0] usb_io = GPIO_0_0_tri_o[47:32];
     1'b0,
     1'b0,
     // Port 0 [7:0]
-    USB_LED_COM,
-    USB_LED_R,
-    POWER_LED_R,
-    POWER_LED_COM,
-    POWER_LED_G,
-    POWER_LED_B,
-    USB_LED_G,
-    USB_LED_B
+    1'b1, // USB_LED_COM,
+    !usb_led_r, // 1'b0, // USB_LED_R,
+    !pwr_led_r, // 1'b0, // POWER_LED_R,
+    1'b1, // POWER_LED_COM,
+    1'b1, // POWER_LED_G,
+    1'b1, // POWER_LED_B,
+    !usb_mmcm_locked, //USB_LED_G,
+    1'b1 // USB_LED_B
 };
-*/
 
-i2c_ioexp usb_i2c_ioexp (
+
+
+
+wire [15:0] usb_io2 = //GPIO_0_0_tri_o[47:32];
+{
+    // Port 1 [7:0]
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b0,
+    // Port 0 [7:0]
+    1'b0,
+    1'b0,
+    1'b0,
+    1'b1,  // USB_RESET_N
+    1'b1,  // USB_WAKE_N,
+    1'b0,  // USB_GPIO1,
+    1'b0,  // USB_GPIO0,
+    1'b0   // VBUS_DET_N - should be input but must drive low if output 
+};
+
+
+
+
+
+i2c_ioexp #( .USE_IN2(1) )
+usb_i2c_ioexp (
 
     .clk(clk),
     .reset(reset),
     
-    .in(usb_io),
+    .in(usb_io1),
+    .in2(usb_io2),
     
     .sclk(USB_IO_CLK),
     .sdata(USB_IO_DATA),
@@ -721,7 +756,7 @@ i2c_ioexp usb_i2c_ioexp (
 );
 
 
-
+wire usb_rd_en_raw;
     
 assign usb_wr_data =(usb_wr_mux == 0) ? usb_wr_data_raw :
                     (usb_wr_mux == 1) ? 0 : 
@@ -729,7 +764,7 @@ assign usb_wr_data =(usb_wr_mux == 0) ? usb_wr_data_raw :
                     (usb_wr_mux == 3) ? usb_rd_data : 
                     0; 
                     
-assign usb_wr_be   =(usb_wr_mux == 0) ? usb_wr_be_raw :
+assign usb_wr_be =  (usb_wr_mux == 0) ? usb_wr_be_raw :
                     (usb_wr_mux == 1) ? 4'hF : 
                     (usb_wr_mux == 2) ? 4'hF :
                     (usb_wr_mux == 3) ? usb_rd_be : 
@@ -740,12 +775,21 @@ assign usb_wr_en =  (usb_wr_mux == 0) ? usb_wr_en_raw :
                     (usb_wr_mux == 2) ? 1 :
                     (usb_wr_mux == 3) ? usb_rd_valid : 
                     0; 
-                      
+                               
+assign usb_rd_en =  (usb_wr_mux == 0) ? usb_rd_en_raw :
+                    (usb_wr_mux == 1) ? 0 : 
+                    (usb_wr_mux == 2) ? 1 :
+                    (usb_wr_mux == 3) ? (!usb_wr_fifo_full) : 
+                    0; 
+         
+
   
 assign usb_rd_en = 1; 
 
+wire usb_wr_push;
 
-ft601_if ft601_if_inst (
+
+ft601_if2 ft601_if_inst (
 
     /////////////////////////////////////////////
     // Device interface
@@ -772,13 +816,16 @@ ft601_if ft601_if_inst (
     .wr_data(usb_wr_data),
     .wr_be(usb_wr_be),
     .wr_valid(usb_wr_en),
-    .wr_fifo_full(usb_wr_fifo_full),
+    .wr_full(usb_wr_fifo_full),
+    .wr_push(usb_wr_push),
     
     .rd_data(usb_rd_data),
     .rd_be(usb_rd_be),
     .rd_en(usb_rd_en),
     .rd_valid(usb_rd_valid),
-    .rd_fifo_empty(usb_rd_fifo_empty)
+    .rd_empty(usb_rd_fifo_empty),
+    
+    .locked(usb_mmcm_locked)
     
 );
     
@@ -1211,8 +1258,6 @@ r24bb_bd r24bb_bd_inst (
 
 
     
-   
-    
 regs regs_inst (
 
     .clk(pl_clk0),
@@ -1232,9 +1277,9 @@ regs regs_inst (
     .usb_wr_en(usb_wr_en_raw),
     .usb_wr_fifo_full(usb_wr_fifo_full),
     
-    .usb_rd_data(),
-    .usb_rd_be(),
-    .usb_rd_en(),
+    .usb_rd_data(usb_rd_data),
+    .usb_rd_be(usb_rd_be),
+    .usb_rd_en(usb_rd_en_raw),
     .usb_rd_fifo_empty(usb_rd_fifo_empty),
     
     .usb_wr_mux(usb_wr_mux),
@@ -1244,7 +1289,12 @@ regs regs_inst (
     
     .dac_dce(dac_dce),
     
-    .aud_rate(aud_rate)
+    .aud_rate(aud_rate),
+    
+    .usb_wr_push(usb_wr_push),
+    .usb_led_r(usb_led_r),
+    .pwr_led_r(pwr_led_r)
+    
                 
 );    
     

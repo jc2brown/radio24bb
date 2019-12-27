@@ -442,6 +442,11 @@ int main()
 
 	print_cmd_responses(true);
 
+
+	USB_WR_MUX = 2;
+
+
+
 	while (1) {
 
 

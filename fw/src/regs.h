@@ -28,6 +28,19 @@
 */
 
 #define LEDS				*((volatile uint32_t*)0x43C04000)
+
+
+#define USB_WR_DATA			*((volatile uint32_t*)0x43C04004)
+#define USB_WR_FULL			*((volatile uint32_t*)0x43C04008)
+
+#define USB_RD_DATA			*((volatile uint32_t*)0x43C0400C)
+#define USB_RD_EMPTY		*((volatile uint32_t*)0x43C04010)
+
+#define USB_WR_MUX			*((volatile uint32_t*)0x43C04014)
+
+
+
+
 /*
 
 #define USB_WR_DATA			*((volatile uint32_t*)0x43C01100)
@@ -52,6 +65,11 @@
 #define DAC_DCE	 			*((volatile uint32_t*)0x43C0401C)
 
 #define AUD_RATE 			*((volatile uint32_t*)0x43C04020)
+
+#define USB_WR_PUSH 		*((volatile uint32_t*)0x43C04024)
+#define USB_LED_R 			*((volatile uint32_t*)0x43C04028)
+#define PWR_LED_R 			*((volatile uint32_t*)0x43C0402C)
+
 
 /*
 #define OUTA_RAW	 		*((volatile uint32_t*)0x43C01400)

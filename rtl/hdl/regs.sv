@@ -70,7 +70,12 @@ module regs (
     
     output reg dac_dce,
     
-    output reg [1:0] aud_rate
+    output reg [1:0] aud_rate,
+    
+    output reg usb_wr_push,
+    
+    output reg usb_led_r,
+    output reg pwr_led_r
     
 //    output reg [31:0] outa_raw,
     
@@ -164,6 +169,11 @@ localparam REG_DAC_DCE = 12'h01C;
 
 localparam REG_AUD_RATE = 12'h020;
 
+localparam REG_USB_WR_PUSH = 12'h024;
+
+localparam REG_USB_LED_R = 12'h028;
+localparam REG_PWR_LED_R = 12'h02C;
+
 //localparam REG_OUTA_RAW = 12'h1400;
 
 //localparam REG_OUTA_WR_COUNT = 12'h1500;
@@ -234,6 +244,11 @@ begin
         
         aud_rate <= 2'b0;
         
+        usb_wr_push <= 1'b0;
+        
+        usb_led_r <= 1'b0;
+        pwr_led_r <= 1'b0;
+        
 //        outa_raw <= 'h0;       
 //        outa_mux <= 'h0; 
         
@@ -249,7 +264,8 @@ begin
 //        outa_filter_cfg_ce <= 'h0;
 //        outb_filter_cfg_ce <= 'h0;
         
-        usb_wr_en <= 1'b0;        
+        usb_wr_en <= 1'b0;    
+        usb_wr_push <= 1'b0;    
         dac_cfg_wr_en <= 1'b0;
         
 //        outa_dds_cfg_ce <= 1'b0;
@@ -323,6 +339,12 @@ begin
                 REG_DAC_DCE: dac_dce <= pwdata[0];
                 
                 REG_AUD_RATE: aud_rate <= pwdata[0];
+                
+                REG_USB_WR_PUSH: usb_wr_push <= pwdata[0];
+                
+                REG_USB_LED_R: usb_led_r <= pwdata[0];
+                
+                REG_PWR_LED_R: pwr_led_r <= pwdata[0];
                 
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                
