@@ -116,6 +116,7 @@ always @(posedge clk) begin
         csr <= {CSR_BITS{1'b1}};
         dsr <= {DSR_BITS{1'b1}};
         osr <= {DSR_BITS{1'b0}};
+        isr <= {DSR_BITS{1'b0}};
         done <= 1'b0;
         rd_data0 <= 'h0;
         rd_data1 <= 'h0;
@@ -130,7 +131,8 @@ always @(posedge clk) begin
                 num_rd_bytes_reg <= num_rd_bytes;
                 state <= STATE_LOAD;
             end
-        end
+        end        
+        
         STATE_LOAD: begin        
             if (sclk_ce) begin
                 if (num_wr_bytes_reg == 1) begin
@@ -154,19 +156,20 @@ always @(posedge clk) begin
                 else if (num_rd_bytes_reg == 1) begin
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},                                               1'b0,{36{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,                                                1'b0,{18{1'b1}}};
-                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b0,                                                1'b0,{18{1'b0}}};    
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b1,                                                1'b0,{18{1'b0}}};    
                     $display("> 4");            
                 end
                 else if (num_rd_bytes_reg == 2) begin                    
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},                             1'b0,{18{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,        8'b0,1'b0,                              1'b0,{9{1'b1}}};
-                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b0,   {8{1'b1}},1'b0,                         1'b0,{9{1'b0}}};            
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b0,   {8{1'b1}},1'b1,                         1'b0,{9{1'b0}}};            
                     $display("> 5");            
                 end
                 
                 state <= STATE_SHIFT;
             end
         end
+        
         STATE_SHIFT: begin        
             if (sclk_ce) begin
                 csr <= {csr[CSR_BITS-2:0], 1'b1};

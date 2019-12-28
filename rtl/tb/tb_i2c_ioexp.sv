@@ -17,8 +17,8 @@ initial #1000000 @(posedge clk) reset <= 1'b0;
 
 reg [15:0] in0 = 16'h00;
 reg [15:0] in1 = 16'h00;
-
-
+wire [15:0] out;
+reg irq = 0;
 
 initial begin
     @(negedge reset);
@@ -34,7 +34,8 @@ initial begin
     repeat (1000*1000) #5000;
     in0 <= 16'hAA55;
     
-    
+    repeat (1000*1000) #5000;
+    irq <= 1;
 end    
 
 
@@ -76,8 +77,8 @@ dut
     .reset(reset),
     
     .in(in0),
-    .out0(),
-    .irq0(0),
+    .out0(out),
+    .irq0(irq),
     
     .in1(in1),
     .out1(),

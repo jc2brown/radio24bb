@@ -12,10 +12,23 @@ struct radio24bb {
 };
 
 
-struct radio24bb_regs {
-
-
-};
+struct radio24bb_regs {	
+	uint32_t leds;
+	uint32_t usb_wr_data;
+	uint32_t usb_wr_full;
+	uint32_t usb_rd_data;
+	uint32_t usb_rd_empty;
+	uint32_t usb_wr_mux;
+	uint32_t dac_cfg;
+	uint32_t dac_dce;
+	uint32_t aud_rate;
+	uint32_t usb_wr_push;
+	uint32_t usb_led_r;
+	uint32_t pwr_led_r;
+	uint32_t led0_brightness;
+	uint32_t led1_brightness;
+	uint32_t serial;
+}; 
 
 
 

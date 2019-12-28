@@ -103,6 +103,11 @@ always @(posedge clk) begin
                 
                 if (start_init) begin
                     done <= 0;
+                    num_wr_bytes <= 3;
+                    num_rd_bytes <= 0;
+                    wr_data0 <= 8'h06; // Config port
+                    wr_data1 <= inputs[7:0];
+                    wr_data2 <= inputs[15:8];  
                     state <= STATE_INIT1;
                 end                                
                                 
@@ -115,36 +120,25 @@ always @(posedge clk) begin
             end
             
             
-            STATE_INIT1: begin
-                num_wr_bytes <= 3;
-                num_rd_bytes <= 0;
-                wr_data0 <= 8'h06; // Config port
-                wr_data1 <= inputs[7:0];
-                wr_data2 <= inputs[15:8];  
-//                i2c_start <= 1'b1;          
+            STATE_INIT1: begin      
                 state <= STATE_INIT2;
             end           
             STATE_INIT2: begin
-//                i2c_start <= 1'b0;
                 if (i2c_done) begin
-//                    do_read <= 1;
-//                    do_write <= 1;
+                    num_wr_bytes <= 3;
+                    num_rd_bytes <= 0;
+                    wr_data0 <= 8'h4A; // Interrupt mask
+                    wr_data1 <= ~inputs[7:0];
+                    wr_data2 <= ~inputs[15:8];  
                     state <= STATE_INIT3;
                 end
             end
                            
             
-            STATE_INIT3: begin
-                num_wr_bytes <= 3;
-                num_rd_bytes <= 0;
-                wr_data0 <= 8'h4A; // Interrupt mask
-                wr_data1 <= ~inputs[7:0];
-                wr_data2 <= ~inputs[15:8];  
-//                i2c_start <= 1'b1;          
+            STATE_INIT3: begin  
                 state <= STATE_INIT4;
             end           
             STATE_INIT4: begin
-//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_read <= 1;
                     do_write <= 1;
@@ -155,10 +149,18 @@ always @(posedge clk) begin
             
             STATE_UPDATE: begin
                 
-                if (do_read) begin                
+                if (do_read) begin       
+                    num_wr_bytes <= 1;
+                    num_rd_bytes <= 0;
+                    wr_data0 <= 8'h00; // Input port        
                     state <= STATE_READ0;
                 end
                 else if (do_write) begin
+                    num_wr_bytes <= 3;
+                    num_rd_bytes <= 0;
+                    wr_data0 <= 8'h02; // Output port
+                    wr_data1 <= in[7:0];
+                    wr_data2 <= in[15:8];         
                     state <= STATE_WRITE0;
                 end
                 else begin
@@ -168,16 +170,9 @@ always @(posedge clk) begin
                                               
                         
             STATE_WRITE0: begin  
-                num_wr_bytes <= 3;
-                num_rd_bytes <= 0;
-                wr_data0 <= 8'h02; // Output port
-                wr_data1 <= in[7:0];
-                wr_data2 <= in[15:8];         
-//                i2c_start <= 1'b1;     
                 state <= STATE_WRITE1;
             end
             STATE_WRITE1: begin  
-//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_write <= 0;
                     state <= STATE_UPDATE;
@@ -185,27 +180,20 @@ always @(posedge clk) begin
             end
                      
                         
-            STATE_READ0: begin  
-                num_wr_bytes <= 1;
-                num_rd_bytes <= 0;
-                wr_data0 <= 8'h00; // Input port
-//                i2c_start <= 1'b1;     
+            STATE_READ0: begin   
                 state <= STATE_READ1;
             end
             STATE_READ1: begin  
-//                i2c_start <= 1'b0;
                 if (i2c_done) begin
+                    num_wr_bytes <= 0;
+                    num_rd_bytes <= 2;
                     state <= STATE_READ2;
                 end
             end                                        
-            STATE_READ2: begin  
-                num_wr_bytes <= 0;
-                num_rd_bytes <= 2;
-//                i2c_start <= 1'b1;     
+            STATE_READ2: begin       
                 state <= STATE_READ3;
             end
             STATE_READ3: begin  
-//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_read <= 0;
                     out <= {rd_data1, rd_data0};         

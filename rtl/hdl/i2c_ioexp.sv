@@ -114,21 +114,23 @@ reg [3:0] state;
 
 localparam STATE_INIT0A = 0;
 localparam STATE_INIT0B = 1;
-localparam STATE_INIT1A = 2;
-localparam STATE_INIT1B = 3;
-localparam STATE_IDLE = 4;
-localparam STATE_LOOP0 = 5;
-localparam STATE_LOOP1 = 6;
-localparam STATE_LOOP2 = 7;
-localparam STATE_LOOP3 = 8;
-localparam STATE_LOOP4 = 9;
-localparam STATE_LOOP5 = 10;
-localparam STATE_RESET = 11;
+localparam STATE_INIT0C = 2;
+localparam STATE_INIT1A = 3;
+localparam STATE_INIT1B = 4;
+localparam STATE_INIT1C = 5;
+localparam STATE_IDLE =  6;
+localparam STATE_LOOP0 = 7;
+localparam STATE_LOOP1 = 8;
+localparam STATE_LOOP2 = 9;
+localparam STATE_LOOP3 = 10;
+localparam STATE_LOOP4 = 11;
+localparam STATE_LOOP5 = 12;
+localparam STATE_RESET = 13;
 
 
 
 
-wire start_init = (state == STATE_INIT0A) || (state == STATE_INIT1A);
+wire start_init = (state == STATE_INIT0B) || (state == STATE_INIT1B);
 wire start = (state == STATE_LOOP1) || (state == STATE_LOOP4);
 
 
@@ -146,7 +148,7 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
     .out_valid(out_valid),
     
     .write(write),
-    .read(irq[sel]),
+    .read(read),
     
     .inputs(inputs[sel]),
     
@@ -205,7 +207,6 @@ always @(posedge clk) begin
         STATE_INIT0A: begin
             if (USE_IN0) begin
                 sel <= 0;
-//                start_init <= 1;      
                 state <= STATE_INIT0B;
             end
             else begin
@@ -213,7 +214,12 @@ always @(posedge clk) begin
             end
         end           
         STATE_INIT0B: begin
-//            start_init <= 1'b0;
+            state <= STATE_INIT0C;
+        end
+        STATE_INIT0C: begin
+             if (out_valid) begin
+                 out1 <= out;
+             end 
             if (done) begin
                 state <= STATE_INIT1A;
             end
@@ -228,23 +234,29 @@ always @(posedge clk) begin
             else begin
                 state <= STATE_IDLE;
             end
-        end           
+        end  
         STATE_INIT1B: begin
-//            start_init <= 1'b0;
+            state <= STATE_INIT1C;
+        end
+        STATE_INIT1C: begin
+             if (out_valid) begin
+                 out1 <= out;
+             end 
             if (done) begin
                 state <= STATE_IDLE;
             end
-        end
-        
+        end         
+                
         
         STATE_IDLE: begin
             state <= STATE_LOOP0;
         end
         
         
-        STATE_LOOP0: begin      
+        STATE_LOOP0: begin     
+        /* 
             write <= 0;          
-            if (in != in_d1[0]) begin    
+            if (USE_IN0 && in != in_d1[0]) begin    
                 write <= 1;              
                 in_d1[0] <= in;
                 sel <= 0;     
@@ -253,43 +265,69 @@ always @(posedge clk) begin
             else begin
                 state <= STATE_LOOP3;
             end
+            */               
+             write <= 0;   
+             read <= 0;            
+             state <= STATE_LOOP3;
+             if (USE_IN0) begin                                               
+                 if (in != in_d1[0]) begin     
+                     write <= 1;         
+                     in_d1[0] <= in;
+                     sel <= 0;         
+                     state <= STATE_LOOP1;
+                 end
+                 if (irq0) begin     
+                     read <= 1;        
+                     sel <= 0;         
+                     state <= STATE_LOOP1;
+                 end
+             end
         end
         STATE_LOOP1: begin   
             state <= STATE_LOOP2;        
         end
         STATE_LOOP2: begin
+             if (out_valid) begin
+                 out0 <= out;
+             end 
             if (done) begin
-                if (out_valid) begin
-                    out0 <= out;
-                end
-                state <= STATE_LOOP3;
-            end      
+                state <= STATE_IDLE;
+            end       
         end
         
         
         
         STATE_LOOP3: begin      
-            write <= 0;          
-            if (in1 != in_d1[1]) begin     
-                write <= 1;         
-                in_d1[1] <= in1;
-                sel <= 1;         
-                state <= STATE_LOOP4;
+            write <= 0;   
+            read <= 0;            
+            state <= STATE_IDLE;
+            if (USE_IN1) begin                                               
+                if (in1 != in_d1[1]) begin     
+                    write <= 1;         
+                    in_d1[1] <= in1;
+                    sel <= 1;         
+                    state <= STATE_LOOP4;
+                end
+                if (irq1) begin     
+                    read <= 1;        
+                    sel <= 1;         
+                    state <= STATE_LOOP4;
+                end
             end
-            else begin
-                state <= STATE_IDLE;
-            end
+//            else begin
+//                state <= STATE_IDLE;
+//            end
         end
         STATE_LOOP4: begin   
             state <= STATE_LOOP5;        
         end
-        STATE_LOOP5: begin
+        STATE_LOOP5: begin       
+             if (out_valid) begin
+                 out1 <= out;
+             end 
             if (done) begin
-                if (out_valid) begin
-                    out1 <= out;
-                end
                 state <= STATE_IDLE;
-            end      
+            end             
         end
         
         
