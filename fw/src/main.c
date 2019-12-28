@@ -488,11 +488,11 @@ int main()
 
 
 	USB_WR_MUX = 0;
-	USB_LED_R = 1;
-	PWR_LED_R = 1;
+	// USB_LED_R = 1;
+	// PWR_LED_R = 1;
 
-	LED0_BRIGHTNESS = (uint16_t)(0.1 * ((1<<16)-1));
-	LED1_BRIGHTNESS = (uint16_t)(0.1 * ((1<<16)-1));
+	LED0_BRIGHTNESS = (uint32_t)(0.1 * ((1UL<<16)-1));
+	LED1_BRIGHTNESS = (uint32_t)(0.1 * ((1UL<<16)-1));
 
 
 

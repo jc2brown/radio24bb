@@ -84,8 +84,8 @@ module r24bb_top(
     input CODEC_DOUT,
     
     output CODEC_IO_CLK,
-    output CODEC_IO_DATA,
-    output CODEC_IO_INT_N,
+    inout CODEC_IO_DATA,
+    input CODEC_IO_INT_N,
 
 
 
