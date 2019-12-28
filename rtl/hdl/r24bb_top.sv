@@ -814,7 +814,7 @@ assign usb_rd_en =  (usb_wr_mux == 0) ? usb_rd_en_raw :
          
 
   
-assign usb_rd_en = 1; 
+//assign usb_rd_en = 1; 
 
 wire usb_wr_push;
 
