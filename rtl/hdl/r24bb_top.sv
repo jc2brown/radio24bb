@@ -696,6 +696,13 @@ wire pwr_led_r;
 
 wire usb_mmcm_locked;
 
+
+wire [15:0] usb_io_out;
+wire [15:0] usb_io2_out;
+
+
+
+
 wire [15:0] usb_io1 = //GPIO_0_0_tri_o[47:32];
 {
     // Port 1 [7:0]
@@ -715,7 +722,7 @@ wire [15:0] usb_io1 = //GPIO_0_0_tri_o[47:32];
     1'b1, // POWER_LED_G,
     1'b1, // POWER_LED_B,
     !usb_mmcm_locked, //USB_LED_G,
-    1'b1 // USB_LED_B
+    usb_io2_out[0] // USB_LED_B
 };
 
 
@@ -740,25 +747,41 @@ wire [15:0] usb_io2 = //GPIO_0_0_tri_o[47:32];
     1'b1,  // USB_WAKE_N,
     1'b0,  // USB_GPIO1,
     1'b0,  // USB_GPIO0,
-    1'b0   // VBUS_DET_N - should be input but must drive low if output 
+    usb_io2_out[0] //1'b0   // VBUS_DET_N - should be input but must drive low if output 
 };
 
 
 
+   
+    
+    
 
 
-i2c_ioexp #( .USE_IN1(1) )
+i2c_ioexp #( 
+    .USE_IN1(1), 
+    .INPUTS0(16'hE000),
+    .INPUTS1(16'h0007),
+    .USE_IOBUF(1)    
+)
 usb_i2c_ioexp (
 
     .clk(clk),
     .reset(reset),
     
     .in(usb_io1),
+    .out0(usb_io_out),
+    .irq0(0),
+    
     .in1(usb_io2),
+    .out1(usb_io2_out),
+    .irq1(!USB_IO_INT_N),
+    
     
     .sclk(USB_IO_CLK),
-    .sdata(USB_IO_DATA),
-    .sdata_oe_n()
+//    .sdata(USB_IO_DATA),
+//    .sdata_oe_n()
+    
+    .sda(USB_IO_DATA)
    
 );
 
@@ -864,41 +887,61 @@ wire pw_fifo_wr_en;
 wire pw_fifo_full;
     */
     
-wire [15:0] codec_io = GPIO_0_0_tri_o[63:48];
-/*
+wire [15:0] codec_out;
+
+wire phone_out_det = codec_out[9];
+wire line_out_det = codec_out[10];
+wire line_in_det = codec_out[15];
+    
+    
+wire [15:0] codec_io = // GPIO_0_0_tri_o[63:48];
+
 {
     // Port 1 [7:0]
     1'b0, // LINE_IN_DET,
     1'b0,
     1'b0,
     1'b0,
-    CODEC_RESET_N,
-    1'b0, // LINE_IN_DET,
-    1'b0, // LINE_IN_DET,
+    1'b1, // CODEC_RESET_N,
+    1'b0, // LINE_OUT_DET,
+    1'b0, // PHONE_OUT_DET,
     1'b0,
     // Port 0 [7:0]
-    LINE_IN_LED_R,
-    LINE_IN_LED_COM,
-    LINE_OUT_LED_R,
-    LINE_OUT_LED_COM,
-    LINE_OUT_LED_G,
-    LINE_OUT_LED_B,
-    LINE_IN_LED_B,
-    LINE_IN_LED_G    
+    1'b1, // LINE_IN_LED_R,
+    1'b1, // LINE_IN_LED_COM,
+    !phone_out_det, // LINE_OUT_LED_R,
+    1'b1, // LINE_OUT_LED_COM,
+    !line_out_det, // LINE_OUT_LED_G,
+    1'b1, // LINE_OUT_LED_B,
+    1'b1, // LINE_IN_LED_B,
+    !line_in_det // LINE_IN_LED_G    
 };
-*/
 
 
-i2c_ioexp codec_i2c_ioexp (
+
+
+
+wire codec_resetn = 0; // Unused, not connected to any load
+
+
+i2c_ioexp #(
+    .INPUTS0(16'h8600),
+    .USE_IOBUF(1)    
+)
+codec_i2c_ioexp (
 
     .clk(clk),
     .reset(reset),
     
     .in(codec_io),
+    .out0(codec_out),
+    .irq0(CODEC_IO_INT_N),
     
     .sclk(CODEC_IO_CLK),
-    .sdata(CODEC_IO_DATA),
-    .sdata_oe_n()
+//    .sdata(CODEC_IO_DATA),
+    .sdata_oe_n(),
+    .sda(CODEC_IO_DATA)
+    
    
 );
 

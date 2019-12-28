@@ -50,14 +50,16 @@ reg [3:0] state;
 
 localparam STATE_INIT1 = 0;
 localparam STATE_INIT2 = 1;
-localparam STATE_IDLE = 2;
-localparam STATE_UPDATE = 3;
-localparam STATE_WRITE0 = 4;
-localparam STATE_WRITE1 = 5;
-localparam STATE_READ0 = 6;
-localparam STATE_READ1 = 7;
-localparam STATE_READ2 = 8;
-localparam STATE_READ3 = 9;
+localparam STATE_INIT3 = 2;
+localparam STATE_INIT4 = 3;
+localparam STATE_IDLE = 4;
+localparam STATE_UPDATE = 5;
+localparam STATE_WRITE0 = 6;
+localparam STATE_WRITE1 = 7;
+localparam STATE_READ0 = 8;
+localparam STATE_READ1 = 9;
+localparam STATE_READ2 = 10;
+localparam STATE_READ3 = 11;
 
 
 
@@ -67,6 +69,7 @@ reg do_write;
 
 assign i2c_start = 
     (state == STATE_INIT1) || 
+    (state == STATE_INIT3) || 
     (state == STATE_WRITE0) ||
     (state == STATE_READ0) ||
     (state == STATE_READ2);
@@ -122,6 +125,25 @@ always @(posedge clk) begin
                 state <= STATE_INIT2;
             end           
             STATE_INIT2: begin
+//                i2c_start <= 1'b0;
+                if (i2c_done) begin
+//                    do_read <= 1;
+//                    do_write <= 1;
+                    state <= STATE_INIT3;
+                end
+            end
+                           
+            
+            STATE_INIT3: begin
+                num_wr_bytes <= 3;
+                num_rd_bytes <= 0;
+                wr_data0 <= 8'h4A; // Interrupt mask
+                wr_data1 <= !inputs[7:0];
+                wr_data2 <= !inputs[15:0];  
+//                i2c_start <= 1'b1;          
+                state <= STATE_INIT4;
+            end           
+            STATE_INIT4: begin
 //                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_read <= 1;
