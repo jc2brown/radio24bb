@@ -18,14 +18,16 @@ module pcal6416a_ctrl
     output reg [15:0] out,
     output reg out_valid,
     
+    input [15:0] in_d1,
     input irq,
     
     input [15:0] inputs,
     input start_init,    
+    
     input start,
     output reg done,
     
-    output reg i2c_start,
+    output i2c_start,
     input i2c_done,
     
     input [6:0] addr,
@@ -54,21 +56,24 @@ localparam STATE_READ0 = 6;
 localparam STATE_READ1 = 7;
 localparam STATE_READ2 = 8;
 localparam STATE_READ3 = 9;
-localparam STATE_UNINITED = 10;
 
 
 
-reg [15:0] in_d1 = 16'h0;
 
 reg do_read;
 reg do_write;
 
+assign i2c_start = 
+    (state == STATE_INIT1) || 
+    (state == STATE_WRITE0) ||
+    (state == STATE_READ0) ||
+    (state == STATE_READ2);
+
 
 always @(posedge clk) begin
     if (reset) begin
-        state <= STATE_UNINITED;
-        in_d1 <= !in;
-        i2c_start <= 0;
+        state <= STATE_IDLE;
+        //i2c_start <= 0;
         wr_data0 <= 0;
         wr_data2 <= 0;
         wr_data1 <= 0;
@@ -87,23 +92,17 @@ always @(posedge clk) begin
         
             case (state)
             
-            STATE_UNINITED: begin
-                if (start_init) begin
-                    done <= 0;
-                    state <= STATE_INIT1;
-                end
-            end
             
             STATE_INIT1: begin
                 num_wr_bytes <= 3;
                 wr_data0 <= 8'h06; // Config port
                 wr_data1 <= inputs[7:0];
                 wr_data2 <= inputs[15:0];  
-                i2c_start <= 1'b1;          
+//                i2c_start <= 1'b1;          
                 state <= STATE_INIT2;
             end           
             STATE_INIT2: begin
-                i2c_start <= 1'b0;
+//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_read <= 1;
                     do_write <= 1;
@@ -114,6 +113,12 @@ always @(posedge clk) begin
             
             STATE_IDLE: begin
                 done <= 1;
+                
+                if (start_init) begin
+                    done <= 0;
+                    state <= STATE_INIT1;
+                end                                
+                                
                 if (start) begin                
                     do_write <= (in != in_d1);
                     do_read <= irq;
@@ -140,13 +145,12 @@ always @(posedge clk) begin
                 num_wr_bytes <= 3;
                 wr_data0 <= 8'h02; // Output port
                 wr_data1 <= in[7:0];
-                wr_data2 <= in[15:8];  
-                in_d1 <= in;                    
-                i2c_start <= 1'b1;     
+                wr_data2 <= in[15:8];         
+//                i2c_start <= 1'b1;     
                 state <= STATE_WRITE1;
             end
             STATE_WRITE1: begin  
-                i2c_start <= 1'b0;
+//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_write <= 0;
                     state <= STATE_UPDATE;
@@ -157,11 +161,11 @@ always @(posedge clk) begin
             STATE_READ0: begin  
                 num_wr_bytes <= 1;
                 wr_data0 <= 8'h00; // Input port
-                i2c_start <= 1'b1;     
+//                i2c_start <= 1'b1;     
                 state <= STATE_READ1;
             end
             STATE_READ1: begin  
-                i2c_start <= 1'b0;
+//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     state <= STATE_READ2;
                 end
@@ -169,11 +173,11 @@ always @(posedge clk) begin
             STATE_READ2: begin  
                 num_rd_bytes <= 2;
                 wr_data0 <= 8'h00; // Input port
-                i2c_start <= 1'b1;     
+//                i2c_start <= 1'b1;     
                 state <= STATE_READ3;
             end
             STATE_READ3: begin  
-                i2c_start <= 1'b0;
+//                i2c_start <= 1'b0;
                 if (i2c_done) begin
                     do_read <= 0;
                     out <= {rd_data1, rd_data0};         

@@ -19,15 +19,18 @@ reg [15:0] in0 = 16'h00;
 reg [15:0] in1 = 16'h00;
 
 
+
 initial begin
     @(negedge reset);
     
     
 //    #100000 in <= 8'hA1;
-    #10000000 in0 <= 16'hFF00;
+    repeat (1000*1000) #10000;
+    in0 <= 16'hFF00;
     
     
-    #3000000000 in0 <= 16'hAA55;
+    repeat (1000*1000) #10000;
+    in0 <= 16'hAA55;
     
     
 end    
@@ -72,14 +75,15 @@ dut
     
     .in0(in0),
     .out0(),
-    .irq0(),
+    .irq0(0),
     
     .in1(in1),
     .out1(),
-    .irq1(),
+    .irq1(0),
     
     .sclk(sclk),
     .sdata_out(sdata_out),
+    .sdata_in(1),
     .sdata_oe_n()
     
 

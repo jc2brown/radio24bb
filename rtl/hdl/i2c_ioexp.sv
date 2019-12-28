@@ -37,10 +37,14 @@ module i2c_ioexp
     
 );
     
-wire [7:0] in [0:1] = { in0, in1 };
+wire [7:0] in [0:1];// = { in0, in1 };
+assign in[0] = in0;
+assign in[1] = in1;
 reg [7:0] in_d1 [0:1];
 wire irq [0:1] = { irq0, irq1 };
-wire inputs [0:1] = { INPUTS0, INPUTS1 };
+wire [15:0] inputs [0:1];
+assign inputs[0] = INPUTS0;
+assign inputs[1] = INPUTS1;
 wire [6:0] addr [0:1] = { 7'h20, 7'h21 };    
     
 wire i2c_start;
@@ -97,9 +101,33 @@ wire [15:0] out;
 wire out_valid;
 
 reg enable = 1;
-reg start_init;
-reg start;
+//reg start_init;
+//reg start;
 wire done;
+
+
+
+reg [3:0] state;
+
+
+localparam STATE_INIT0A = 0;
+localparam STATE_INIT0B = 1;
+localparam STATE_INIT1A = 2;
+localparam STATE_INIT1B = 3;
+localparam STATE_IDLE = 4;
+localparam STATE_LOOP0 = 5;
+localparam STATE_LOOP1 = 6;
+localparam STATE_LOOP2 = 7;
+localparam STATE_LOOP3 = 8;
+localparam STATE_RESET = 9;
+
+
+
+
+wire start_init = (state == STATE_INIT0A) || (state == STATE_INIT1A);
+wire start = (state == STATE_LOOP0) || (state == STATE_LOOP2);
+
+
 
 
 pcal6416a_ctrl pcal6416a_ctrl_inst (
@@ -113,6 +141,7 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
     .out(out),
     .out_valid(out_valid),
     
+    .in_d1(in_d1[sel]),
     .irq(irq[sel]),
     
     .inputs(inputs[sel]),
@@ -146,40 +175,30 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
 
 
 
-reg [3:0] state;
-
-
-localparam STATE_INIT0A = 0;
-localparam STATE_INIT0B = 1;
-localparam STATE_INIT1A = 2;
-localparam STATE_INIT1B = 3;
-localparam STATE_IDLE = 4;
-localparam STATE_LOOP0 = 5;
-localparam STATE_LOOP1 = 6;
-localparam STATE_LOOP2 = 7;
-localparam STATE_LOOP3 = 8;
-
-
-
-
 always @(posedge clk) begin
     if (reset) begin
-        state <= STATE_INIT0A;
+        state <= STATE_RESET;
         in_d1[0] <= !in0;
         in_d1[1] <= !in1;
         
         sel <= 0;
-        start_init <= 0;  
-        start <= 0;
+        //start_init <= 0;  
+//        start <= 0;
         
     end
     else begin
         case (state)
         
+        STATE_RESET: begin
+            if (done) begin
+                state <= STATE_INIT0A;
+            end
+        end
+        
         STATE_INIT0A: begin
             if (USE_IN0) begin
                 sel <= 0;
-                start_init <= 1;      
+//                start_init <= 1;      
                 state <= STATE_INIT0B;
             end
             else begin
@@ -187,7 +206,7 @@ always @(posedge clk) begin
             end
         end           
         STATE_INIT0B: begin
-            start_init <= 1'b0;
+//            start_init <= 1'b0;
             if (done) begin
                 state <= STATE_INIT1A;
             end
@@ -196,7 +215,7 @@ always @(posedge clk) begin
         STATE_INIT1A: begin
             if (USE_IN1) begin
                 sel <= 1;
-                start_init <= 1;      
+//                start_init <= 1;      
                 state <= STATE_INIT1B;
             end
             else begin
@@ -204,7 +223,7 @@ always @(posedge clk) begin
             end
         end           
         STATE_INIT1B: begin
-            start_init <= 1'b0;
+//            start_init <= 1'b0;
             if (done) begin
                 state <= STATE_IDLE;
             end
@@ -220,7 +239,7 @@ always @(posedge clk) begin
             if (in0 != in_d1[0]) begin 
                 in_d1[0] <= in0;
                 sel <= 0;
-                start <= 1;                
+//                start <= 1;                
                 state <= STATE_LOOP1;
             end
             else begin
@@ -228,7 +247,7 @@ always @(posedge clk) begin
             end
         end
         STATE_LOOP1: begin
-            start <= 0;
+//            start <= 0;
             if (done) begin
                 if (out_valid) begin
                     out0 <= out;
@@ -239,10 +258,10 @@ always @(posedge clk) begin
         
         
         STATE_LOOP2: begin                
-            if (in0 != in_d1[1]) begin 
+            if (in1 != in_d1[1]) begin 
                 in_d1[1] <= in1;
                 sel <= 1;
-                start <= 1;                
+//                start <= 1;                
                 state <= STATE_LOOP3;
             end
             else begin
@@ -250,7 +269,7 @@ always @(posedge clk) begin
             end
         end
         STATE_LOOP3: begin
-            start <= 0;
+//            start <= 0;
             if (done) begin
                 if (out_valid) begin
                     out1 <= out;

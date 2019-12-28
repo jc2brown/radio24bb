@@ -120,7 +120,7 @@ always @(posedge clk) begin
     else begin
         case (state)
         STATE_IDLE: begin
-            done <= 1'b0;
+            done <= 1'b1;
             if (start) begin
                 done <= 0;
                 num_rd_bytes_reg <= num_rd_bytes;
