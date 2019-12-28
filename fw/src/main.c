@@ -10,7 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+
+#include "xscugic.h"
+
 #include <stdbool.h>
+
+#include "xiicps.h"
 
 #include "roe.h"
 
@@ -314,6 +319,175 @@ void adc_handler(void *arg, struct command *cmd) {
 
 
 
+
+
+
+s32 i2c_write2(XIicPs *xiic2ps, u8 bus_addr, u8 *WriteBuffer, u16 ByteCount) {
+	_return_if_error_(XIicPs_MasterSendPolled(xiic2ps, WriteBuffer, ByteCount, bus_addr), "&WrBuf=%p, ByteCount=%d, SlvAddr=0x%X\n", &WriteBuffer, ByteCount, bus_addr);
+	while (XIicPs_BusIsBusy(xiic2ps));
+	return XST_SUCCESS;
+}
+
+
+/*
+s32 i2c_read8(u8 bus_addr, u8 reg_addr, u8 *BufferPtr, u16 ByteCount) {
+	u32 WrBfrOffset;
+	u8 WriteBuffer[1];
+	WriteBuffer[0] = reg_addr;
+	WrBfrOffset = 1;
+	_return_if_error_(i2c_write(bus_addr, WriteBuffer, WrBfrOffset));
+	_return_if_error_(XIicPs_MasterRecvPolled(get_xiicps(), BufferPtr, ByteCount, bus_addr));
+	while (XIicPs_BusIsBusy(get_xiicps()));
+	return XST_SUCCESS;
+}
+*/
+s32 i2c_read16_2(XIicPs *xiic2ps, u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 ByteCount) {
+	u32 WrBfrOffset;
+	u8 WriteBuffer[2];
+	WriteBuffer[0] = (u8) (reg_addr >> 8);
+	WriteBuffer[1] = (u8) (reg_addr);
+	WrBfrOffset = 2;
+	_return_if_error_(i2c_write2(xiic2ps, bus_addr, WriteBuffer, WrBfrOffset));
+	_return_if_error_(XIicPs_MasterRecvPolled(xiic2ps, BufferPtr, ByteCount, bus_addr));
+	while (XIicPs_BusIsBusy(xiic2ps));
+	return XST_SUCCESS;
+}
+
+
+
+
+
+
+
+
+/*
+ * Create a shared variable to be used by the main thread of processing and
+ * the interrupt processing
+ */
+volatile static int InterruptProcessed = FALSE;
+
+static void AssertPrint(const char8 *FilenamePtr, s32 LineNumber){
+	xil_printf("ASSERT: File Name: %s ", FilenamePtr);
+	xil_printf("Line Number: %d\r\n",LineNumber);
+}
+
+
+int ScuGicExample() {
+
+
+	XScuGic InterruptController; 	     /* Instance of the Interrupt Controller */
+
+	int Status;
+
+	/*
+	 * Initialize the interrupt controller driver so that it is ready to
+	 * use.
+	 */
+	XScuGic_Config *GicConfig = XScuGic_LookupConfig(XPAR_SCUGIC_SINGLE_DEVICE_ID);
+	if (NULL == GicConfig) {
+		return XST_FAILURE;
+	}
+
+	Status = XScuGic_CfgInitialize(&InterruptController, GicConfig,
+					GicConfig->CpuBaseAddress);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+
+	/*
+	 * Perform a self-test to ensure that the hardware was built
+	 * correctly
+	 */
+	Status = XScuGic_SelfTest(&InterruptController);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+
+	/*
+	 * Setup the Interrupt System
+	 */
+	Status = SetUpInterruptSystem(&InterruptController);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Connect a device driver handler that will be called when an
+	 * interrupt for the device occurs, the device driver handler performs
+	 * the specific interrupt processing for the device
+	 */
+	Status = XScuGic_Connect(&InterruptController, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)&InterruptController);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Enable the interrupt for the device and then cause (simulate) an
+	 * interrupt so the handlers will be called
+	 */
+	XScuGic_Enable(&InterruptController, INTC_DEVICE_INT_ID);
+
+	/*
+	 *  Simulate the Interrupt
+	 */
+	Status = XScuGic_SoftwareIntr(&InterruptController, INTC_DEVICE_INT_ID, XSCUGIC_SPI_CPU0_MASK);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Wait for the interrupt to be processed, if the interrupt does not
+	 * occur this loop will wait forever
+	 */
+	while (1) {
+		/*
+		 * If the interrupt occurred which is indicated by the global
+		 * variable which is set in the device driver handler, then
+		 * stop waiting
+		 */
+		if (InterruptProcessed) {
+			break;
+		}
+	}
+
+	return XST_SUCCESS;
+}
+
+
+
+int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler,	XScuGicInstancePtr);
+	Xil_ExceptionEnable();
+	return XST_SUCCESS;
+}
+
+
+
+void DeviceDriverHandler(void *CallbackRef) {
+	InterruptProcessed = TRUE;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int main()
 {
 
@@ -393,7 +567,64 @@ int main()
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
 
 
-	//xil_printf()
+	xil_printf("1\n");
+
+
+	I2C_SEL = 1;
+
+	XIicPs xiic2ps;
+
+	XIicPs_Config *ConfigPtr = XIicPs_LookupConfig(XPAR_PS7_I2C_1_DEVICE_ID);
+	if (ConfigPtr == NULL) {
+		_return_(XST_FAILURE, "XIicPs_LookupConfig failed\n")
+	}
+	_return_if_error_(XIicPs_CfgInitialize(&xiic2ps, ConfigPtr, ConfigPtr->BaseAddress));		
+	_return_if_error_(XIicPs_SelfTest(&xiic2ps));
+	_return_if_error_(XIicPs_SetSClk(&xiic2ps, 100000));
+
+	xil_printf("2\n");
+
+	uint8_t p0_inputs = 0x00;
+	uint8_t p1_inputs = 0x86;
+
+
+	uint8_t p0_value = 0x00;
+	uint8_t p1_value = 0x00;
+
+	{
+	uint8_t buf[3] = { 0x06, p0_inputs, p1_inputs };
+	i2c_write2(&xiic2ps, 0x20, buf, 3);
+	}
+
+
+	xil_printf("3\n");
+	{
+	uint8_t buf[3] = { 0x4A, ~p0_inputs, ~p1_inputs };
+	i2c_write2(&xiic2ps, 0x20, buf, 3);
+	}
+
+
+	xil_printf("4\n");
+	{
+	uint8_t buf[2];
+	i2c_read16_2(&xiic2ps, 0x20, 0x02, buf, 2);
+	xil_printf("[0]:0x%02X  [1]:0x%02X\n", buf[0], buf[1]);
+	}
+
+
+
+	xil_printf("5\n");
+
+
+
+	int result = ScuGicExample();
+	xil_printf("gic=%d\n", result);
+
+
+
+
+
+
 
 
 

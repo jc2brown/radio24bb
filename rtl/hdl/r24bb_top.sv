@@ -1315,16 +1315,16 @@ wire codec_io_data_in;
 // Output open drain
 OBUFT usb_io_clk_obuft (
     .O(USB_IO_CLK),
-    .I(1'b0),
-    .T( (i2c_sel==0) ? (I2C_scl_o || I2C_scl_t) : 1'b1 )
+    .I(I2C_scl_o),
+    .T( (i2c_sel==0) ? I2C_scl_t : 1'b1 )
 );
 
 // Bidirectional open drain
 IOBUF usb_io_data_iobuf (
     .IO(USB_IO_DATA),
-    .I(1'b0),
+    .I(I2C_sda_o),
     .O(usb_io_data_in),
-    .T( (i2c_sel==0) ? (I2C_sda_o || I2C_sda_t) : 1'b1 )
+    .T( (i2c_sel==0) ? I2C_sda_t : 1'b1 )
 );
 
 
@@ -1333,19 +1333,20 @@ IOBUF usb_io_data_iobuf (
 // Output open drain
 OBUFT codec_io_clk_obuft (
     .O(CODEC_IO_CLK),
-    .I(1'b0),
-    .T( (i2c_sel==1) ? (I2C_scl_o || I2C_scl_t) : 1'b1 )
+    .I(I2C_scl_o),
+    .T( (i2c_sel==1) ? I2C_scl_t : 1'b1 )
 );
 
 // Bidirectional open drain
 IOBUF codec_io_data_iobuf (
     .IO(CODEC_IO_DATA),
-    .I(1'b0),
+    .I(I2C_sda_o),
     .O(codec_io_data_in),
-    .T( (i2c_sel==1) ? (I2C_sda_o || I2C_sda_t) : 1'b1 )
+    .T( (i2c_sel==1) ? I2C_sda_t : 1'b1 )
 );
 
 
+assign I2C_sda_i = (i2c_sel==0) ? usb_io_data_in : codec_io_data_in;
 
 
 

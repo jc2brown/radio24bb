@@ -74,6 +74,7 @@
 #define LED1_BRIGHTNESS		*((volatile uint32_t*)0x43C04034)
 
 #define SERIAL				*((volatile uint32_t*)0x43C04038)
+#define I2C_SEL				*((volatile uint32_t*)0x43C0403C)
 
 
 
