@@ -38,6 +38,7 @@ module i2c_basic
     
     
 reg [1:0] num_rd_bytes_reg;
+reg [1:0] num_wr_bytes_reg;
 
 reg [1:0] state;
 
@@ -106,6 +107,8 @@ reg [CSR_BITS-1:0] csr;
 reg [DSR_BITS-1:0] dsr;
 reg [DSR_BITS-1:0] osr;
 reg [DSR_BITS-1:0] isr;
+
+
     
 always @(posedge clk) begin
     if (reset) begin
@@ -123,36 +126,42 @@ always @(posedge clk) begin
             done <= 1'b1;
             if (start) begin
                 done <= 0;
+                num_wr_bytes_reg <= num_wr_bytes;
                 num_rd_bytes_reg <= num_rd_bytes;
                 state <= STATE_LOAD;
             end
         end
         STATE_LOAD: begin        
             if (sclk_ce) begin
-                if (num_wr_bytes == 1) begin
+                if (num_wr_bytes_reg == 1) begin
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},                                               1'b0,{36{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,                                            1'b0,{18{1'b1}}};
                     osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,                                                1'b0,{18{1'b0}}};
+                    $display("> 1");
                 end
-                else if (num_wr_bytes == 2) begin
+                else if (num_wr_bytes_reg == 2) begin
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},1'b0,                        {18{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,    wr_data1,1'b1,                          1'b0,{9{1'b1}}};
                     osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,        8'b0,1'b1,                              1'b0,{9{1'b0}}};
+                    $display("> 2");
                 end
-                else if (num_wr_bytes == 3) begin
+                else if (num_wr_bytes_reg == 3) begin
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},         {9{2'b01}},         1'b0};
                     dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,    wr_data1,1'b1,      wr_data2,1'b1,      1'b0};
                     osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,        8'b0,1'b1,          8'b0,1'b1,          1'b0};
+                    $display("> 3");
                 end
-                else if (num_rd_bytes == 1) begin
+                else if (num_rd_bytes_reg == 1) begin
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},                                               1'b0,{36{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,                                                1'b0,{18{1'b1}}};
-                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b1,1'b0,                                                1'b0,{18{1'b0}}};                
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b0,                                                1'b0,{18{1'b0}}};    
+                    $display("> 4");            
                 end
-                else if (num_rd_bytes == 2) begin                    
+                else if (num_rd_bytes_reg == 2) begin                    
                     csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},                             1'b0,{18{1'b1}}};
                     dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,        8'b0,1'b0,                              1'b0,{9{1'b1}}};
-                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b1,1'b0,        8'b1,1'b0,                              1'b0,{9{1'b0}}};                        
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   {8{1'b1}},1'b0,   {8{1'b1}},1'b0,                         1'b0,{9{1'b0}}};            
+                    $display("> 5");            
                 end
                 
                 state <= STATE_SHIFT;
