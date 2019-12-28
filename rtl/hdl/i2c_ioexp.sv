@@ -42,7 +42,7 @@ reg [15:0] in_d1 [0:1];
 wire irq [0:1];
 assign irq[0] = irq0;
 assign irq[1] = irq1; // = { irq0, irq1 };
-wire [15:0] inputs [0:1];
+wire [15:0] inputs [0:1];// = { INPUTS1, INPUTS1 };
 assign inputs[0] = INPUTS0;
 assign inputs[1] = INPUTS1;
 wire [6:0] addr [0:1] = { 7'h20, 7'h21 };    

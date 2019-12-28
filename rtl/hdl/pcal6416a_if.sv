@@ -120,7 +120,7 @@ always @(posedge clk) begin
                 num_rd_bytes <= 0;
                 wr_data0 <= 8'h06; // Config port
                 wr_data1 <= inputs[7:0];
-                wr_data2 <= inputs[15:0];  
+                wr_data2 <= inputs[15:8];  
 //                i2c_start <= 1'b1;          
                 state <= STATE_INIT2;
             end           
@@ -139,7 +139,7 @@ always @(posedge clk) begin
                 num_rd_bytes <= 0;
                 wr_data0 <= 8'h4A; // Interrupt mask
                 wr_data1 <= ~inputs[7:0];
-                wr_data2 <= ~inputs[15:0];  
+                wr_data2 <= ~inputs[15:8];  
 //                i2c_start <= 1'b1;          
                 state <= STATE_INIT4;
             end           

@@ -65,7 +65,7 @@ i2c_ioexp
     .CLK_DIV_BITS(10),
     .USE_IN0(1),
     .USE_IN1(1),
-    .INPUTS0(16'h00),
+    .INPUTS0(16'h02),
     .INPUTS1(16'h00),
     .USE_IOBUF(0)     
 )
