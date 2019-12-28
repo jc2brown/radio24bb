@@ -70,6 +70,10 @@
 #define USB_LED_R 			*((volatile uint32_t*)0x43C04028)
 #define PWR_LED_R 			*((volatile uint32_t*)0x43C0402C)
 
+#define LED0_BRIGHTNESS		*((volatile uint32_t*)0x43C04030)
+#define LED1_BRIGHTNESS		*((volatile uint32_t*)0x43C04034)
+
+
 
 /*
 #define OUTA_RAW	 		*((volatile uint32_t*)0x43C01400)

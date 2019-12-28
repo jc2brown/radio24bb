@@ -1,12 +1,13 @@
 `timescale 1ps / 1ps
 
 
-// Basic write-only I2C controller
-// Supports 7-bit addresses and 1-, 2-, or 3-byte data payloads
+// Basic I2C controller
+// Supports 7-bit addresses, 1-, 2-, or 3-byte write payloads, and 1- or 2-byte read payloads 
 
 module i2c_basic
 #(
-    parameter CLK_DIV_BITS = 8
+    parameter CLK_DIV_BITS = 8,
+    parameter USE_IOBUF = 0
 )
 (
     input clk,
@@ -19,17 +20,24 @@ module i2c_basic
     input [7:0] wr_data1,
     input [7:0] wr_data2,
     
+    input [1:0] num_rd_bytes,
+    output reg [7:0] rd_data0,
+    output reg [7:0] rd_data1,
+    
     input start,    
     output reg done,
     
     output reg sclk,
     output reg sdata_out,
-    output reg sdata_oe_n
+    input wire sdata_in,
+    output reg sdata_oe_n,
+    
+    inout sda
     
 );
     
     
-
+reg [1:0] num_rd_bytes_reg;
 
 reg [1:0] state;
 
@@ -77,7 +85,9 @@ always @(posedge clk) begin
     end
 end
     
-    
+
+wire _sdata_in;
+
 
 reg start_ce;
 always @(posedge clk) begin
@@ -95,6 +105,7 @@ localparam DSR_BITS = 39;
 reg [CSR_BITS-1:0] csr;
 reg [DSR_BITS-1:0] dsr;
 reg [DSR_BITS-1:0] osr;
+reg [DSR_BITS-1:0] isr;
     
 always @(posedge clk) begin
     if (reset) begin
@@ -103,32 +114,47 @@ always @(posedge clk) begin
         dsr <= {DSR_BITS{1'b1}};
         osr <= {DSR_BITS{1'b0}};
         done <= 1'b0;
+        rd_data0 <= 'h0;
+        rd_data1 <= 'h0;
     end
     else begin
         case (state)
         STATE_IDLE: begin
             done <= 1'b0;
             if (start) begin
+                done <= 0;
+                num_rd_bytes_reg <= num_rd_bytes;
                 state <= STATE_LOAD;
             end
         end
         STATE_LOAD: begin        
             if (sclk_ce) begin
                 if (num_wr_bytes == 1) begin
-                    csr <= {1'b1, 1'b0, {9{2'b01}}, {9{2'b01}}, 1'b0, {36{1'b1}}};
-                    dsr <= {1'b1, 1'b0, addr, 1'b0, 1'b1, wr_data0, 1'b1, 1'b0, {18{1'b1}}};
-                    osr <= {1'b0, 1'b0, 7'b0, 1'b0, 1'b1, 8'b0, 1'b1, 1'b0, {18{1'b0}}};
+                    csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},                                               1'b0,{36{1'b1}}};
+                    dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,                                            1'b0,{18{1'b1}}};
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,                                                1'b0,{18{1'b0}}};
                 end
                 else if (num_wr_bytes == 2) begin
-                    csr <= {1'b1, 1'b0, {9{2'b01}}, {9{2'b01}}, {9{2'b01}}, 1'b0, {18{1'b1}}};
-                    dsr <= {1'b1, 1'b0, addr, 1'b0, 1'b1, wr_data0, 1'b1, wr_data1, 1'b1, 1'b0, {9{1'b1}}};
-                    osr <= {1'b0, 1'b0, 7'b0, 1'b0, 1'b1, 8'b0, 1'b1, 8'b0, 1'b1, 1'b0, {9{1'b0}}};
+                    csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},1'b0,                        {18{1'b1}}};
+                    dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,    wr_data1,1'b1,                          1'b0,{9{1'b1}}};
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,        8'b0,1'b1,                              1'b0,{9{1'b0}}};
                 end
                 else if (num_wr_bytes == 3) begin
-                    csr <= {1'b1, 1'b0, {9{2'b01}}, {9{2'b01}}, {9{2'b01}}, {9{2'b01}}, 1'b0};
-                    dsr <= {1'b1, 1'b0, addr, 1'b0, 1'b1, wr_data0, 1'b1, wr_data1, 1'b1, wr_data2, 1'b1, 1'b0};
-                    osr <= {1'b0, 1'b0, 7'b0, 1'b0, 1'b1, 8'b0, 1'b1, 8'b0, 1'b1, 8'b0, 1'b1, 1'b0};
+                    csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},         {9{2'b01}},         1'b0};
+                    dsr <= {1'b1,1'b0,      addr,1'b0,1'b1,   wr_data0,1'b1,    wr_data1,1'b1,      wr_data2,1'b1,      1'b0};
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b0,1'b1,        8'b0,1'b1,          8'b0,1'b1,          1'b0};
                 end
+                else if (num_rd_bytes == 1) begin
+                    csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},                                               1'b0,{36{1'b1}}};
+                    dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,                                                1'b0,{18{1'b1}}};
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b1,1'b0,                                                1'b0,{18{1'b0}}};                
+                end
+                else if (num_rd_bytes == 2) begin                    
+                    csr <= {1'b1,1'b0,      {9{2'b01}},       {9{2'b01}},       {9{2'b01}},                             1'b0,{18{1'b1}}};
+                    dsr <= {1'b1,1'b0,      addr,1'b1,1'b1,   8'b0,1'b0,        8'b0,1'b0,                              1'b0,{9{1'b1}}};
+                    osr <= {1'b0,1'b0,      7'b0,1'b0,1'b1,   8'b1,1'b0,        8'b1,1'b0,                              1'b0,{9{1'b0}}};                        
+                end
+                
                 state <= STATE_SHIFT;
             end
         end
@@ -139,8 +165,16 @@ always @(posedge clk) begin
             if (sdata_ce) begin
                 dsr <= {dsr[DSR_BITS-2:0], 1'b1};
                 osr <= {osr[DSR_BITS-2:0], 1'b0};
+                isr <= {isr[DSR_BITS-2:0], _sdata_in};
             end
             if (&csr && &dsr) begin
+                if (num_rd_bytes_reg == 1) begin
+                    rd_data0 <= isr[9:2];
+                end
+                else if (num_rd_bytes_reg == 2) begin
+                    rd_data0 <= isr[18:11];
+                    rd_data1 <= isr[9:2];
+                end
                 done <= 1'b1;
                 state <= STATE_IDLE;
             end
@@ -159,10 +193,23 @@ always @(posedge clk) begin
      
     
     
-    
-    
-    
-    
+generate 
+if (USE_IOBUF) begin
+
+IOBUF sda_iobuf (
+    .I(sdata_out),
+    .O(_sdata_in),
+    .IO(sda),
+    .T(sdata_oe_n)
+);
+
+end  
+else begin
+
+assign _sdata_in = sdata_in;
+
+end
+endgenerate
     
     
     

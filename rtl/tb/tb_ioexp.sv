@@ -1,6 +1,6 @@
 `timescale 1ps / 1ps
 
-module tb_i2c_ioexp(
+module tb_ioexp(
 
     );
     

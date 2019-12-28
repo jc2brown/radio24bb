@@ -491,6 +491,9 @@ int main()
 	USB_LED_R = 1;
 	PWR_LED_R = 1;
 
+	LED0_BRIGHTNESS = (uint16_t)(0.1 * ((1<<16)-1));
+	LED1_BRIGHTNESS = (uint16_t)(0.1 * ((1<<16)-1));
+
 
 
 	while (1) {

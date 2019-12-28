@@ -1275,7 +1275,27 @@ r24bb_bd r24bb_bd_inst (
 );
 
 
+wire [15:0] led0_brightness;
+wire [15:0] led1_brightness;
     
+ddac #( .DEPTH(16) )
+led0_ddac (
+    .clk(clk),
+    .count(led0_brightness),
+    .out(LED0)
+);   
+
+
+ddac #( .DEPTH(16) )
+led1_ddac (
+    .clk(clk),
+    .count(led1_brightness),
+    .out(LED1)
+);   
+
+
+
+
 regs regs_inst (
 
     .clk(pl_clk0),
@@ -1288,7 +1308,7 @@ regs regs_inst (
     .pwdata(pwdata),
     .prdata(regs_prdata),
 
-    .leds({LED1, LED0}),
+//    .leds({LED1, LED0}),
             
     .usb_wr_data(usb_wr_data_raw),
     .usb_wr_be(usb_wr_be_raw),
@@ -1311,8 +1331,10 @@ regs regs_inst (
     
     .usb_wr_push(usb_wr_push),
     .usb_led_r(usb_led_r),
-    .pwr_led_r(pwr_led_r)
+    .pwr_led_r(pwr_led_r),
     
+    .led0_brightness(led0_brightness),
+    .led1_brightness(led1_brightness)
                 
 );    
     

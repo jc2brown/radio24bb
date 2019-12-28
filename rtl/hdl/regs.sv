@@ -75,7 +75,10 @@ module regs (
     output reg usb_wr_push,
     
     output reg usb_led_r,
-    output reg pwr_led_r
+    output reg pwr_led_r,
+    
+    output reg [15:0] led0_brightness,
+    output reg [15:0] led1_brightness
     
 //    output reg [31:0] outa_raw,
     
@@ -174,6 +177,9 @@ localparam REG_USB_WR_PUSH = 12'h024;
 localparam REG_USB_LED_R = 12'h028;
 localparam REG_PWR_LED_R = 12'h02C;
 
+localparam REG_LED0_BRIGHTNESS = 12'h030;
+localparam REG_LED1_BRIGHTNESS = 12'h034;
+
 //localparam REG_OUTA_RAW = 12'h1400;
 
 //localparam REG_OUTA_WR_COUNT = 12'h1500;
@@ -248,6 +254,9 @@ begin
         
         usb_led_r <= 1'b0;
         pwr_led_r <= 1'b0;
+        
+        led0_brightness <= 16'h0;
+        led1_brightness <= 16'h0;
         
 //        outa_raw <= 'h0;       
 //        outa_mux <= 'h0; 
@@ -345,6 +354,9 @@ begin
                 REG_USB_LED_R: usb_led_r <= pwdata[0];
                 
                 REG_PWR_LED_R: pwr_led_r <= pwdata[0];
+                
+                REG_LED0_BRIGHTNESS: led0_brightness <= pwdata[15:0];
+                REG_LED1_BRIGHTNESS: led1_brightness <= pwdata[15:0];
                 
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                

@@ -8,96 +8,203 @@
 module i2c_ioexp
 #(
     parameter CLK_DIV_BITS = 10, // sclk = clk / 2^(CLK_DIV_BITS+1)
-    parameter USE_IN1 = 1,
-    parameter USE_IN2 = 0
+    parameter USE_IN0 = 1,
+    parameter USE_IN1 = 0,
+    parameter INPUTS0 = 16'h00,
+    parameter INPUTS1 = 16'h00,
+    parameter USE_IOBUF = 0
+    
     //parameter ADDR_PIN = 0
 )
 (
     input clk,
     input reset,
             
-    input [15:0] in,
-    input [15:0] in2,
+    input [15:0] in0,
+    output reg [15:0] out0,
+    input irq0,
+        
+    input [15:0] in1,
+    output reg [15:0] out1,
+    input irq1,
     
     output wire sclk,
-    output wire sdata,
-    output wire sdata_oe_n
+    output wire sdata_out,
+    input sdata_in,
+    output wire sdata_oe_n,
+    
+    input sda
     
 );
     
+wire [7:0] in [0:1] = { in0, in1 };
+reg [7:0] in_d1 [0:1];
+wire irq [0:1] = { irq0, irq1 };
+wire inputs [0:1] = { INPUTS0, INPUTS1 };
+wire [6:0] addr [0:1] = { 7'h20, 7'h21 };    
     
+wire i2c_start;
+wire i2c_done;
 
-reg [2:0] state;
+
+reg [1:0] sel = 0;
+    
+wire [1:0] num_wr_bytes;
+wire [7:0] wr_data0;
+wire [7:0] wr_data1;
+wire [7:0] wr_data2;
+
+wire [1:0] num_rd_bytes;
+wire [7:0] rd_data0;
+wire [7:0] rd_data1;
+
+    
+i2c_basic
+#(
+    .CLK_DIV_BITS(CLK_DIV_BITS),
+    .USE_IOBUF(USE_IOBUF)
+)
+i2c_basic_inst
+(
+    .clk(clk),
+    .reset(reset),
+        
+    .addr(addr[sel]),
+     
+    .num_wr_bytes(num_wr_bytes),        
+    .wr_data0(wr_data0),
+    .wr_data1(wr_data1),
+    .wr_data2(wr_data2),
+         
+    .num_rd_bytes(num_rd_bytes),        
+    .rd_data0(rd_data0),
+    .rd_data1(rd_data1),
+    
+    .start(i2c_start),    
+    .done(i2c_done),
+    
+    .sclk(sclk),
+    .sdata_out(sdata_out),
+    .sdata_in(sdata_in),
+    .sdata_oe_n(sdata_oe_n),
+    
+    .sda(sda)     
+ );
 
 
-localparam STATE_INIT1A = 0;
-localparam STATE_INIT1B = 1;
-localparam STATE_INIT2A = 2;
-localparam STATE_INIT2B = 3;
-localparam STATE_IDLE = 4;
-localparam STATE_UPDATE0 = 5;
-localparam STATE_UPDATE1 = 6;
 
+wire [15:0] out;
+wire out_valid;
+
+reg enable = 1;
+reg start_init;
 reg start;
 wire done;
-reg [7:0] wr_data0;
-reg [7:0] wr_data1;
-reg [7:0] wr_data2;
+
+
+pcal6416a_ctrl pcal6416a_ctrl_inst (
+
+    .clk(clk),
+    .reset(reset),
+    
+    .enable(enable),
+    
+    .in(in[sel]),
+    .out(out),
+    .out_valid(out_valid),
+    
+    .irq(irq[sel]),
+    
+    .inputs(inputs[sel]),
+    
+    .start_init(start_init),
+    .start(start),
+    .done(done),
+    
+    .i2c_start(i2c_start),
+    .i2c_done(i2c_done),
+    
+    .addr(addr[sel]),
+    
+    .num_wr_bytes(num_wr_bytes),
+    .wr_data0(wr_data0),
+    .wr_data1(wr_data1),
+    .wr_data2(wr_data2),
+    
+    .num_rd_bytes(num_rd_bytes),
+    .rd_data0(rd_data0),   
+    .rd_data1(rd_data1)
+    
+);
+
+    
+    
+    
+    
+    
+    
 
 
 
-reg [15:0] in_d1 = 16'h0;
-reg [15:0] in2_d1 = 16'h0;
+reg [3:0] state;
 
 
-reg [6:0] addr;
+localparam STATE_INIT0A = 0;
+localparam STATE_INIT0B = 1;
+localparam STATE_INIT1A = 2;
+localparam STATE_INIT1B = 3;
+localparam STATE_IDLE = 4;
+localparam STATE_LOOP0 = 5;
+localparam STATE_LOOP1 = 6;
+localparam STATE_LOOP2 = 7;
+localparam STATE_LOOP3 = 8;
+
 
 
 
 always @(posedge clk) begin
     if (reset) begin
-        state <= STATE_INIT1A;
-        in_d1 <= !in;
-        in2_d1 <= !in2;
+        state <= STATE_INIT0A;
+        in_d1[0] <= !in0;
+        in_d1[1] <= !in1;
+        
+        sel <= 0;
+        start_init <= 0;  
+        start <= 0;
+        
     end
     else begin
         case (state)
         
-        STATE_INIT1A: begin
-            if (USE_IN1) begin
-                addr <= 7'h20;
-                wr_data0 <= 8'h06;
-                wr_data1 <= 8'h00;
-                wr_data2 <= 8'h00;  
-                start <= 1'b1;          
-                state <= STATE_INIT1B;
+        STATE_INIT0A: begin
+            if (USE_IN0) begin
+                sel <= 0;
+                start_init <= 1;      
+                state <= STATE_INIT0B;
             end
             else begin
-                state <= STATE_INIT2A;
+                state <= STATE_INIT1A;
             end
         end           
-        STATE_INIT1B: begin
-            start <= 1'b0;
+        STATE_INIT0B: begin
+            start_init <= 1'b0;
             if (done) begin
-                state <= STATE_INIT2A;
+                state <= STATE_INIT1A;
             end
         end
                     
-        STATE_INIT2A: begin
-            if (USE_IN2) begin
-                addr <= 7'h21;
-                wr_data0 <= 8'h06;
-                wr_data1 <= 8'h00;
-                wr_data2 <= 8'h00;  
-                start <= 1'b1;          
-                state <= STATE_INIT2B;
+        STATE_INIT1A: begin
+            if (USE_IN1) begin
+                sel <= 1;
+                start_init <= 1;      
+                state <= STATE_INIT1B;
             end
             else begin
                 state <= STATE_IDLE;
             end
         end           
-        STATE_INIT2B: begin
-            start <= 1'b0;
+        STATE_INIT1B: begin
+            start_init <= 1'b0;
             if (done) begin
                 state <= STATE_IDLE;
             end
@@ -105,34 +212,53 @@ always @(posedge clk) begin
         
         
         STATE_IDLE: begin
-            if (in != in_d1) begin 
-                in_d1 <= in;   
-                addr <= 7'h20;
-                wr_data1 <= in[7:0];
-                wr_data2 <= in[15:8];  
-                state <= STATE_UPDATE0;
-            end
-            else if (in2 != in2_d1) begin 
-                in2_d1 <= in2;   
-                addr <= 7'h21;
-                wr_data1 <= in2[7:0];
-                wr_data2 <= in2[15:8];  
-                state <= STATE_UPDATE0;
-            end
+            state <= STATE_LOOP0;
         end
         
         
-        STATE_UPDATE0: begin  
-            wr_data0 <= 8'h02;
-            start <= 1'b1;     
-            state <= STATE_UPDATE1;
+        STATE_LOOP0: begin                
+            if (in0 != in_d1[0]) begin 
+                in_d1[0] <= in0;
+                sel <= 0;
+                start <= 1;                
+                state <= STATE_LOOP1;
+            end
+            else begin
+                state <= STATE_LOOP2;
+            end
         end
-        STATE_UPDATE1: begin  
-            start <= 1'b0;
+        STATE_LOOP1: begin
+            start <= 0;
             if (done) begin
+                if (out_valid) begin
+                    out0 <= out;
+                end
+                state <= STATE_LOOP2;
+            end      
+        end
+        
+        
+        STATE_LOOP2: begin                
+            if (in0 != in_d1[1]) begin 
+                in_d1[1] <= in1;
+                sel <= 1;
+                start <= 1;                
+                state <= STATE_LOOP3;
+            end
+            else begin
                 state <= STATE_IDLE;
             end
         end
+        STATE_LOOP3: begin
+            start <= 0;
+            if (done) begin
+                if (out_valid) begin
+                    out1 <= out;
+                end
+                state <= STATE_IDLE;
+            end      
+        end
+        
         endcase
     end
 end
@@ -140,34 +266,6 @@ end
     
    
     
-    
-    
-    
-    
-i2c_basic
-#(
-    .CLK_DIV_BITS(CLK_DIV_BITS)
-)
-i2c_basic_inst
-(
-    .clk(clk),
-    .reset(reset),
-        
-    .addr(addr),
-     
-    .num_wr_bytes(2'd3),        
-    .wr_data0(wr_data0),
-    .wr_data1(wr_data1),
-    .wr_data2(wr_data2),
-    
-    .start(start),    
-    .done(done),
-    
-    .sclk(sclk),
-    .sdata_out(sdata),
-    .sdata_oe_n(sdata_oe_n)     
- );
-
     
     
     
