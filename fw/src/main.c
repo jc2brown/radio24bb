@@ -503,6 +503,7 @@ int main()
 
 		handle_command();
 
+	xil_printf("serial: %d\n", SERIAL);
 
 
 	}

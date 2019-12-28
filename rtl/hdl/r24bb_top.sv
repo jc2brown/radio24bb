@@ -696,7 +696,7 @@ wire pwr_led_r;
 
 wire usb_mmcm_locked;
 
-
+/*
 wire [15:0] usb_io_out;
 wire [15:0] usb_io2_out;
 
@@ -786,7 +786,7 @@ usb_i2c_ioexp (
     .sda(USB_IO_DATA)
    
 );
-
+*/
 
 wire usb_rd_en_raw;
     
@@ -889,6 +889,7 @@ wire pw_fifo_wr_en;
 wire pw_fifo_full;
     */
     
+    /*
 wire [15:0] codec_out;
 
 wire phone_out_det = codec_out[9];
@@ -946,7 +947,7 @@ codec_i2c_ioexp (
     
    
 );
-
+*/
 
 
 wire mreset;
@@ -1295,6 +1296,76 @@ wire signed [11:0] auxadc_data = ADC_tdata[11:0];
 wire auxadc_valid = ADC_tvalid;
 
 
+wire I2C_scl_i;
+wire I2C_scl_o;
+wire I2C_scl_t;
+wire I2C_sda_i;
+wire I2C_sda_o;
+wire I2C_sda_t;
+
+
+
+
+wire i2c_sel;
+
+wire usb_io_data_in;
+wire codec_io_data_in;
+
+
+// Output open drain
+OBUFT usb_io_clk_obuft (
+    .O(USB_IO_CLK),
+    .I(1'b0),
+    .T( (i2c_sel==0) ? (I2C_scl_o || I2C_scl_t) : 1'b1 )
+);
+
+// Bidirectional open drain
+IOBUF usb_io_data_iobuf (
+    .IO(USB_IO_DATA),
+    .I(1'b0),
+    .O(usb_io_data_in),
+    .T( (i2c_sel==0) ? (I2C_sda_o || I2C_sda_t) : 1'b1 )
+);
+
+
+
+
+// Output open drain
+OBUFT codec_io_clk_obuft (
+    .O(CODEC_IO_CLK),
+    .I(1'b0),
+    .T( (i2c_sel==1) ? (I2C_scl_o || I2C_scl_t) : 1'b1 )
+);
+
+// Bidirectional open drain
+IOBUF codec_io_data_iobuf (
+    .IO(CODEC_IO_DATA),
+    .I(1'b0),
+    .O(codec_io_data_in),
+    .T( (i2c_sel==1) ? (I2C_sda_o || I2C_sda_t) : 1'b1 )
+);
+
+
+
+
+
+
+
+
+wire [1:0] IRQ_F2P_0 = {
+    CODEC_IO_INT_N,
+    USB_IO_INT_N
+};
+
+
+
+
+
+
+
+
+
+
 r24bb_bd r24bb_bd_inst (
 
     .pl_clk0(clk),
@@ -1312,6 +1383,16 @@ r24bb_bd r24bb_bd_inst (
     .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
     .GPIO_0_0_tri_o(GPIO_0_0_tri_o),
     .GPIO_0_0_tri_t(GPIO_0_0_tri_t),
+    
+    .I2C_scl_i(I2C_scl_i),
+    .I2C_scl_o(I2C_scl_o),
+    .I2C_scl_t(I2C_scl_t),
+    .I2C_sda_i(I2C_sda_i),
+    .I2C_sda_o(I2C_sda_o),
+    .I2C_sda_t(I2C_sda_t),
+    
+    .IRQ_F2P_0(IRQ_F2P_0),
+                
     
     .apb_paddr(paddr),
     .apb_penable(penable),
@@ -1386,7 +1467,9 @@ regs regs_inst (
     .led0_brightness(led0_brightness),
     .led1_brightness(led1_brightness),
     
-    .serial(serial)
+    .serial(serial),
+    
+    .i2c_sel(i2c_sel)
                 
 );    
     

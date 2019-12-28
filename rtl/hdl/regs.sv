@@ -80,7 +80,9 @@ module regs (
     output reg [15:0] led0_brightness,
     output reg [15:0] led1_brightness,
     
-    input [2:0] serial 
+    input [2:0] serial ,
+    
+    output reg i2c_sel
     
 //    output reg [31:0] outa_raw,
     
@@ -184,6 +186,8 @@ localparam REG_LED1_BRIGHTNESS = 12'h034;
 
 localparam REG_SERIAL = 12'h038;
 
+localparam REG_I2C_SEL = 12'h03C;
+
 //localparam REG_OUTA_RAW = 12'h1400;
 
 //localparam REG_OUTA_WR_COUNT = 12'h1500;
@@ -261,6 +265,8 @@ begin
         
         led0_brightness <= 16'h0;
         led1_brightness <= 16'h0;
+        
+        i2c_sel <= 1'b0;
         
 //        outa_raw <= 'h0;       
 //        outa_mux <= 'h0; 
@@ -361,6 +367,8 @@ begin
                 
                 REG_LED0_BRIGHTNESS: led0_brightness <= pwdata[15:0];
                 REG_LED1_BRIGHTNESS: led1_brightness <= pwdata[15:0];
+                
+                REG_I2C_SEL: i2c_sel <= pwdata[0];
                 
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                
