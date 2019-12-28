@@ -755,6 +755,8 @@ wire [15:0] usb_io2 = //GPIO_0_0_tri_o[47:32];
    
     
     
+wire [2:0] serial = usb_io1[15:13];
+
 
 
 i2c_ioexp #( 
@@ -935,7 +937,7 @@ codec_i2c_ioexp (
     
     .in(codec_io),
     .out0(codec_out),
-    .irq0(CODEC_IO_INT_N),
+    .irq0(!CODEC_IO_INT_N),
     
     .sclk(CODEC_IO_CLK),
 //    .sdata(CODEC_IO_DATA),
@@ -1382,7 +1384,9 @@ regs regs_inst (
     .pwr_led_r(pwr_led_r),
     
     .led0_brightness(led0_brightness),
-    .led1_brightness(led1_brightness)
+    .led1_brightness(led1_brightness),
+    
+    .serial(serial)
                 
 );    
     

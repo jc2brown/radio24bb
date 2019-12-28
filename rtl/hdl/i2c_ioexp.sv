@@ -39,7 +39,9 @@ module i2c_ioexp
     
     
 reg [15:0] in_d1 [0:1];
-wire irq [0:1] = { irq0, irq1 };
+wire irq [0:1];
+assign irq[0] = irq0;
+assign irq[1] = irq1; // = { irq0, irq1 };
 wire [15:0] inputs [0:1];
 assign inputs[0] = INPUTS0;
 assign inputs[1] = INPUTS1;
@@ -180,8 +182,8 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
 always @(posedge clk) begin
     if (reset) begin
         state <= STATE_RESET;
-        in_d1[0] <= !in;
-        in_d1[1] <= !in1;
+        in_d1[0] <= ~in;
+        in_d1[1] <= ~in1;
         
         read <= 0;
         write <= 0;

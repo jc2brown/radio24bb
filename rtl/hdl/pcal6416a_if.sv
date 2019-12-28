@@ -138,8 +138,8 @@ always @(posedge clk) begin
                 num_wr_bytes <= 3;
                 num_rd_bytes <= 0;
                 wr_data0 <= 8'h4A; // Interrupt mask
-                wr_data1 <= !inputs[7:0];
-                wr_data2 <= !inputs[15:0];  
+                wr_data1 <= ~inputs[7:0];
+                wr_data2 <= ~inputs[15:0];  
 //                i2c_start <= 1'b1;          
                 state <= STATE_INIT4;
             end           

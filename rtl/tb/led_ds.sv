@@ -18,7 +18,7 @@ ddac
 ddac_inst
 (
     .clk(clk),
-    .count(2),
+    .count(255),
     .out(out)
 );   
     

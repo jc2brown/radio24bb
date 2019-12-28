@@ -78,7 +78,9 @@ module regs (
     output reg pwr_led_r,
     
     output reg [15:0] led0_brightness,
-    output reg [15:0] led1_brightness
+    output reg [15:0] led1_brightness,
+    
+    input [2:0] serial 
     
 //    output reg [31:0] outa_raw,
     
@@ -179,6 +181,8 @@ localparam REG_PWR_LED_R = 12'h02C;
 
 localparam REG_LED0_BRIGHTNESS = 12'h030;
 localparam REG_LED1_BRIGHTNESS = 12'h034;
+
+localparam REG_SERIAL = 12'h038;
 
 //localparam REG_OUTA_RAW = 12'h1400;
 
@@ -431,6 +435,8 @@ begin
             end
         
         REG_USB_RD_EMPTY: prdata = {31'h0, usb_rd_fifo_empty};
+        
+        REG_SERIAL: prdata = serial;
         
 //        REG_OUTA_WR_COUNT: prdata = dac_a_wr_count;
         

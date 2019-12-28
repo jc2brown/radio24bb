@@ -491,9 +491,10 @@ int main()
 	// USB_LED_R = 1;
 	// PWR_LED_R = 1;
 
-	LED0_BRIGHTNESS = (uint32_t)(0.1 * ((1UL<<16)-1));
-	LED1_BRIGHTNESS = (uint32_t)(0.1 * ((1UL<<16)-1));
+	LED0_BRIGHTNESS = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
+	LED1_BRIGHTNESS = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
 
+	xil_printf("serial: %d\n", SERIAL);
 
 
 	while (1) {
