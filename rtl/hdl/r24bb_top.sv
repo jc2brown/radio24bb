@@ -370,6 +370,9 @@ wire ADC_IO_DATA_n;
 assign ADC_IO_CLK = !ADC_IO_CLK_n;
 assign ADC_IO_DATA = !ADC_IO_DATA_n;
 
+
+
+
 i2c_ioexp adc_i2c_ioexp (
 
     .clk(clk),
@@ -382,6 +385,8 @@ i2c_ioexp adc_i2c_ioexp (
     .sdata_oe_n()
 
 );
+
+
 
 
 
@@ -742,14 +747,14 @@ wire [15:0] usb_io2 = //GPIO_0_0_tri_o[47:32];
 
 
 
-i2c_ioexp #( .USE_IN2(1) )
+i2c_ioexp #( .USE_IN1(1) )
 usb_i2c_ioexp (
 
     .clk(clk),
     .reset(reset),
     
     .in(usb_io1),
-    .in2(usb_io2),
+    .in1(usb_io2),
     
     .sclk(USB_IO_CLK),
     .sdata(USB_IO_DATA),

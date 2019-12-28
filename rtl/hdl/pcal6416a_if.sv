@@ -18,8 +18,10 @@ module pcal6416a_ctrl
     output reg [15:0] out,
     output reg out_valid,
     
-    input [15:0] in_d1,
-    input irq,
+    input write,
+    input read,
+//    input [15:0] in_d1,
+//    input irq,
     
     input [15:0] inputs,
     input start_init,    
@@ -75,8 +77,8 @@ always @(posedge clk) begin
         state <= STATE_IDLE;
         //i2c_start <= 0;
         wr_data0 <= 0;
-        wr_data2 <= 0;
         wr_data1 <= 0;
+        wr_data2 <= 0;
         do_read <= 0;
         do_write <= 0;
         done <= 0;
@@ -93,8 +95,26 @@ always @(posedge clk) begin
             case (state)
             
             
+            STATE_IDLE: begin
+                done <= 1;                
+                
+                if (start_init) begin
+                    done <= 0;
+                    state <= STATE_INIT1;
+                end                                
+                                
+                if (start) begin                
+                    do_write <= write;//(in != in_d1);
+                    do_read <= read;//irq;
+                    done <= 0;
+                    state <= STATE_UPDATE;
+                end
+            end
+            
+            
             STATE_INIT1: begin
                 num_wr_bytes <= 3;
+                num_rd_bytes <= 0;
                 wr_data0 <= 8'h06; // Config port
                 wr_data1 <= inputs[7:0];
                 wr_data2 <= inputs[15:0];  
@@ -110,22 +130,6 @@ always @(posedge clk) begin
                 end
             end
             
-            
-            STATE_IDLE: begin
-                done <= 1;
-                
-                if (start_init) begin
-                    done <= 0;
-                    state <= STATE_INIT1;
-                end                                
-                                
-                if (start) begin                
-                    do_write <= (in != in_d1);
-                    do_read <= irq;
-                    done <= 0;
-                    state <= STATE_UPDATE;
-                end
-            end
             
             STATE_UPDATE: begin
                 
@@ -143,6 +147,7 @@ always @(posedge clk) begin
                         
             STATE_WRITE0: begin  
                 num_wr_bytes <= 3;
+                num_rd_bytes <= 0;
                 wr_data0 <= 8'h02; // Output port
                 wr_data1 <= in[7:0];
                 wr_data2 <= in[15:8];         
@@ -160,6 +165,7 @@ always @(posedge clk) begin
                         
             STATE_READ0: begin  
                 num_wr_bytes <= 1;
+                num_rd_bytes <= 0;
                 wr_data0 <= 8'h00; // Input port
 //                i2c_start <= 1'b1;     
                 state <= STATE_READ1;
@@ -171,8 +177,8 @@ always @(posedge clk) begin
                 end
             end                                        
             STATE_READ2: begin  
+                num_wr_bytes <= 0;
                 num_rd_bytes <= 2;
-                wr_data0 <= 8'h00; // Input port
 //                i2c_start <= 1'b1;     
                 state <= STATE_READ3;
             end

@@ -20,7 +20,7 @@ module i2c_ioexp
     input clk,
     input reset,
             
-    input [15:0] in0,
+    input [15:0] in,
     output reg [15:0] out0,
     input irq0,
         
@@ -29,18 +29,16 @@ module i2c_ioexp
     input irq1,
     
     output wire sclk,
-    output wire sdata_out,
+    output wire sdata,
     input sdata_in,
     output wire sdata_oe_n,
     
-    input sda
+    inout sda
     
 );
     
-wire [7:0] in [0:1];// = { in0, in1 };
-assign in[0] = in0;
-assign in[1] = in1;
-reg [7:0] in_d1 [0:1];
+    
+reg [15:0] in_d1 [0:1];
 wire irq [0:1] = { irq0, irq1 };
 wire [15:0] inputs [0:1];
 assign inputs[0] = INPUTS0;
@@ -50,6 +48,8 @@ wire [6:0] addr [0:1] = { 7'h20, 7'h21 };
 wire i2c_start;
 wire i2c_done;
 
+reg read;
+reg write;
 
 reg [1:0] sel = 0;
     
@@ -88,7 +88,7 @@ i2c_basic_inst
     .done(i2c_done),
     
     .sclk(sclk),
-    .sdata_out(sdata_out),
+    .sdata_out(sdata),
     .sdata_in(sdata_in),
     .sdata_oe_n(sdata_oe_n),
     
@@ -119,13 +119,15 @@ localparam STATE_LOOP0 = 5;
 localparam STATE_LOOP1 = 6;
 localparam STATE_LOOP2 = 7;
 localparam STATE_LOOP3 = 8;
-localparam STATE_RESET = 9;
+localparam STATE_LOOP4 = 9;
+localparam STATE_LOOP5 = 10;
+localparam STATE_RESET = 11;
 
 
 
 
 wire start_init = (state == STATE_INIT0A) || (state == STATE_INIT1A);
-wire start = (state == STATE_LOOP0) || (state == STATE_LOOP2);
+wire start = (state == STATE_LOOP1) || (state == STATE_LOOP4);
 
 
 
@@ -137,12 +139,12 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
     
     .enable(enable),
     
-    .in(in[sel]),
+    .in((sel == 0) ? in : in1),
     .out(out),
     .out_valid(out_valid),
     
-    .in_d1(in_d1[sel]),
-    .irq(irq[sel]),
+    .write(write),
+    .read(irq[sel]),
     
     .inputs(inputs[sel]),
     
@@ -178,8 +180,11 @@ pcal6416a_ctrl pcal6416a_ctrl_inst (
 always @(posedge clk) begin
     if (reset) begin
         state <= STATE_RESET;
-        in_d1[0] <= !in0;
+        in_d1[0] <= !in;
         in_d1[1] <= !in1;
+        
+        read <= 0;
+        write <= 0;
         
         sel <= 0;
         //start_init <= 0;  
@@ -235,41 +240,48 @@ always @(posedge clk) begin
         end
         
         
-        STATE_LOOP0: begin                
-            if (in0 != in_d1[0]) begin 
-                in_d1[0] <= in0;
-                sel <= 0;
-//                start <= 1;                
+        STATE_LOOP0: begin      
+            write <= 0;          
+            if (in != in_d1[0]) begin    
+                write <= 1;              
+                in_d1[0] <= in;
+                sel <= 0;     
                 state <= STATE_LOOP1;
             end
             else begin
-                state <= STATE_LOOP2;
+                state <= STATE_LOOP3;
             end
         end
-        STATE_LOOP1: begin
-//            start <= 0;
+        STATE_LOOP1: begin   
+            state <= STATE_LOOP2;        
+        end
+        STATE_LOOP2: begin
             if (done) begin
                 if (out_valid) begin
                     out0 <= out;
                 end
-                state <= STATE_LOOP2;
+                state <= STATE_LOOP3;
             end      
         end
         
         
-        STATE_LOOP2: begin                
-            if (in1 != in_d1[1]) begin 
+        
+        STATE_LOOP3: begin      
+            write <= 0;          
+            if (in1 != in_d1[1]) begin     
+                write <= 1;         
                 in_d1[1] <= in1;
-                sel <= 1;
-//                start <= 1;                
-                state <= STATE_LOOP3;
+                sel <= 1;         
+                state <= STATE_LOOP4;
             end
             else begin
                 state <= STATE_IDLE;
             end
         end
-        STATE_LOOP3: begin
-//            start <= 0;
+        STATE_LOOP4: begin   
+            state <= STATE_LOOP5;        
+        end
+        STATE_LOOP5: begin
             if (done) begin
                 if (out_valid) begin
                     out1 <= out;
@@ -277,6 +289,7 @@ always @(posedge clk) begin
                 state <= STATE_IDLE;
             end      
         end
+        
         
         endcase
     end

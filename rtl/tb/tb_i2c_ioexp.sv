@@ -27,9 +27,11 @@ initial begin
 //    #100000 in <= 8'hA1;
     repeat (1000*1000) #10000;
     in0 <= 16'hFF00;
+        
+    repeat (1000*1000) #5000;
+    in1 <= 16'hAA55;
     
-    
-    repeat (1000*1000) #10000;
+    repeat (1000*1000) #5000;
     in0 <= 16'hAA55;
     
     
@@ -73,7 +75,7 @@ dut
     .clk(clk),
     .reset(reset),
     
-    .in0(in0),
+    .in(in0),
     .out0(),
     .irq0(0),
     
@@ -82,7 +84,7 @@ dut
     .irq1(0),
     
     .sclk(sclk),
-    .sdata_out(sdata_out),
+    .sdata(sdata_out),
     .sdata_in(1),
     .sdata_oe_n()
     
