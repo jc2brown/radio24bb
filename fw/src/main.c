@@ -329,18 +329,18 @@ s32 i2c_write2(XIicPs *xiic2ps, u8 bus_addr, u8 *WriteBuffer, u16 ByteCount) {
 }
 
 
-/*
-s32 i2c_read8(u8 bus_addr, u8 reg_addr, u8 *BufferPtr, u16 ByteCount) {
+
+s32 i2c_read8_2(XIicPs *xiic2ps, u8 bus_addr, u8 reg_addr, u8 *BufferPtr, u16 ByteCount) {
 	u32 WrBfrOffset;
 	u8 WriteBuffer[1];
 	WriteBuffer[0] = reg_addr;
 	WrBfrOffset = 1;
-	_return_if_error_(i2c_write(bus_addr, WriteBuffer, WrBfrOffset));
-	_return_if_error_(XIicPs_MasterRecvPolled(get_xiicps(), BufferPtr, ByteCount, bus_addr));
-	while (XIicPs_BusIsBusy(get_xiicps()));
+	_return_if_error_(i2c_write2(xiic2ps, bus_addr, WriteBuffer, WrBfrOffset));
+	_return_if_error_(XIicPs_MasterRecvPolled(xiic2ps, BufferPtr, ByteCount, bus_addr));
+	while (XIicPs_BusIsBusy(xiic2ps));
 	return XST_SUCCESS;
 }
-*/
+/*
 s32 i2c_read16_2(XIicPs *xiic2ps, u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 ByteCount) {
 	u32 WrBfrOffset;
 	u8 WriteBuffer[2];
@@ -352,12 +352,14 @@ s32 i2c_read16_2(XIicPs *xiic2ps, u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 
 	while (XIicPs_BusIsBusy(xiic2ps));
 	return XST_SUCCESS;
 }
+*/
 
 
 
 
 
-
+#define INTC_DEVICE_ID		XPAR_SCUGIC_0_DEVICE_ID
+#define INTC_DEVICE_INT_ID	0x0E
 
 
 /*
@@ -366,10 +368,21 @@ s32 i2c_read16_2(XIicPs *xiic2ps, u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 
  */
 volatile static int InterruptProcessed = FALSE;
 
-static void AssertPrint(const char8 *FilenamePtr, s32 LineNumber){
-	xil_printf("ASSERT: File Name: %s ", FilenamePtr);
-	xil_printf("Line Number: %d\r\n",LineNumber);
+
+int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler,	XScuGicInstancePtr);
+	Xil_ExceptionEnable();
+	return XST_SUCCESS;
 }
+
+
+
+void DeviceDriverHandler(void *CallbackRef) {
+	InterruptProcessed = TRUE;
+}
+
+
+
 
 
 int ScuGicExample() {
@@ -388,8 +401,7 @@ int ScuGicExample() {
 		return XST_FAILURE;
 	}
 
-	Status = XScuGic_CfgInitialize(&InterruptController, GicConfig,
-					GicConfig->CpuBaseAddress);
+	Status = XScuGic_CfgInitialize(&InterruptController, GicConfig, GicConfig->CpuBaseAddress);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -453,20 +465,6 @@ int ScuGicExample() {
 	}
 
 	return XST_SUCCESS;
-}
-
-
-
-int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler,	XScuGicInstancePtr);
-	Xil_ExceptionEnable();
-	return XST_SUCCESS;
-}
-
-
-
-void DeviceDriverHandler(void *CallbackRef) {
-	InterruptProcessed = TRUE;
 }
 
 
@@ -580,7 +578,7 @@ int main()
 	}
 	_return_if_error_(XIicPs_CfgInitialize(&xiic2ps, ConfigPtr, ConfigPtr->BaseAddress));		
 	_return_if_error_(XIicPs_SelfTest(&xiic2ps));
-	_return_if_error_(XIicPs_SetSClk(&xiic2ps, 100000));
+	_return_if_error_(XIicPs_SetSClk(&xiic2ps, 400000));
 
 	xil_printf("2\n");
 
@@ -607,13 +605,24 @@ int main()
 	xil_printf("4\n");
 	{
 	uint8_t buf[2];
-	i2c_read16_2(&xiic2ps, 0x20, 0x02, buf, 2);
+	i2c_read8_2(&xiic2ps, 0x20, 0x00, buf, 2);
 	xil_printf("[0]:0x%02X  [1]:0x%02X\n", buf[0], buf[1]);
 	}
 
 
 
 	xil_printf("5\n");
+
+
+
+	{
+	uint8_t buf[3] = { 0x02, p0_value, p1_value };
+	i2c_write2(&xiic2ps, 0x20, buf, 3);
+	}
+
+
+	xil_printf("6\n");
+
 
 
 

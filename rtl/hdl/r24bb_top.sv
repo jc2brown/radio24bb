@@ -1347,7 +1347,7 @@ IOBUF codec_io_data_iobuf (
 
 
 assign I2C_sda_i = (i2c_sel==0) ? usb_io_data_in : codec_io_data_in;
-
+assign I2C_scl_i = 1;
 
 
 
