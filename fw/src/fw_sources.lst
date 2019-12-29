@@ -4,7 +4,9 @@ command.c
 dac.c  
 dds.c
 i2c.c  
+iicps.c
 ina219.c  
+ioexp.c
 list.c
 mpx.c
 radio24bb.c

@@ -1,4 +1,7 @@
 
+
+
+/*
 #include "xiicps.h"
 #include "roe.h"
 #include "i2c.h"
@@ -78,3 +81,5 @@ s32 i2c_read16(u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 ByteCount) {
 	while (XIicPs_BusIsBusy(get_xiicps()));
 	return XST_SUCCESS;
 }
+
+*/

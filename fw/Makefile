@@ -8,6 +8,7 @@ UNAME:=$(shell uname)
 .SUFFIXES:
 	
 COMPILER_FLAGS:=-Wall -O0 -g3 -c -fmessage-length=0 
+# COMPILER_FLAGS:=-w -O0 -g3 -c -fmessage-length=0 
 CC_FLAGS:=$(COMPILER_FLAGS)
 CXX_FLAGS:=$(COMPILER_FLAGS)
 

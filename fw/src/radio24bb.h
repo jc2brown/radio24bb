@@ -3,13 +3,34 @@
 #ifndef R24BB_H
 #define R24BB_H
 
+
 #include "xadcps.h"
+#include "xiicps.h"
+
+#include "ioexp.h"
+
+
 
 
 struct radio24bb {	
+
+	// Zynq peripherals
+	XIicPs *iicps0;
+	XIicPs *iicps1;
 	XAdcPs *xadc;
+	
+	// Board devices
+	struct ioexp *adc_ioexp;
+	struct ioexp *dac_ioexp;
+	struct ioexp *usb_ioexp_0;
+	struct ioexp *usb_ioexp_1;
+	struct ioexp *codec_ioexp;
+
+	// Misc.
 	struct radio24bb_regs *regs;
+
 };
+
 
 
 struct radio24bb_regs {	
@@ -33,12 +54,14 @@ struct radio24bb_regs {
 
 
 
-struct radio24bb *make_radio24bb(uint32_t regs_addr);
+struct radio24bb *make_radio24bb();
 
-void init_radio24bb(struct radio24bb *r24bb);
+int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr);
 
 
 
+
+int get_serial(struct radio24bb *r24bb);
 
 
 

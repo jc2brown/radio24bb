@@ -311,8 +311,8 @@ wire adc_b_empty;
 wire dora;
 wire dorb;
 
-assign GPIO_0_0_tri_i[7] = dora;
-assign GPIO_0_0_tri_i[3] = dorb;
+//assign GPIO_0_0_tri_i[7] = dora;
+//assign GPIO_0_0_tri_i[3] = dorb;
 
 
 wire [1:0] ina_att;
@@ -1354,8 +1354,8 @@ assign I2C_scl_i = 1;
 
 
 wire [1:0] IRQ_F2P_0 = {
-    CODEC_IO_INT_N,
-    USB_IO_INT_N
+    !CODEC_IO_INT_N,
+    !USB_IO_INT_N
 };
 
 
@@ -1365,7 +1365,9 @@ wire [1:0] IRQ_F2P_0 = {
 
 
 
-
+assign GPIO_0_0_tri_i[0] = !USB_IO_INT_N;
+assign GPIO_0_0_tri_i[1] = !CODEC_IO_INT_N;
+assign GPIO_0_0_tri_i[2] = GPIO_0_0_tri_o[3];
 
 r24bb_bd r24bb_bd_inst (
 

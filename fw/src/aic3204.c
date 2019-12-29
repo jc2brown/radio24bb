@@ -751,6 +751,6 @@ void init_aic3204() {
 	core_init();
 	adc_post_init();
 	dac_post_init();
-	aic3204_dump();
+	//aic3204_dump();
 }
 

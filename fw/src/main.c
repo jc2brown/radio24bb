@@ -1,40 +1,37 @@
-/*
- * Empty C++ Application
- */
 
-
-#include "xparameters.h"
-#include "xparameters_ps.h"
-#include "xgpiops.h"
-#include "sleep.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-#include "xscugic.h"
-
 #include <stdbool.h>
 
+#include "sleep.h"
+#include "xparameters.h"
+#include "xparameters_ps.h"
+#include "xgpiops.h"
+#include "xscugic.h"
 #include "xiicps.h"
+#include "xadc.h"
 
 #include "roe.h"
 
-#include "regs.h"
+#include "command.h"
 
 #include "i2c.h"
+
+#include "regs.h"
 #include "ina219.h"
 
-#include "radio24bb.h"
-#include "xadc.h"
+#include "aic3204.h"
 
 #include "adc.h"
 #include "dac.h"
 #include "dds.h"
 #include "mpx.h"
 
-#include "aic3204.h"
+#include "radio24bb.h"
 
-#include "command.h"
+
+
 
 
 void usb_handler(void *arg, struct command *cmd) {
@@ -319,47 +316,16 @@ void adc_handler(void *arg, struct command *cmd) {
 
 
 
-
-
-
-s32 i2c_write2(XIicPs *xiic2ps, u8 bus_addr, u8 *WriteBuffer, u16 ByteCount) {
-	_return_if_error_(XIicPs_MasterSendPolled(xiic2ps, WriteBuffer, ByteCount, bus_addr), "&WrBuf=%p, ByteCount=%d, SlvAddr=0x%X\n", &WriteBuffer, ByteCount, bus_addr);
-	while (XIicPs_BusIsBusy(xiic2ps));
-	return XST_SUCCESS;
+static void IntrHandler(void *CallBackRef, u32 Bank, u32 Status) {
+	XGpioPs *Gpio = (XGpioPs *)CallBackRef;
+	u32 DataRead;
+	print("INT!\n");
 }
-
-
-
-s32 i2c_read8_2(XIicPs *xiic2ps, u8 bus_addr, u8 reg_addr, u8 *BufferPtr, u16 ByteCount) {
-	u32 WrBfrOffset;
-	u8 WriteBuffer[1];
-	WriteBuffer[0] = reg_addr;
-	WrBfrOffset = 1;
-	_return_if_error_(i2c_write2(xiic2ps, bus_addr, WriteBuffer, WrBfrOffset));
-	_return_if_error_(XIicPs_MasterRecvPolled(xiic2ps, BufferPtr, ByteCount, bus_addr));
-	while (XIicPs_BusIsBusy(xiic2ps));
-	return XST_SUCCESS;
-}
-/*
-s32 i2c_read16_2(XIicPs *xiic2ps, u8 bus_addr, u16 reg_addr, u8 *BufferPtr, u16 ByteCount) {
-	u32 WrBfrOffset;
-	u8 WriteBuffer[2];
-	WriteBuffer[0] = (u8) (reg_addr >> 8);
-	WriteBuffer[1] = (u8) (reg_addr);
-	WrBfrOffset = 2;
-	_return_if_error_(i2c_write2(xiic2ps, bus_addr, WriteBuffer, WrBfrOffset));
-	_return_if_error_(XIicPs_MasterRecvPolled(xiic2ps, BufferPtr, ByteCount, bus_addr));
-	while (XIicPs_BusIsBusy(xiic2ps));
-	return XST_SUCCESS;
-}
-*/
-
-
 
 
 
 #define INTC_DEVICE_ID		XPAR_SCUGIC_0_DEVICE_ID
-#define INTC_DEVICE_INT_ID	0x0E
+#define INTC_DEVICE_INT_ID	XPAR_FABRIC_IRQ_F2P_01_INTR
 
 
 /*
@@ -372,6 +338,8 @@ volatile static int InterruptProcessed = FALSE;
 int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler,	XScuGicInstancePtr);
 	Xil_ExceptionEnable();
+
+	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
 	return XST_SUCCESS;
 }
 
@@ -379,10 +347,13 @@ int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
 
 void DeviceDriverHandler(void *CallbackRef) {
 	InterruptProcessed = TRUE;
+	print("int\n");
 }
 
 
 
+static u32 Input_Pin; /* Switch button */
+XGpioPs *gpiops_ptr ;
 
 
 int ScuGicExample() {
@@ -434,13 +405,64 @@ int ScuGicExample() {
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
-
+  	//XScuGic_SetPriorityTriggerType(&InterruptController, INTC_DEVICE_INT_ID,0x00, 0x3); 
 	/*
 	 * Enable the interrupt for the device and then cause (simulate) an
 	 * interrupt so the handlers will be called
 	 */
 	XScuGic_Enable(&InterruptController, INTC_DEVICE_INT_ID);
 
+
+	return XST_SUCCESS;
+
+
+	Status = XScuGic_Connect(&InterruptController, XPAR_XGPIOPS_0_INTR,
+				(Xil_ExceptionHandler)XGpioPs_IntrHandler,
+				(void *)gpiops_ptr);
+	if (Status != XST_SUCCESS) {
+		return Status;
+	}
+
+
+
+	XGpioPs_SetDirectionPin(gpiops_ptr, 54, 0x0);
+	XGpioPs_SetDirectionPin(gpiops_ptr, 55, 0x0);
+
+
+	XGpioPs_SetIntrType(gpiops_ptr, 2, 0x00, 0xFFFFFFFF, 0x00);
+	XGpioPs_SetCallbackHandler(gpiops_ptr, (void *)gpiops_ptr, IntrHandler);
+
+
+	// Enable the GPIO interrupts of Bank 0
+	XGpioPs_IntrEnable(gpiops_ptr, 2, 0x03);
+	XGpioPs_SetIntrTypePin(gpiops_ptr, 55, 3);
+
+	// Enable the interrupt for the GPIO device. 
+	XScuGic_Enable(&InterruptController, XPAR_XGPIOPS_0_INTR);
+
+
+	/*
+	// Enable interrupts in the Processor. 
+	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
+
+*/
+
+
+
+	return XST_SUCCESS;
+
+
+
+
+
+
+
+
+
+	XScuGic_InterruptMaptoCpu(&InterruptController, XPAR_CPU_ID, INTC_DEVICE_INT_ID);
+	XScuGic_SetPriorityTriggerType(&InterruptController, INTC_DEVICE_INT_ID, (0+1)<<3, 3);
+
+	return XST_SUCCESS;
 	/*
 	 *  Simulate the Interrupt
 	 */
@@ -448,6 +470,12 @@ int ScuGicExample() {
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
+
+ 
+
+ 
+
+
 
 	/*
 	 * Wait for the interrupt to be processed, if the interrupt does not
@@ -493,16 +521,16 @@ int main()
 	usleep(100000);
 
 	_return_if_error_(spi_init());
-	_return_if_error_(i2c_init());
-	_return_if_error_(i2c_selftest());
-	_return_if_error_(i2c_config());
-	_return_if_error_(ina219_config());
+	// _return_if_error_(i2c_init());
+	// _return_if_error_(i2c_selftest());
+	// _return_if_error_(i2c_config());
+	//_return_if_error_(ina219_config());
 
 	AUD_RATE = 2;
 	init_aic3204();
 
 	XGpioPs gpiops_inst;
-	XGpioPs *gpiops_ptr = &gpiops_inst;
+	gpiops_ptr = &gpiops_inst;
 
 	XGpioPs_Config *gpiops_config = XGpioPs_LookupConfig(XPAR_PS7_GPIO_0_DEVICE_ID);
 	XGpioPs_CfgInitialize(gpiops_ptr, gpiops_config, gpiops_config->BaseAddr);
@@ -569,7 +597,7 @@ int main()
 
 
 	I2C_SEL = 1;
-
+/*
 	XIicPs xiic2ps;
 
 	XIicPs_Config *ConfigPtr = XIicPs_LookupConfig(XPAR_PS7_I2C_1_DEVICE_ID);
@@ -623,22 +651,26 @@ int main()
 
 	xil_printf("6\n");
 
+*/
 
 
-
-	int result = ScuGicExample();
-	xil_printf("gic=%d\n", result);
-
-
-
-
+	// int result = ScuGicExample();
+	// xil_printf("gic=%d\n", result);
 
 
 
 
 
-	r24bb = make_radio24bb(R24BB_REGS);
-	init_radio24bb(r24bb);
+	struct radio24bb *r24bb = make_radio24bb();
+	
+	init_radio24bb(r24bb, R24BB_REGS);
+
+
+	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
+	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
+
+
+	xil_printf("serial=%d\n", get_serial(r24bb));
 
 	add_command(NULL, "adc", adc_handler);
 
@@ -743,7 +775,7 @@ int main()
 
 		handle_command();
 
-	xil_printf("serial: %d\n", SERIAL);
+		xil_printf("serial: %d\n", get_serial(r24bb));
 
 
 	}
