@@ -593,66 +593,6 @@ int main()
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
 
 
-	xil_printf("1\n");
-
-
-	I2C_SEL = 1;
-/*
-	XIicPs xiic2ps;
-
-	XIicPs_Config *ConfigPtr = XIicPs_LookupConfig(XPAR_PS7_I2C_1_DEVICE_ID);
-	if (ConfigPtr == NULL) {
-		_return_(XST_FAILURE, "XIicPs_LookupConfig failed\n")
-	}
-	_return_if_error_(XIicPs_CfgInitialize(&xiic2ps, ConfigPtr, ConfigPtr->BaseAddress));		
-	_return_if_error_(XIicPs_SelfTest(&xiic2ps));
-	_return_if_error_(XIicPs_SetSClk(&xiic2ps, 400000));
-
-	xil_printf("2\n");
-
-	uint8_t p0_inputs = 0x00;
-	uint8_t p1_inputs = 0x86;
-
-
-	uint8_t p0_value = 0x00;
-	uint8_t p1_value = 0x00;
-
-	{
-	uint8_t buf[3] = { 0x06, p0_inputs, p1_inputs };
-	i2c_write2(&xiic2ps, 0x20, buf, 3);
-	}
-
-
-	xil_printf("3\n");
-	{
-	uint8_t buf[3] = { 0x4A, ~p0_inputs, ~p1_inputs };
-	i2c_write2(&xiic2ps, 0x20, buf, 3);
-	}
-
-
-	xil_printf("4\n");
-	{
-	uint8_t buf[2];
-	i2c_read8_2(&xiic2ps, 0x20, 0x00, buf, 2);
-	xil_printf("[0]:0x%02X  [1]:0x%02X\n", buf[0], buf[1]);
-	}
-
-
-
-	xil_printf("5\n");
-
-
-
-	{
-	uint8_t buf[3] = { 0x02, p0_value, p1_value };
-	i2c_write2(&xiic2ps, 0x20, buf, 3);
-	}
-
-
-	xil_printf("6\n");
-
-*/
-
 
 	// int result = ScuGicExample();
 	// xil_printf("gic=%d\n", result);
@@ -660,17 +600,22 @@ int main()
 
 
 
+	xil_printf("Starting Baseband... \n");
 
+	xil_printf("Allocating devices... \n");
 	struct radio24bb *r24bb = make_radio24bb();
+	xil_printf("Done allocating devices.\n");
 	
+	xil_printf("Initializing devices... \n");
 	init_radio24bb(r24bb, R24BB_REGS);
+	xil_printf("Done initializing devices.\n");
+
+	xil_printf("Baseband ready! \n");
+	xil_printf("  S/N: %d\n", get_serial(r24bb));
 
 
-	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
-	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
 
 
-	xil_printf("serial=%d\n", get_serial(r24bb));
 
 	add_command(NULL, "adc", adc_handler);
 

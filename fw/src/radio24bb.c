@@ -112,6 +112,16 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
+
+
+
+	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
+	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
+
+
+
+
+	
 	return XST_SUCCESS;
 }
 
