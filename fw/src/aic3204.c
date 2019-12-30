@@ -2,10 +2,12 @@
 
 #include "xspips.h"
 
-#include "spi.h"
-
+#include "spips.h"
+#include "command.h"
 
 #include "aic3204.h"
+#include "regs.h"
+
 
 
 struct aic3204 *make_aic3204() {
@@ -13,6 +15,16 @@ struct aic3204 *make_aic3204() {
 	struct aic3204 *aic = (struct aic3204 *)malloc(sizeof(struct aic3204));
 	return aic;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 void transfer(struct aic3204 *aic, uint8_t addr, uint8_t data_in, uint8_t *data_out) {
@@ -749,9 +761,64 @@ void dac_post_init(struct aic3204 *aic) {
 
 
 
+
+
+
+void aud_rate_handler(void *arg, struct command *cmd) {
+
+	struct aic3204 *aic = (struct aic3204 *)arg;
+
+	int aud_rate = atoi(cmd->tokens[cmd->index++]);
+	if (aud_rate == 0) {
+		AUD_RATE = 0;		
+		set_adc_osr(aic, 128);
+		set_adc_prb(aic, 1);
+		set_dac_osr(aic, 128);
+		set_dac_prb(aic, 17);
+	}
+	if (aud_rate == 11) {
+		set_adc_prb(aic, 1);
+	}
+	if (aud_rate == 12) {
+		set_adc_prb(aic, 2);
+	}
+	if (aud_rate == 13) {
+		set_adc_prb(aic, 3);
+	}
+	if (aud_rate == 1) {
+		AUD_RATE = 1;		
+		set_adc_osr(aic, 64);
+		set_adc_prb(aic, 14); //??
+		set_dac_osr(aic, 64);
+		set_dac_prb(aic, 8);  //??
+	}
+	if (aud_rate == 2) {
+		AUD_RATE = 2;		
+		set_adc_osr(aic, 32);
+		set_adc_prb(aic, 14);
+		set_dac_osr(aic, 32);
+		set_dac_prb(aic, 8);
+	}
+
+}
+
+
+
+
+
+
+
 int init_aic3204(struct aic3204 *aic, XSpiPs *spips) {
 	aic->spips = spips;	
 	aic->page = -1;
+
+
+	struct cmd_context *aud = make_cmd_context("aud", (void*)aic);	
+	add_command(aud, "rate", aud_rate_handler);
+	add_subcontext(NULL, aud);
+
+
+
 	aic3204_reset(aic);
 	adc_pre_init(aic);
 	dac_pre_init(aic);

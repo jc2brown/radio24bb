@@ -266,50 +266,10 @@ void led_handler(void *arg, struct command *cmd) {
 
 
 
-void aud_rate_handler(void *arg, struct command *cmd) {
-	xil_printf("todo!!\n");
-/*
-	int aud_rate = atoi(cmd->tokens[cmd->index++]);
-	if (aud_rate == 0) {
-		AUD_RATE = 0;		
-		set_adc_osr(128);
-		set_adc_prb(1);
-		set_dac_osr(128);
-		set_dac_prb(17);
-	}
-	if (aud_rate == 11) {
-		set_adc_prb(1);
-	}
-	if (aud_rate == 12) {
-		set_adc_prb(2);
-	}
-	if (aud_rate == 13) {
-		set_adc_prb(3);
-	}
-	if (aud_rate == 1) {
-		AUD_RATE = 1;		
-		set_adc_osr(64);
-		set_adc_prb(14); //??
-		set_dac_osr(64);
-		set_dac_prb(8);  //??
-	}
-	if (aud_rate == 2) {
-		AUD_RATE = 2;		
-		set_adc_osr(32);
-		set_adc_prb(14);
-		set_dac_osr(32);
-		set_dac_prb(8);
-	}
-*/
-}
 
-
-struct radio24bb *r24bb;
-
-
-void adc_handler(void *arg, struct command *cmd) {
-	xadc_report(r24bb->xadc);
-}
+// void xadc_handler(void *arg, struct command *cmd) {
+// 	xadc_report(r24bb->xadc);
+// }
 
 
 
@@ -567,7 +527,10 @@ int main()
 
 
 
-	add_command(NULL, "adc", adc_handler);
+
+
+
+	// add_command(NULL, "xadc", xadc_handler);
 
 
 	//add_command(NULL, "tonea", tonea_handler);
@@ -581,11 +544,6 @@ int main()
 	add_command(NULL, "led", led_handler);
 
 
-
-	struct cmd_context * aud = make_cmd_context("aud", NULL);	
-	add_command(aud, "rate", aud_rate_handler);
-
-	add_subcontext(NULL, aud);
 
 
 
@@ -618,6 +576,7 @@ int main()
 
 	issue_command("outa att 0", NULL);
 	issue_command("outb att 3", NULL);
+
 
 
 
