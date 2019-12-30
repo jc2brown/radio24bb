@@ -13,7 +13,7 @@
 
 struct cmd_context {
 	struct cmd_context *parent;
-	const char *name;
+	char *name;
 	void *arg;
 	struct stringmap_node *subcontexts;
 	struct stringmap_node *commands;

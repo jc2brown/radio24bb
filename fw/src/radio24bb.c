@@ -13,6 +13,8 @@
 #include "iicps.h"
 #include "gpiops.h"
 
+#include "command.h"
+
 #include "aic3204.h"
 
 #include "spips.h"
@@ -116,7 +118,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	// init_usb(r24bb->usb);
 
 
-
+	r24bb->serial = get_serial(r24bb);
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
@@ -124,10 +126,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 
-
-
-
-
+	get_root_context()->name[2] = '0' + r24bb->serial;
 
 
 

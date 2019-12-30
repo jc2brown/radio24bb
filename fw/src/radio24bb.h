@@ -34,6 +34,8 @@ struct radio24bb {
 
 	// Misc.
 	struct radio24bb_regs *regs;
+	
+	int serial;
 
 };
 

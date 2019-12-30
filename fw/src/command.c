@@ -40,21 +40,6 @@ void add_command(struct cmd_context *ctx, const char *name, void (*handler)(void
 
 
 
-void tokenize_command(const char *cmd_str, struct command *cmd) {
-	init_command(cmd);
-	for (char *c = (char*)cmd_str; *c != '\0'; ++c) {
-		if (isgraph(*c)) {
-			if (c == cmd_str || !isgraph(*(c-1))) { // Relying on short-circuit to prevent accessing line-1
-				cmd->tokens[cmd->num_tokens++] = c;
-			}
-		} else {
-			*c = '\0';
-		}
-	}
-}
-
-
-
 
 static bool print_cmd_ok = false;
 
@@ -86,10 +71,29 @@ void init_command(struct command *cmd) {
 	}
 }
 
+
+
+
+void tokenize_command(const char *cmd_str, struct command *cmd) {
+	init_command(cmd);
+	for (char *c = (char*)cmd_str; *c != '\0'; ++c) {
+		if (isgraph(*c)) {
+			if (c == cmd_str || !isgraph(*(c-1))) { // Relying on short-circuit to prevent accessing line-1
+				cmd->tokens[cmd->num_tokens++] = c;
+			}
+		} else {
+			*c = '\0';
+		}
+	}
+}
+
+
+
 void get_command(struct command *cmd) {
 	fgets(cmd->line, 1024, stdin);
 	tokenize_command(cmd->line, cmd);
 }
+
 
 
 
@@ -190,7 +194,7 @@ void init_root_context() {
 	if (inited) {
 		return;
 	}
-	root_ctx = make_cmd_context("bb", NULL);
+	root_ctx = make_cmd_context("bbX", NULL);
 	inited = 1;
 	set_root_context();
 }
