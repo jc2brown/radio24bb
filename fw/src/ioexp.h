@@ -23,7 +23,7 @@ struct ioexp {
 struct ioexp *make_ioexp();
 
 
-int ioexp_init(
+int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
 		int if_type, 

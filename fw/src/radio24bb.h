@@ -3,7 +3,7 @@
 #ifndef R24BB_H
 #define R24BB_H
 
-
+#include "xgpiops.h"
 #include "xadcps.h"
 #include "xiicps.h"
 #include "xspips.h"
@@ -16,6 +16,7 @@
 struct radio24bb {	
 
 	// Zynq peripherals
+	XGpioPs *gpiops;
 	XSpiPs *spips1;
 	XIicPs *iicps0;
 	XIicPs *iicps1;

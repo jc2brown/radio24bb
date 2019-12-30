@@ -1,11 +1,8 @@
 #include <stdlib.h>
 
-#include "spi.h"
+#include "spips.h"
 #include "xspips.h"
 #include "roe.h"
-
-XSpiPs xspips_inst;
-XSpiPs *xspips_ptr = &xspips_inst;
 
 
 

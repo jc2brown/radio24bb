@@ -3,6 +3,7 @@ aic3204.c
 command.c
 dac.c  
 dds.c
+gpiops.c
 i2c.c  
 iicps.c
 ina219.c  
@@ -10,7 +11,7 @@ ioexp.c
 list.c
 mpx.c
 radio24bb.c
-spi.c 
+spips.c 
 stringmap.c
 xadc.c
 main.c

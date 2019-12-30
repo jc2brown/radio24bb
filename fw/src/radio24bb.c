@@ -11,10 +11,12 @@
 #include "xiicps.h"
 #include "xspips.h"
 #include "iicps.h"
+#include "gpiops.h"
 
 #include "aic3204.h"
 
-
+#include "spips.h"
+#include "regs.h"
 
 
 void init_radio24bb_regs(struct radio24bb_regs *regs) {
@@ -48,8 +50,8 @@ struct radio24bb *make_radio24bb() {
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
+	r24bb->gpiops = make_gpiops();
 	r24bb->spips1 = make_spips();
-
 	r24bb->iicps0 = make_iicps();
 	r24bb->iicps1 = make_iicps();
 
@@ -69,28 +71,16 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	xil_printf("init_radio24bb\n");
 
+	_return_if_error_(init_gpiops(r24bb->gpiops, XPAR_PS7_GPIO_0_DEVICE_ID));
 	_return_if_error_(init_spips(r24bb->spips1, XPAR_PS7_SPI_1_DEVICE_ID));
-
 	_return_if_error_(init_iicps(r24bb->iicps0, XPAR_PS7_I2C_0_DEVICE_ID, IICPS0_CLK_RATE));
 	_return_if_error_(init_iicps(r24bb->iicps1, XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE));
-
-	// XIicPs_Config *i2c0_cfg;
-	// _return_if_null_(i2c0_cfg = XIicPs_LookupConfig(XPAR_PS7_I2C_0_DEVICE_ID));
-	// _return_if_error_(XIicPs_CfgInitialize(r24bb->i2c0, i2c0_cfg, i2c0_cfg->BaseAddress));		
-	// _return_if_error_(XIicPs_SelfTest(r24bb->i2c0));
-	// _return_if_error_(XIicPs_SetSClk(r24bb->i2c0, 400000));
-
-	// XIicPs_Config *i2c1_cfg;
-	// _return_if_null_(i2c1_cfg = XIicPs_LookupConfig(XPAR_PS7_I2C_1_DEVICE_ID));
-	// _return_if_error_(XIicPs_CfgInitialize(r24bb->i2c1, i2c1_cfg, i2c1_cfg->BaseAddress));		
-	// _return_if_error_(XIicPs_SelfTest(r24bb->i2c1));
-	// _return_if_error_(XIicPs_SetSClk(r24bb->i2c1, 400000));
-
-
 
 	// r24bb->adc_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
 	// r24bb->dac_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
 
+
+	AUD_RATE = 2;
 
 	_return_if_error_(init_aic3204(
 			r24bb->codec,
@@ -107,7 +97,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(init_ioexp(r24bb->usb_ioexp_1,
 			r24bb->iicps1,
-
 			IOEXP_IICPS, 0x21, I2C_SEL_USB,
 			USB_IOEXP_1_PORT0_INPUTS,
 			USB_IOEXP_1_PORT1_INPUTS
@@ -125,7 +114,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	// init_adc(r24bb->adc);
 	// init_dac(r24bb->dac);
 	// init_usb(r24bb->usb);
-	// init_codec(r24bb->codec);
 
 
 
@@ -133,6 +121,46 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
 
+
+
+
+	XGpioPs_SetDirection(r24bb->gpiops, 0, 0x0);
+	XGpioPs_SetOutputEnable(r24bb->gpiops, 0, 0x0);
+
+
+	XGpioPs_SetDirection(r24bb->gpiops, 1, 0xFFFFFFFF);
+	XGpioPs_SetDirection(r24bb->gpiops, 2, 0xFFFFFFFF);
+	XGpioPs_SetDirection(r24bb->gpiops, 3, 0xFFFFFFFF);
+
+	XGpioPs_SetOutputEnable(r24bb->gpiops, 1, 0xFFFFFFFF);
+	XGpioPs_SetOutputEnable(r24bb->gpiops, 2, 0xFFFFFFFF);
+	XGpioPs_SetOutputEnable(r24bb->gpiops, 3, 0xFFFFFFFF);
+
+
+	/*
+	XGpioPs_Write(gpiops_ptr, 0, 0xFFFFFFFF);
+	XGpioPs_Write(gpiops_ptr, 1, 0xFFFFFFFF);
+	XGpioPs_Write(gpiops_ptr, 2, 0xFFFFFFFF);
+	XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
+
+*/
+
+	XGpioPs_Write(r24bb->gpiops, 1, 0x0);
+	XGpioPs_Write(r24bb->gpiops, 2, 0x00);
+	XGpioPs_Write(r24bb->gpiops, 3, 0x00);
+	usleep(500000);
+	XGpioPs_Write(r24bb->gpiops, 2, 0xFFFFFFFF);
+	XGpioPs_Write(r24bb->gpiops, 3, 0xFFFFFFFF);
+
+
+	XGpioPs_WritePin(r24bb->gpiops, 54, 1);	// INB ATT0
+	XGpioPs_WritePin(r24bb->gpiops, 55, 1);	// INB ATT1
+
+	XGpioPs_WritePin(r24bb->gpiops, 58, 1);  // INA ATT0
+	XGpioPs_WritePin(r24bb->gpiops, 59, 1);  // INA ATT1
+
+
+	XGpioPs_WritePin(r24bb->gpiops, 90, 1);	// USB_RESET_N
 
 
 

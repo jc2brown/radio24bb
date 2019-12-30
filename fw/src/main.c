@@ -7,9 +7,7 @@
 #include "sleep.h"
 #include "xparameters.h"
 #include "xparameters_ps.h"
-#include "xgpiops.h"
 #include "xscugic.h"
-#include "xiicps.h"
 #include "xadc.h"
 
 #include "roe.h"
@@ -512,70 +510,6 @@ int ScuGicExample() {
 
 
 
-
-
-
-int main()
-{
-
-	xil_printf("\nHello\r\n");
-	usleep(100000);
-
-	//_return_if_error_(spi_init());
-	// _return_if_error_(i2c_init());
-	// _return_if_error_(i2c_selftest());
-	// _return_if_error_(i2c_config());
-	//_return_if_error_(ina219_config());
-
-	AUD_RATE = 2;
-	//init_aic3204();
-
-	XGpioPs gpiops_inst;
-	gpiops_ptr = &gpiops_inst;
-
-	XGpioPs_Config *gpiops_config = XGpioPs_LookupConfig(XPAR_PS7_GPIO_0_DEVICE_ID);
-	XGpioPs_CfgInitialize(gpiops_ptr, gpiops_config, gpiops_config->BaseAddr);
-
-
-	XGpioPs_SetDirection(gpiops_ptr, 0, 0x0);
-	XGpioPs_SetOutputEnable(gpiops_ptr, 0, 0x0);
-
-
-	XGpioPs_SetDirection(gpiops_ptr, 1, 0xFFFFFFFF);
-	XGpioPs_SetDirection(gpiops_ptr, 2, 0xFFFFFFFF);
-	XGpioPs_SetDirection(gpiops_ptr, 3, 0xFFFFFFFF);
-
-	XGpioPs_SetOutputEnable(gpiops_ptr, 1, 0xFFFFFFFF);
-	XGpioPs_SetOutputEnable(gpiops_ptr, 2, 0xFFFFFFFF);
-	XGpioPs_SetOutputEnable(gpiops_ptr, 3, 0xFFFFFFFF);
-
-	/*
-	XGpioPs_Write(gpiops_ptr, 0, 0xFFFFFFFF);
-	XGpioPs_Write(gpiops_ptr, 1, 0xFFFFFFFF);
-	XGpioPs_Write(gpiops_ptr, 2, 0xFFFFFFFF);
-	XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
-
-*/
-
-	XGpioPs_Write(gpiops_ptr, 1, 0x0);
-	XGpioPs_Write(gpiops_ptr, 2, 0x00);
-	XGpioPs_Write(gpiops_ptr, 3, 0x00);
-	usleep(500000);
-	XGpioPs_Write(gpiops_ptr, 2, 0xFFFFFFFF);
-	XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
-
-
-	XGpioPs_WritePin(gpiops_ptr, 54, 1);	// INB ATT0
-	XGpioPs_WritePin(gpiops_ptr, 55, 1);	// INB ATT1
-
-	XGpioPs_WritePin(gpiops_ptr, 58, 1);  // INA ATT0
-	XGpioPs_WritePin(gpiops_ptr, 59, 1);  // INA ATT1
-
-
-	XGpioPs_WritePin(gpiops_ptr, 90, 1);	// USB_RESET_N
-
-
-
 #define INA_REGS 0x43C00000UL
 #define INB_REGS 0x43C01000UL
 
@@ -589,6 +523,21 @@ int main()
 #define DDSB_REGS 0x43C06000UL
 
 #define MPX_REGS 0x43C07000UL
+
+
+
+int main()
+{
+	xil_printf("\nHello\r\n");
+	usleep(100000);
+
+	//_return_if_error_(ina219_config());
+
+
+
+
+
+
 
 //	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
 //	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
