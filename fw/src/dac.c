@@ -6,28 +6,21 @@
 
 #include "dac.h"
 #include "command.h"
+#include "roe.h"
 
 
 
 
 
 
-struct dac_channel *make_dac_channel(uint32_t regs_addr) {
+struct dac_channel *make_dac_channel() {
 	struct dac_channel *channel = (struct dac_channel *)malloc(sizeof(struct dac_channel));
-	channel->regs = (struct dac_channel_regs *)regs_addr;
-	init_dac_channel_regs(channel->regs);
 	return channel;
 }
 
 
 
-void init_dac_channel(struct dac_channel *channel) {
-	init_dac_channel_regs(channel->regs);
-}
-
-
-
-void init_dac_channel_regs(struct dac_channel_regs *regs) {
+int init_dac_channel_regs(struct dac_channel_regs *regs) {
 
 	regs->gain = 256;
 	regs->offset = 0;
@@ -47,7 +40,22 @@ void init_dac_channel_regs(struct dac_channel_regs *regs) {
 	regs->led = 0b000;
 
 	regs->mux = 4;
+
+	return XST_SUCCESS;
 }
+
+
+int init_dac_channel(struct dac_channel *channel, uint32_t regs_addr) {
+	xil_printf("init_dac_channel\n");
+	channel->regs = (struct dac_channel_regs *)regs_addr;
+	xil_printf("X\n");
+	_return_if_error_(init_dac_channel_regs(channel->regs));
+	xil_printf("X\n");
+	return XST_SUCCESS;
+}
+
+
+
 
 
 

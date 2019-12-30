@@ -809,6 +809,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 
 
 int init_aic3204(struct aic3204 *aic, XSpiPs *spips) {
+	xil_printf("init_aic3204\n");
 	aic->spips = spips;	
 	aic->page = -1;
 

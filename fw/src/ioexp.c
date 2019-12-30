@@ -7,10 +7,6 @@
 #include "ioexp.h"
 
 
-#include "regs.h"
-
-
-
 
 #define IOEXP_REG_IN0 0x00
 #define IOEXP_REG_IN1 0x01

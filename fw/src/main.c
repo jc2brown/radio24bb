@@ -472,9 +472,6 @@ int ScuGicExample() {
 
 
 
-#define OUTA_REGS 0x43C02000UL
-#define OUTB_REGS 0x43C03000UL
-
 #define R24BB_REGS 0x43C04000UL
 
 #define DDSA_REGS 0x43C05000UL
@@ -552,13 +549,13 @@ int main()
 	init_adc_channel_context("inb", inb, NULL);
 */
 
-
+/*
 	struct dac_channel *outa = make_dac_channel(OUTA_REGS);
 	struct dac_channel *outb = make_dac_channel(OUTB_REGS);
 
 	init_dac_channel_context("outa", outa, NULL);
 	init_dac_channel_context("outb", outb, NULL);
-
+*/
 
 	struct dds_channel *ddsa = make_dds_channel(DDSA_REGS);
 	struct dds_channel *ddsb = make_dds_channel(DDSB_REGS);

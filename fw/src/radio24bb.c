@@ -73,6 +73,9 @@ struct radio24bb *make_radio24bb() {
 	r24bb->ina = make_adc_channel();
 	r24bb->inb = make_adc_channel();
 
+	r24bb->outa = make_adc_channel();
+	r24bb->outb = make_adc_channel();
+
 	r24bb->codec = make_aic3204();
 
 	r24bb->usb_ioexp_0 = make_ioexp();
@@ -104,12 +107,26 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 	_return_if_error_(init_adc_channel(
-			r24bb->ina, INB_REGS
+			r24bb->inb, INB_REGS
 	));
 
-	init_adc_channel_context("ina", r24bb->ina, NULL);
-	init_adc_channel_context("inb", r24bb->inb, NULL);
 
+
+	r24bb->regs = (struct radio24bb_regs *)regs_addr;
+	init_radio24bb_regs(r24bb->regs);
+
+
+
+#define OUTA_REGS 0x43C02000UL
+#define OUTB_REGS 0x43C03000UL
+
+	_return_if_error_(init_dac_channel(
+			r24bb->outa, OUTA_REGS
+	));
+
+	_return_if_error_(init_dac_channel(
+			r24bb->outb, OUTB_REGS
+	));
 
 
 
@@ -141,7 +158,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-
 	// init_adc(r24bb->adc);
 	// init_dac(r24bb->dac);
 	// init_usb(r24bb->usb);
@@ -149,15 +165,15 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	r24bb->serial = get_serial(r24bb);
 
-	r24bb->regs = (struct radio24bb_regs *)regs_addr;
-	init_radio24bb_regs(r24bb->regs);
-
-
 
 
 	get_root_context()->name[2] = '0' + r24bb->serial;
 
+	init_adc_channel_context("ina", r24bb->ina, NULL);
+	init_adc_channel_context("inb", r24bb->inb, NULL);
 
+	init_dac_channel_context("outa", r24bb->outa, NULL);
+	init_dac_channel_context("outb", r24bb->outb, NULL);
 
 
 

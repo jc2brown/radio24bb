@@ -11,6 +11,7 @@
 #include "ioexp.h"
 #include "aic3204.h"
 #include "adc.h"
+#include "dac.h"
 
 
 struct radio24bb {	
@@ -25,6 +26,9 @@ struct radio24bb {
 	// Board devices
 	struct adc_channel *ina;
 	struct adc_channel *inb;
+
+	struct dac_channel *outa;
+	struct dac_channel *outb;
 
 	struct aic3204 *codec;
 

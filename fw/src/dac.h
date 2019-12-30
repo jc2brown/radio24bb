@@ -12,9 +12,9 @@ struct dac_channel {
 
 
 
-struct dac_channel *make_dac_channel(uint32_t regs_addr);
+struct dac_channel *make_dac_channel();
 
-void init_dac_channel(struct dac_channel *channel);
+int init_dac_channel(struct dac_channel *channel, uint32_t regs_addr);
 
 void init_dac_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
 
@@ -136,7 +136,7 @@ struct dac_channel_regs {
 
 
 
-void init_dac_channel_regs(struct dac_channel_regs *regs);
+// void init_dac_channel_regs(struct dac_channel_regs *regs);
 
 
 #endif

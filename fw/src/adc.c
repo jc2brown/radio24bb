@@ -46,6 +46,7 @@ int init_adc_channel_regs(struct adc_channel_regs *regs) {
 
 
 int init_adc_channel(struct adc_channel *channel, uint32_t regs_addr) {
+	xil_printf("init_adc_channel\n");
 	channel->regs = (struct adc_channel_regs *)regs_addr;
 	_return_if_error_(init_adc_channel_regs(channel->regs));
 	return XST_SUCCESS;
