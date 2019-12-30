@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "spi.h"
 #include "xspips.h"
 #include "roe.h"
@@ -6,19 +8,20 @@ XSpiPs xspips_inst;
 XSpiPs *xspips_ptr = &xspips_inst;
 
 
-int spi_init() {
 
-	XSpiPs_Config *cfg = XSpiPs_LookupConfig(XPAR_PS7_SPI_1_DEVICE_ID);
-	_return_if_error_(XSpiPs_CfgInitialize(xspips_ptr, cfg, cfg->BaseAddress));
-	_return_if_error_(XSpiPs_SelfTest(xspips_ptr));
-	//XSpiPs_Enable(xspips_ptr);
-
-	XSpiPs_SetOptions(xspips_ptr,
-			XSPIPS_MASTER_OPTION | XSPIPS_FORCE_SSELECT_OPTION | XSPIPS_CR_CPHA_MASK
-	);
-
-	XSpiPs_SetClkPrescaler(xspips_ptr, XSPIPS_CLK_PRESCALE_64);
-	XSpiPs_SetSlaveSelect(xspips_ptr, 0x7);
-	return XST_SUCCESS;
-
+XSpiPs *make_spips() {
+	XSpiPs *spips = (XSpiPs *)malloc(sizeof(XSpiPs));
+	return spips;
 }
+
+
+int init_spips(XSpiPs *spips, int device_id) {
+	XSpiPs_Config *cfg = XSpiPs_LookupConfig(device_id);
+	_return_if_error_(XSpiPs_CfgInitialize(spips, cfg, cfg->BaseAddress));
+	_return_if_error_(XSpiPs_SelfTest(spips));
+	XSpiPs_SetOptions(spips, XSPIPS_MASTER_OPTION | XSPIPS_FORCE_SSELECT_OPTION | XSPIPS_CR_CPHA_MASK);
+	XSpiPs_SetClkPrescaler(spips, XSPIPS_CLK_PRESCALE_64);
+	XSpiPs_SetSlaveSelect(spips, 0x7);
+	return XST_SUCCESS;
+}
+

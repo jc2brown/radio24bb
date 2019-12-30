@@ -9,8 +9,10 @@
 #include "xadcps.h"
 #include "xadc.h"
 #include "xiicps.h"
+#include "xspips.h"
 #include "iicps.h"
 
+#include "aic3204.h"
 
 
 
@@ -46,10 +48,14 @@ struct radio24bb *make_radio24bb() {
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
+	r24bb->spips1 = make_spips();
+
 	r24bb->iicps0 = make_iicps();
 	r24bb->iicps1 = make_iicps();
 
 	r24bb->xadc = (XAdcPs *)malloc(sizeof(XAdcPs));
+
+	r24bb->codec = make_aic3204();
 
 	r24bb->usb_ioexp_0 = make_ioexp();
 	r24bb->usb_ioexp_1 = make_ioexp();
@@ -62,6 +68,8 @@ struct radio24bb *make_radio24bb() {
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	xil_printf("init_radio24bb\n");
+
+	_return_if_error_(init_spips(r24bb->spips1, XPAR_PS7_SPI_1_DEVICE_ID));
 
 	_return_if_error_(init_iicps(r24bb->iicps0, XPAR_PS7_I2C_0_DEVICE_ID, IICPS0_CLK_RATE));
 	_return_if_error_(init_iicps(r24bb->iicps1, XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE));
@@ -84,6 +92,10 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	// r24bb->dac_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
 
 
+	_return_if_error_(init_aic3204(
+			r24bb->codec,
+			r24bb->spips1
+	));
 
 
 	_return_if_error_(init_ioexp(r24bb->usb_ioexp_0,
@@ -110,8 +122,18 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 
+	// init_adc(r24bb->adc);
+	// init_dac(r24bb->dac);
+	// init_usb(r24bb->usb);
+	// init_codec(r24bb->codec);
+
+
+
+
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
+
+
 
 
 
@@ -121,7 +143,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 
-	
+
 	return XST_SUCCESS;
 }
 

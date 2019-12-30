@@ -6,20 +6,25 @@
 
 #include "xadcps.h"
 #include "xiicps.h"
+#include "xspips.h"
 
 #include "ioexp.h"
-
+#include "aic3204.h"
 
 
 
 struct radio24bb {	
 
 	// Zynq peripherals
+	XSpiPs *spips1;
 	XIicPs *iicps0;
 	XIicPs *iicps1;
 	XAdcPs *xadc;
 	
 	// Board devices
+
+	struct aic3204 *codec;
+
 	struct ioexp *adc_ioexp;
 	struct ioexp *dac_ioexp;
 	struct ioexp *usb_ioexp_0;

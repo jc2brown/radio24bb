@@ -269,7 +269,8 @@ void led_handler(void *arg, struct command *cmd) {
 
 
 void aud_rate_handler(void *arg, struct command *cmd) {
-
+	xil_printf("todo!!\n");
+/*
 	int aud_rate = atoi(cmd->tokens[cmd->index++]);
 	if (aud_rate == 0) {
 		AUD_RATE = 0;		
@@ -301,7 +302,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 		set_dac_osr(32);
 		set_dac_prb(8);
 	}
-
+*/
 }
 
 
@@ -520,14 +521,14 @@ int main()
 	xil_printf("\nHello\r\n");
 	usleep(100000);
 
-	_return_if_error_(spi_init());
+	//_return_if_error_(spi_init());
 	// _return_if_error_(i2c_init());
 	// _return_if_error_(i2c_selftest());
 	// _return_if_error_(i2c_config());
 	//_return_if_error_(ina219_config());
 
 	AUD_RATE = 2;
-	init_aic3204();
+	//init_aic3204();
 
 	XGpioPs gpiops_inst;
 	gpiops_ptr = &gpiops_inst;

@@ -6,9 +6,9 @@
 #ifndef SPI_H
 #define SPI_H
 
-extern XSpiPs xspips_inst;
-extern XSpiPs *xspips_ptr;
 
-int spi_init();
+XSpiPs *make_spips();
+int init_spips(XSpiPs *spips, int device_id);
+
 
 #endif
