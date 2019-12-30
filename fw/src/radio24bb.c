@@ -13,6 +13,7 @@
 #include "iicps.h"
 #include "gpiops.h"
 
+#include "sleep.h"
 #include "command.h"
 
 #include "aic3204.h"
@@ -22,7 +23,17 @@
 
 
 void init_radio24bb_regs(struct radio24bb_regs *regs) {
-
+	regs->leds = 3;
+	regs->usb_wr_data = 0;
+	regs->usb_wr_mux = 0;
+	regs->dac_dce = 0;
+	usleep(100000);
+	regs->dac_cfg = 0x40;
+	regs->aud_rate = 0;
+	regs->usb_led_r = 1;
+	regs->pwr_led_r = 1;
+	regs->led0_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
+	regs->led1_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));	
 }
 
 
@@ -91,21 +102,21 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 	_return_if_error_(init_ioexp(r24bb->usb_ioexp_0,
-			r24bb->iicps1,
+			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_USB,
 			USB_IOEXP_0_PORT0_INPUTS, 
 			USB_IOEXP_0_PORT1_INPUTS
 	));
 
 	_return_if_error_(init_ioexp(r24bb->usb_ioexp_1,
-			r24bb->iicps1,
+			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x21, I2C_SEL_USB,
 			USB_IOEXP_1_PORT0_INPUTS,
 			USB_IOEXP_1_PORT1_INPUTS
 	));
 
 	_return_if_error_(init_ioexp(r24bb->codec_ioexp,
-			r24bb->iicps1,
+			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_CODEC,
 			CODEC_IOEXP_PORT0_INPUTS,
 			CODEC_IOEXP_PORT1_INPUTS

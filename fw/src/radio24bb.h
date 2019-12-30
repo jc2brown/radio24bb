@@ -34,7 +34,7 @@ struct radio24bb {
 
 	// Misc.
 	struct radio24bb_regs *regs;
-	
+
 	int serial;
 
 };
@@ -57,6 +57,7 @@ struct radio24bb_regs {
 	uint32_t led0_brightness;
 	uint32_t led1_brightness;
 	uint32_t serial;
+	uint32_t i2c_sel;
 }; 
 
 

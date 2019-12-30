@@ -581,46 +581,14 @@ int main()
 
 
 
-
-
-
-	DAC_DCE = 0;
-	usleep(100000);
-
-
-	DAC_CFG = 0x40;
-
-	LEDS = 3;
-
-
-	// XGpioPs_WritePin(gpiops_ptr, 72, 1);	// OUTA ATT0
-	// XGpioPs_WritePin(gpiops_ptr, 71, 1);	// OUTA ATT1
-
-
-
-
-
-
-
 	issue_command("led", NULL);
-
-
 	//issue_command("fmtone", NULL);
 	issue_command("stereo", NULL);
-
-
 
 	print_cmd_responses(true);
 
 
-	USB_WR_MUX = 0;
-	// USB_LED_R = 1;
-	// PWR_LED_R = 1;
 
-	LED0_BRIGHTNESS = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
-	LED1_BRIGHTNESS = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
-
-	xil_printf("serial: %d\n", SERIAL);
 
 
 	while (1) {
