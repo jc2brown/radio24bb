@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "command.h"
 
+#include "roe.h"
 #include "adc.h"
 #include "xil_printf.h"
 #include "sleep.h"
@@ -11,23 +12,16 @@
 
 
 
-struct adc_channel *make_adc_channel(uint32_t regs_addr) {
+struct adc_channel *make_adc_channel() {
 	struct adc_channel *channel = (struct adc_channel *)malloc(sizeof(struct adc_channel));
-	channel->regs = (struct adc_channel_regs *)regs_addr;
-	init_adc_channel_regs(channel->regs);
 	return channel;
 }
 
 
 
-void init_adc_channel(struct adc_channel *channel) {
-	init_adc_channel_regs(channel->regs);
-}
 
 
-
-
-void init_adc_channel_regs(struct adc_channel_regs *regs) {
+int init_adc_channel_regs(struct adc_channel_regs *regs) {
 
 	regs->gain = 256;
 	regs->offset = 0;
@@ -44,7 +38,21 @@ void init_adc_channel_regs(struct adc_channel_regs *regs) {
 	regs->amp_en = 1;
 	regs->led = 0b001;
 
+	return XST_SUCCESS;
+
 }
+
+
+
+
+int init_adc_channel(struct adc_channel *channel, uint32_t regs_addr) {
+	channel->regs = (struct adc_channel_regs *)regs_addr;
+	_return_if_error_(init_adc_channel_regs(channel->regs));
+	return XST_SUCCESS;
+}
+
+
+
 
 
 void handle_adc_gain_cmd(void *arg, struct command *cmd) {

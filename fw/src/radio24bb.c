@@ -70,6 +70,9 @@ struct radio24bb *make_radio24bb() {
 
 	r24bb->xadc = (XAdcPs *)malloc(sizeof(XAdcPs));
 
+	r24bb->ina = make_adc_channel();
+	r24bb->inb = make_adc_channel();
+
 	r24bb->codec = make_aic3204();
 
 	r24bb->usb_ioexp_0 = make_ioexp();
@@ -93,7 +96,22 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	// r24bb->dac_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
 
 
-	AUD_RATE = 2;
+#define INA_REGS 0x43C00000UL
+#define INB_REGS 0x43C01000UL
+
+	_return_if_error_(init_adc_channel(
+			r24bb->ina, INA_REGS
+	));
+
+	_return_if_error_(init_adc_channel(
+			r24bb->ina, INB_REGS
+	));
+
+	init_adc_channel_context("ina", r24bb->ina, NULL);
+	init_adc_channel_context("inb", r24bb->inb, NULL);
+
+
+
 
 	_return_if_error_(init_aic3204(
 			r24bb->codec,

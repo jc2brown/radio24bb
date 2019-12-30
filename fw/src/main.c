@@ -470,8 +470,6 @@ int ScuGicExample() {
 
 
 
-#define INA_REGS 0x43C00000UL
-#define INB_REGS 0x43C01000UL
 
 
 #define OUTA_REGS 0x43C02000UL
@@ -546,13 +544,13 @@ int main()
 
 
 
-
+/*
 	struct adc_channel *ina = make_adc_channel(INA_REGS);
 	struct adc_channel *inb = make_adc_channel(INB_REGS);
 
 	init_adc_channel_context("ina", ina, NULL);
 	init_adc_channel_context("inb", inb, NULL);
-
+*/
 
 
 	struct dac_channel *outa = make_dac_channel(OUTA_REGS);

@@ -10,7 +10,7 @@
 
 #include "ioexp.h"
 #include "aic3204.h"
-
+#include "adc.h"
 
 
 struct radio24bb {	
@@ -23,6 +23,8 @@ struct radio24bb {
 	XAdcPs *xadc;
 	
 	// Board devices
+	struct adc_channel *ina;
+	struct adc_channel *inb;
 
 	struct aic3204 *codec;
 

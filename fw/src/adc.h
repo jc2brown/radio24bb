@@ -11,9 +11,9 @@ struct adc_channel {
 };
 
 
-struct adc_channel *make_adc_channel(uint32_t regs_addr);
+struct adc_channel *make_adc_channel();
 
-void init_adc_channel(struct adc_channel *channel);
+int init_adc_channel(struct adc_channel *channel, uint32_t regs_addr);
 
 void init_adc_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
 
@@ -142,8 +142,6 @@ struct adc_channel_regs {
 
 
 
-
-void init_adc_channel_regs(struct adc_channel_regs *regs);
 
 void adc_stat(struct adc_channel *channel);
 #endif
