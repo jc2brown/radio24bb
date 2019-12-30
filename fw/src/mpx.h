@@ -12,9 +12,9 @@ struct mpx_channel {
 
 
 
-struct mpx_channel *make_mpx_channel(uint32_t regs_addr);
+struct mpx_channel *make_mpx_channel();
 
-void init_mpx_channel(struct mpx_channel *channel);
+int init_mpx_channel(struct mpx_channel *channel, uint32_t regs_addr);
 
 void init_mpx_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
 
@@ -80,9 +80,6 @@ static double mpx_filter2_coef[21] = {
 
 
 
-
-
-void init_mpx_channel_regs(struct mpx_channel_regs *regs);
 
 
 #endif

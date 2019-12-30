@@ -4,24 +4,19 @@
 #include "sleep.h"
 #include <math.h>
 
+#include "roe.h"
 #include "mpx.h"
 #include "command.h"
 
 #include "xil_printf.h"
 
 
-struct mpx_channel *make_mpx_channel(uint32_t regs_addr) {
+struct mpx_channel *make_mpx_channel() {
 	struct mpx_channel *channel = (struct mpx_channel *)malloc(sizeof(struct mpx_channel));
-	channel->regs = (struct mpx_channel_regs *)regs_addr;
-	init_mpx_channel_regs(channel->regs);
 	return channel;
 }
 
 
-
-void init_mpx_channel(struct mpx_channel *channel) {
-	init_mpx_channel_regs(channel->regs);
-}
 
 
 #define SAMPLE_RATE 9.728e6
@@ -29,7 +24,8 @@ uint32_t calc_mpx_step_size(double freq) {
 	return ((1ULL<<32) / SAMPLE_RATE) * freq;
 }
 
-void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
+
+int init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 
 
 	regs->stat_cfg = 0;
@@ -50,11 +46,18 @@ void init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 		regs->filter_coef = (uint32_t)(10.0*mpx_filter1_coef[i] * (double)(1<<19));
 	}
 
+	return XST_SUCCESS;
 
 }
 
 
 
+
+int init_mpx_channel(struct mpx_channel *channel, uint32_t regs_addr) {
+	channel->regs = (struct mpx_channel_regs *)regs_addr;
+	_return_if_error_(init_mpx_channel_regs(channel->regs));
+	return XST_SUCCESS;
+}
 
 
 
@@ -79,7 +82,7 @@ void handle_mpx_stat_cmd(void *arg, struct command *cmd) {
 
 void handle_mpx_freq_cmd(void *arg, struct command *cmd) {
 	struct mpx_channel *channel = (struct mpx_channel *)arg;
-	channel->regs->step = calc_step_size(atof(cmd->tokens[cmd->index++]));
+	channel->regs->step = calc_mpx_step_size(atof(cmd->tokens[cmd->index++]));
 }
 
 

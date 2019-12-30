@@ -12,9 +12,9 @@ struct dds_channel {
 
 
 
-struct dds_channel *make_dds_channel(uint32_t regs_addr);
+struct dds_channel *make_dds_channel();
 
-void init_dds_channel(struct dds_channel *channel);
+int init_dds_channel(struct dds_channel *channel, uint32_t regs_addr);
 
 void init_dds_channel_context(char *name, void *arg, struct cmd_context *parent_ctx) ;
 
@@ -60,10 +60,6 @@ struct dds_channel_regs {
 
 
 
-
-
-
-void init_dds_channel_regs(struct dds_channel_regs *regs);
 
 
 #endif

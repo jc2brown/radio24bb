@@ -26,7 +26,7 @@
 #define INB_STAT_COUNT 		*((volatile uint32_t*)0x43C00430)
 
 */
-
+/*
 #define LEDS				*((volatile uint32_t*)0x43C04000)
 
 
@@ -38,7 +38,7 @@
 
 #define USB_WR_MUX			*((volatile uint32_t*)0x43C04014)
 
-
+*/
 
 
 /*
@@ -60,6 +60,8 @@
 // 3: USB
 //#define OUTA_MUX	 		*((volatile uint32_t*)0x43C01200)
 
+
+/*
 #define DAC_CFG	 			*((volatile uint32_t*)0x43C04018)
 
 #define DAC_DCE	 			*((volatile uint32_t*)0x43C0401C)
@@ -76,7 +78,7 @@
 #define SERIAL				*((volatile uint32_t*)0x43C04038)
 #define I2C_SEL				*((volatile uint32_t*)0x43C0403C)
 
-
+*/
 
 /*
 #define OUTA_RAW	 		*((volatile uint32_t*)0x43C01400)

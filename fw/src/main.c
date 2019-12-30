@@ -469,15 +469,7 @@ int ScuGicExample() {
 
 
 
-
-
-
 #define R24BB_REGS 0x43C04000UL
-
-#define DDSA_REGS 0x43C05000UL
-#define DDSB_REGS 0x43C06000UL
-
-#define MPX_REGS 0x43C07000UL
 
 
 
@@ -488,21 +480,8 @@ int main()
 
 	//_return_if_error_(ina219_config());
 
-
-
-
-
-
-
-//	struct adc_channel_regs *ina_regs  = (struct adc_channel_regs *)(0x43C00000UL);
-//	struct adc_channel_regs *inb_regs  = (struct adc_channel_regs *)(0x43C01000UL);
-
-
-
 	// int result = ScuGicExample();
 	// xil_printf("gic=%d\n", result);
-
-
 
 
 	xil_printf("Starting Baseband... \n");
@@ -519,14 +498,7 @@ int main()
 	xil_printf("  S/N: %d\n", get_serial(r24bb));
 
 
-
-
-
-
-
-
 	// add_command(NULL, "xadc", xadc_handler);
-
 
 	//add_command(NULL, "tonea", tonea_handler);
 	add_command(NULL, "usb", usb_handler);
@@ -540,61 +512,18 @@ int main()
 
 
 
-
-/*
-	struct adc_channel *ina = make_adc_channel(INA_REGS);
-	struct adc_channel *inb = make_adc_channel(INB_REGS);
-
-	init_adc_channel_context("ina", ina, NULL);
-	init_adc_channel_context("inb", inb, NULL);
-*/
-
-/*
-	struct dac_channel *outa = make_dac_channel(OUTA_REGS);
-	struct dac_channel *outb = make_dac_channel(OUTB_REGS);
-
-	init_dac_channel_context("outa", outa, NULL);
-	init_dac_channel_context("outb", outb, NULL);
-*/
-
-	struct dds_channel *ddsa = make_dds_channel(DDSA_REGS);
-	struct dds_channel *ddsb = make_dds_channel(DDSB_REGS);
-
-	init_dds_channel_context("ddsa", ddsa, NULL);
-	init_dds_channel_context("ddsb", ddsb, NULL);
-
-
-	struct mpx_channel *mpx = make_mpx_channel(MPX_REGS);
-
-	init_mpx_channel_context("mpx", mpx, NULL);
-
-
 	issue_command("outa att 0", NULL);
 	issue_command("outb att 3", NULL);
 
 
-
-
-
 	issue_command("led", NULL);
-	//issue_command("fmtone", NULL);
 	issue_command("stereo", NULL);
 
 	print_cmd_responses(true);
 
 
-
-
-
 	while (1) {
-
-
-
 		handle_command();
-
-		xil_printf("serial: %d\n", get_serial(r24bb));
-
-
 	}
 
 

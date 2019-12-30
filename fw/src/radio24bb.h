@@ -30,6 +30,11 @@ struct radio24bb {
 	struct dac_channel *outa;
 	struct dac_channel *outb;
 
+	struct dds_channel *ddsa;
+	struct dds_channel *ddsb;
+
+	struct mpx_channel *mpx;
+
 	struct aic3204 *codec;
 
 	struct ioexp *adc_ioexp;

@@ -17,6 +17,10 @@
 #include "command.h"
 
 #include "aic3204.h"
+#include "adc.h"
+#include "dac.h"
+#include "dds.h"
+#include "mpx.h"
 
 #include "spips.h"
 #include "regs.h"
@@ -57,6 +61,24 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 #define I2C_SEL_CODEC 1
 
 
+
+#define INA_REGS 0x43C00000UL
+#define INB_REGS 0x43C01000UL
+
+#define OUTA_REGS 0x43C02000UL
+#define OUTB_REGS 0x43C03000UL
+
+
+
+
+
+#define DDSA_REGS 0x43C05000UL
+#define DDSB_REGS 0x43C06000UL
+
+#define MPX_REGS 0x43C07000UL
+
+
+
 struct radio24bb *make_radio24bb() {	
 
 	xil_printf("make_radio24bb\n");
@@ -73,8 +95,8 @@ struct radio24bb *make_radio24bb() {
 	r24bb->ina = make_adc_channel();
 	r24bb->inb = make_adc_channel();
 
-	r24bb->outa = make_adc_channel();
-	r24bb->outb = make_adc_channel();
+	r24bb->outa = make_dac_channel();
+	r24bb->outb = make_dac_channel();
 
 	r24bb->codec = make_aic3204();
 
@@ -82,75 +104,93 @@ struct radio24bb *make_radio24bb() {
 	r24bb->usb_ioexp_1 = make_ioexp();
 	r24bb->codec_ioexp = make_ioexp();
 
+	r24bb->ddsa = make_dds_channel();
+	r24bb->ddsb = make_dds_channel();
+
+	r24bb->mpx = make_mpx_channel();
+
 	return r24bb;
 };
 
 
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
-	xil_printf("init_radio24bb\n");
-
-	_return_if_error_(init_gpiops(r24bb->gpiops, XPAR_PS7_GPIO_0_DEVICE_ID));
-	_return_if_error_(init_spips(r24bb->spips1, XPAR_PS7_SPI_1_DEVICE_ID));
-	_return_if_error_(init_iicps(r24bb->iicps0, XPAR_PS7_I2C_0_DEVICE_ID, IICPS0_CLK_RATE));
-	_return_if_error_(init_iicps(r24bb->iicps1, XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE));
-
-	// r24bb->adc_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
-	// r24bb->dac_ioexp = make_ioexp(IOEXP_GPIO, 0x00, );
-
-
-#define INA_REGS 0x43C00000UL
-#define INB_REGS 0x43C01000UL
-
-	_return_if_error_(init_adc_channel(
-			r24bb->ina, INA_REGS
-	));
-
-	_return_if_error_(init_adc_channel(
-			r24bb->inb, INB_REGS
-	));
-
-
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
 
 
+	xil_printf("init_radio24bb\n");
 
-#define OUTA_REGS 0x43C02000UL
-#define OUTB_REGS 0x43C03000UL
-
-	_return_if_error_(init_dac_channel(
-			r24bb->outa, OUTA_REGS
+	_return_if_error_(
+		init_gpiops(r24bb->gpiops, 
+			XPAR_PS7_GPIO_0_DEVICE_ID
 	));
 
-	_return_if_error_(init_dac_channel(
-			r24bb->outb, OUTB_REGS
+	_return_if_error_(
+		init_spips(r24bb->spips1, 
+			XPAR_PS7_SPI_1_DEVICE_ID
+	));
+
+	_return_if_error_(
+		init_iicps(r24bb->iicps0, 
+			XPAR_PS7_I2C_0_DEVICE_ID, IICPS0_CLK_RATE
+	));
+
+	_return_if_error_(
+		init_iicps(r24bb->iicps1, 
+			XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE
 	));
 
 
 
-	_return_if_error_(init_aic3204(
-			r24bb->codec,
+	_return_if_error_(
+		init_adc_channel(r24bb->ina, 
+			INA_REGS
+	));
+
+	_return_if_error_(
+		init_adc_channel(r24bb->inb, 
+			INB_REGS
+	));
+
+
+	_return_if_error_(
+		init_dac_channel(r24bb->outa, 
+			OUTA_REGS
+	));
+
+	_return_if_error_(
+		init_dac_channel(r24bb->outb, 
+			OUTB_REGS
+	));
+
+
+
+	_return_if_error_(
+		init_aic3204(r24bb->codec,
 			r24bb->spips1
 	));
 
 
-	_return_if_error_(init_ioexp(r24bb->usb_ioexp_0,
+	_return_if_error_(
+		init_ioexp(r24bb->usb_ioexp_0,
 			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_USB,
 			USB_IOEXP_0_PORT0_INPUTS, 
 			USB_IOEXP_0_PORT1_INPUTS
 	));
 
-	_return_if_error_(init_ioexp(r24bb->usb_ioexp_1,
+	_return_if_error_(
+		init_ioexp(r24bb->usb_ioexp_1,
 			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x21, I2C_SEL_USB,
 			USB_IOEXP_1_PORT0_INPUTS,
 			USB_IOEXP_1_PORT1_INPUTS
 	));
 
-	_return_if_error_(init_ioexp(r24bb->codec_ioexp,
+	_return_if_error_(
+		init_ioexp(r24bb->codec_ioexp,
 			r24bb->iicps1, &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_CODEC,
 			CODEC_IOEXP_PORT0_INPUTS,
@@ -158,13 +198,32 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-	// init_adc(r24bb->adc);
-	// init_dac(r24bb->dac);
+
+	_return_if_error_(
+		init_dds_channel(r24bb->ddsa,
+			DDSA_REGS			
+	));
+
+	_return_if_error_(
+		init_dds_channel(r24bb->ddsb,
+			DDSB_REGS			
+	));
+
+
+
+	_return_if_error_(
+		init_mpx_channel(r24bb->mpx,
+			MPX_REGS			
+	));
+
+
+
+
+
+
 	// init_usb(r24bb->usb);
 
-
 	r24bb->serial = get_serial(r24bb);
-
 
 
 	get_root_context()->name[2] = '0' + r24bb->serial;
@@ -174,6 +233,12 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	init_dac_channel_context("outa", r24bb->outa, NULL);
 	init_dac_channel_context("outb", r24bb->outb, NULL);
+
+	init_dds_channel_context("ddsa", r24bb->ddsa, NULL);
+	init_dds_channel_context("ddsb", r24bb->ddsb, NULL);
+
+	init_mpx_channel_context("mpx", r24bb->mpx, NULL);
+
 
 
 
@@ -216,50 +281,12 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	XGpioPs_WritePin(r24bb->gpiops, 90, 1);	// USB_RESET_N
 
 
-
-
 	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
 	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
-
-
-
-
-
-
-
 
 	return XST_SUCCESS;
 }
 
-
-
-
-
-
-
-
-/*
-
-r24bb
-	->adc
-		->ina/inb
-			->gain
-			->offset
-			->filt
-		->ioexp
-
-	->dac
-		->outa/outb
-		->ioexp
-
-	->usb
-		->ioexp0/ioexp1
-
-	->codec
-		->ioexp
-
-
-*/
 
 
 

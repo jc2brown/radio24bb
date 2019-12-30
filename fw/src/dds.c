@@ -4,32 +4,28 @@
 #include "sleep.h"
 #include <math.h>
 
+#include "roe.h"
 #include "dds.h"
 #include "command.h"
 
 #include "xil_printf.h"
 
 
-struct dds_channel *make_dds_channel(uint32_t regs_addr) {
+struct dds_channel *make_dds_channel() {
 	struct dds_channel *channel = (struct dds_channel *)malloc(sizeof(struct dds_channel));
-	channel->regs = (struct dds_channel_regs *)regs_addr;
-	init_dds_channel_regs(channel->regs);
 	return channel;
 }
 
 
 
-void init_dds_channel(struct dds_channel *channel) {
-	init_dds_channel_regs(channel->regs);
-}
-
-
 #define SAMPLE_RATE 99.99888e6
-uint32_t calc_step_size(double freq) {
+uint32_t calc_dds_step_size(double freq) {
 	return ((1ULL<<32) / SAMPLE_RATE) * freq;
 }
 
-void init_dds_channel_regs(struct dds_channel_regs *regs) {
+
+
+int init_dds_channel_regs(struct dds_channel_regs *regs) {
 
 	regs->mux = 1;
 	regs->raw = 0;
@@ -45,7 +41,7 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 	}
 
 	// regs->step = ((1ULL<<32) / 99.99888e6) * 19.7e6;
-	regs->step = calc_step_size(19.7e6);
+	regs->step = calc_dds_step_size(19.7e6);
 
 	regs->am_mux = 0;
 	regs->am_raw = 127;
@@ -67,7 +63,20 @@ void init_dds_channel_regs(struct dds_channel_regs *regs) {
 	regs->prbs_gain = 0;
 	regs->prbs_offset = 0;
 
+	return XST_SUCCESS;
+
 }
+
+
+
+
+int init_dds_channel(struct dds_channel *channel, uint32_t regs_addr) {
+	channel->regs = (struct dds_channel_regs *)regs_addr;
+	_return_if_error_(init_dds_channel_regs(channel->regs));
+	return XST_SUCCESS;
+}
+
+
 
 
 
@@ -121,7 +130,7 @@ void handle_dds_stat_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_freq_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	channel->regs->step = calc_step_size(atof(cmd->tokens[cmd->index++]));
+	channel->regs->step = calc_dds_step_size(atof(cmd->tokens[cmd->index++]));
 }
 
 
