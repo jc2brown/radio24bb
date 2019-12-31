@@ -303,7 +303,7 @@ void led_handler(void *arg, struct command *cmd) {
 
 
 
-
+#include "fatfs.c"
 
 
 
@@ -360,6 +360,30 @@ int main()
 	issue_command("stereo", NULL);
 
 	print_cmd_responses(true);
+
+
+
+
+
+
+	int Status;
+
+	xil_printf("SD Polled File System Example Test \r\n");
+
+	Status = FfsSdPolledExample();
+	if (Status != XST_SUCCESS) {
+		xil_printf("SD Polled File System Example Test failed \r\n");
+		return XST_FAILURE;
+	}
+
+	xil_printf("Successfully ran SD Polled File System Example Test \r\n");
+
+
+
+
+
+
+
 
 
 	while (1) {

@@ -20,9 +20,12 @@ createapp -name ${project_name}_fsbl -app {Zynq FSBL} -hwproject ${project_name}
 # This by default generates a standalone BSP.
 # There are hooks to change the defaults, but it might work better to
 # use a standalone BSP and build the RTOS separately.
-createbsp -name ${project_name}_bsp -hwproject ${project_name}_hw -proc ${targetcpu}
+createbsp -name ${project_name}_bsp -hwproject ${project_name}_hw -proc ${targetcpu} -os standalone
+setlib -bsp ${project_name}_bsp -lib xilffs
+updatemss -mss ${hw_dir}/${project_name}_bsp/system.mss
+regenbsp -bsp ${project_name}_bsp
 
-createapp -name ${project_name}_app -app {Empty Application} -bsp ${project_name}_bsp -hwproject ${project_name}_hw -proc ${targetcpu}
+createapp -name ${project_name}_app -app {Empty Application} -bsp ${project_name}_bsp -hwproject ${project_name}_hw -proc ${targetcpu} -os standalone
 
 # projects -build
 # exec bootgen -arch zynq -image ouput.bif -w -o BOOT.bin

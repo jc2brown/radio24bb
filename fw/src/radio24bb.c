@@ -132,6 +132,148 @@ struct radio24bb *make_radio24bb() {
 
 
 
+// CODEC IOExp Port 0
+#define CODEC_IOEXP_LINE_IN_LED_G    (1<<0)
+#define CODEC_IOEXP_LINE_IN_LED_B    (1<<1)
+#define CODEC_IOEXP_LINE_OUT_LED_B   (1<<2)
+#define CODEC_IOEXP_LINE_OUT_LED_G   (1<<3)
+#define CODEC_IOEXP_LINE_OUT_LED_COM (1<<4)
+#define CODEC_IOEXP_LINE_OUT_LED_R   (1<<5)
+#define CODEC_IOEXP_LINE_IN_LED_COM  (1<<6)
+#define CODEC_IOEXP_LINE_IN_LED_R    (1<<7)
+
+// CODEC IOExp Port 1
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<0)
+#define CODEC_IOEXP_PHONE_OUT_DET    (1<<1)
+#define CODEC_IOEXP_LINE_OUT_DET     (1<<2)
+#define CODEC_IOEXP_RESET_N          (1<<3)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<4)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<5)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<6)
+#define CODEC_IOEXP_LINE_IN_DET      (1<<7)
+
+
+
+
+
+
+
+int set_line_in_led(struct radio24bb *r24bb, int r, int g, int b) {
+	u8 port0_value;
+	_return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 0, &port0_value));
+	port0_value = ~port0_value;
+	port0_value &= ~(CODEC_IOEXP_LINE_IN_LED_R | CODEC_IOEXP_LINE_IN_LED_G | CODEC_IOEXP_LINE_IN_LED_B);
+	port0_value |= 
+		(r ? CODEC_IOEXP_LINE_IN_LED_R : 0) |
+		(g ? CODEC_IOEXP_LINE_IN_LED_G : 0) |
+		(b ? CODEC_IOEXP_LINE_IN_LED_B : 0);
+	port0_value = ~port0_value;
+	ioexp_write_port(r24bb->codec_ioexp, 0, port0_value);
+}
+
+
+
+int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
+	u8 port0_value;
+	_return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 0, &port0_value));
+	port0_value = ~port0_value;
+	port0_value &= ~(CODEC_IOEXP_LINE_OUT_LED_R | CODEC_IOEXP_LINE_OUT_LED_G | CODEC_IOEXP_LINE_OUT_LED_B);
+	port0_value |= 
+		(r ? CODEC_IOEXP_LINE_OUT_LED_R : 0) |
+		(g ? CODEC_IOEXP_LINE_OUT_LED_G : 0) |
+		(b ? CODEC_IOEXP_LINE_OUT_LED_B : 0);
+	port0_value = ~port0_value;
+	ioexp_write_port(r24bb->codec_ioexp, 0, port0_value);
+}
+
+
+
+int update_codec_ioexp(struct radio24bb *r24bb) {
+
+	u8 port1_value;
+	ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value);
+
+
+
+	set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET));
+	set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET));
+
+
+
+	// uint8_t port0_value = 
+	// 	((port1_value & CODEC_IOEXP_LINE_IN_DET) ? CODEC_IOEXP_LINE_IN_LED_B : 0) |
+	// 	((port1_value & CODEC_IOEXP_LINE_OUT_DET) ? CODEC_IOEXP_LINE_OUT_LED_B : 0);
+
+	// ioexp_write_port(ioe, 0, ~port0_value);
+
+	return XST_SUCCESS;
+}
+
+
+
+
+// USB IOExp0 Port 0
+#define USB_IOEXP_0_USB_LED_B    	(1<<0)
+#define USB_IOEXP_0_USB_LED_G    	(1<<1)
+#define USB_IOEXP_0_POWER_LED_B   	(1<<2)
+#define USB_IOEXP_0_POWER_LED_G   	(1<<3)
+#define USB_IOEXP_0_POWER_LED_COM 	(1<<4)
+#define USB_IOEXP_0_POWER_LED_R   	(1<<5)
+#define USB_IOEXP_0_USB_LED_R  		(1<<6)
+#define USB_IOEXP_0_USB_LED_COM    	(1<<7)
+
+// USB IOExp0 Port 1
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<0)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<1)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<2)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<3)
+// #define CODEC_IOEXP_NOT_CONNECTED (1<<4)
+#define USB_IOEXP_0_SN0      (1<<5)
+#define USB_IOEXP_0_SN1      (1<<6)
+#define USB_IOEXP_0_SN2      (1<<7)
+
+
+
+// USB IOExp1 Port 0
+#define USB_IOEXP_1_VBUS_DET_N    	(1<<0)
+#define USB_IOEXP_1_USB_GPIO0	   	(1<<1)
+#define USB_IOEXP_1_USB_GPIO1   	(1<<2)
+#define USB_IOEXP_1_USB_WAKE_N   	(1<<3)
+#define USB_IOEXP_1_USB_RESET_N 	(1<<4)
+// #define USB_IOEXP_1_NOT_CONNECTED (1<<5)
+// #define USB_IOEXP_1_NOT_CONNECTED (1<<6)
+// #define USB_IOEXP_1_NOT_CONNECTED (1<<7)
+
+
+
+int update_usb_ioexp_0(struct radio24bb *r24bb) {
+	// Critical section
+	// - need to guard bus_sel (modified by ioexp_read_port  shared by usb_ioexp_0 and usb_ioexp_1
+	Xil_ExceptionDisable(); 
+
+	u8 ioe1_port0_value;
+	ioexp_read_port(r24bb->usb_ioexp_1, 0, &ioe1_port0_value);
+
+	uint8_t ioe0_port0_value = 
+		((!(ioe1_port0_value & USB_IOEXP_1_VBUS_DET_N)) ? USB_IOEXP_0_USB_LED_B : 0) |
+		(USB_IOEXP_0_POWER_LED_B);
+
+	ioexp_write_port(r24bb->usb_ioexp_0, 0, ~ioe0_port0_value);
+
+	Xil_ExceptionEnable();
+	return XST_SUCCESS;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
@@ -203,7 +345,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->usb_ioexp_0,
-			r24bb->iicps1, r24bb->scugic, 0,
+			r24bb->iicps1,
 			&(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_USB,
 			USB_IOEXP_0_PORT0_INPUTS, 
@@ -212,8 +354,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->usb_ioexp_1,
-			r24bb->iicps1, r24bb->scugic,
-			XPAR_FABRIC_IRQ_F2P_00_INTR,
+			r24bb->iicps1,
 			 &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x21, I2C_SEL_USB,
 			USB_IOEXP_1_PORT0_INPUTS,
@@ -222,8 +363,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->codec_ioexp,
-			r24bb->iicps1, r24bb->scugic,
-			XPAR_FABRIC_IRQ_F2P_01_INTR,
+			r24bb->iicps1,
 			&(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_CODEC,
 			CODEC_IOEXP_PORT0_INPUTS,
@@ -250,19 +390,15 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
+	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR, (Xil_ExceptionHandler)update_usb_ioexp_0, (void *)r24bb));
+	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR);
+
+	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR, (Xil_ExceptionHandler)update_codec_ioexp, (void *)r24bb));
+	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR);
 
 
-	// _return_if_error_(XScuGic_Connect(scugic, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)scugic));
-	
-	// _return_if_error_(XScuGic_Connect(r24bb->scugic, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)r24bb));
-	// XScuGic_Enable(r24bb->scugic, INTC_DEVICE_INT_ID);
-
-	// XGpioPs_SetCallbackHandler(r24bb->gpiops, (void *)r24bb, codec_ioexp_intr_handler);
-	// _return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_XGPIOPS_0_INTR, (Xil_ExceptionHandler)XGpioPs_IntrHandler, (void *)r24bb->gpiops));
-	// XScuGic_Enable(r24bb->scugic, XPAR_XGPIOPS_0_INTR);
-
-
-
+	update_usb_ioexp_0(r24bb);
+	update_codec_ioexp(r24bb);
 
 
 
@@ -328,13 +464,16 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	XGpioPs_WritePin(r24bb->gpiops, 90, 1);	// USB_RESET_N
 
 
-	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
-	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
+	// ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
+	// ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
 
 
 
-	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
-	
+
+
+
+
+	//Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);	
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;

@@ -10,15 +10,18 @@
 #define IOEXP_IICPS 0
 #define IOEXP_GPIO 1
 
+struct ioexp;
+
+typedef int (*ioexp_update_fcn)(struct ioexp *);
+
+
 struct ioexp {
 	XIicPs *iicps;
-	XScuGic *scugic;
 	uint32_t *bus_sel_ptr;
 	int if_type;
 	uint8_t bus_addr;
 	int bus_sel;
 };
-
 
 
 
@@ -28,8 +31,6 @@ struct ioexp *make_ioexp();
 int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
-		XScuGic *scugic,
-		int intr_id,
 		uint32_t *bus_sel_ptr,
 		int if_type, 
 		uint8_t bus_addr, 

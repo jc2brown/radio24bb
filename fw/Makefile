@@ -62,7 +62,7 @@ ifeq ($(OS),Windows_NT)
 endif
 
 
-LIBS := -Wl,--build-id=none,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group
+LIBS := -Wl,--build-id=none,--start-group,-lxil,-lxilffs,-lgcc,-lc,-lstdc++,--end-group
 
 
 OUT_DIR:=$(FW_ROOT)/out

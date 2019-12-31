@@ -6,7 +6,6 @@
 #include "command.h"
 
 #include "aic3204.h"
-#include "regs.h"
 
 
 
@@ -767,7 +766,7 @@ void dac_post_init(struct aic3204 *aic) {
 void aud_rate_handler(void *arg, struct command *cmd) {
 
 	struct aic3204 *aic = (struct aic3204 *)arg;
-
+/*
 	int aud_rate = atoi(cmd->tokens[cmd->index++]);
 	if (aud_rate == 0) {
 		AUD_RATE = 0;		
@@ -799,7 +798,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 		set_dac_osr(aic, 32);
 		set_dac_prb(aic, 8);
 	}
-
+*/
 }
 
 
