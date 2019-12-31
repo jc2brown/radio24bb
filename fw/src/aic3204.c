@@ -762,7 +762,6 @@ void dac_post_init(struct aic3204 *aic) {
 
 
 
-
 void aud_rate_handler(void *arg, struct command *cmd) {
 
 	struct aic3204 *aic = (struct aic3204 *)arg;
