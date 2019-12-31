@@ -6,10 +6,12 @@
 #include "roe.h"
 #include "ioexp.h"
 
+#include "xscugic.h"
 #include "xadcps.h"
 #include "xadc.h"
 #include "xiicps.h"
 #include "xspips.h"
+#include "scugic.h"
 #include "iicps.h"
 #include "gpiops.h"
 
@@ -23,7 +25,6 @@
 #include "mpx.h"
 
 #include "spips.h"
-#include "regs.h"
 
 
 void init_radio24bb_regs(struct radio24bb_regs *regs) {
@@ -39,8 +40,6 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 	regs->led0_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
 	regs->led1_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));	
 }
-
-
 
 
 
@@ -68,14 +67,25 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 #define OUTA_REGS 0x43C02000UL
 #define OUTB_REGS 0x43C03000UL
 
-
-
-
-
 #define DDSA_REGS 0x43C05000UL
 #define DDSB_REGS 0x43C06000UL
 
 #define MPX_REGS 0x43C07000UL
+
+
+
+/*
+void codec_ioexp_intr_handler(void *arg) {
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	u8 port_value;
+	ioexp_read_port(r24bb->codec_ioexp, 1, &port_value);
+	xil_printf("codec_ioexp intr read port=0x%02X\n", port_value);
+}
+*/
+
+
+
+
 
 
 
@@ -85,6 +95,11 @@ struct radio24bb *make_radio24bb() {
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
+
+
+
+
+	r24bb->scugic = make_scugic();
 	r24bb->gpiops = make_gpiops();
 	r24bb->spips1 = make_spips();
 	r24bb->iicps0 = make_iicps();
@@ -113,6 +128,11 @@ struct radio24bb *make_radio24bb() {
 };
 
 
+
+
+
+
+
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
@@ -122,9 +142,17 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	xil_printf("init_radio24bb\n");
 
+
+	_return_if_error_(
+		init_scugic(r24bb->scugic, 
+			XPAR_SCUGIC_0_DEVICE_ID //XPAR_SCUGIC_SINGLE_DEVICE_ID
+	));
+
 	_return_if_error_(
 		init_gpiops(r24bb->gpiops, 
-			XPAR_PS7_GPIO_0_DEVICE_ID
+			XPAR_PS7_GPIO_0_DEVICE_ID,
+			r24bb->scugic,
+			XPAR_XGPIOPS_0_INTR
 	));
 
 	_return_if_error_(
@@ -175,7 +203,8 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->usb_ioexp_0,
-			r24bb->iicps1, &(r24bb->regs->i2c_sel),
+			r24bb->iicps1, r24bb->scugic, 0,
+			&(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_USB,
 			USB_IOEXP_0_PORT0_INPUTS, 
 			USB_IOEXP_0_PORT1_INPUTS
@@ -183,7 +212,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->usb_ioexp_1,
-			r24bb->iicps1, &(r24bb->regs->i2c_sel),
+			r24bb->iicps1, r24bb->scugic,
+			XPAR_FABRIC_IRQ_F2P_00_INTR,
+			 &(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x21, I2C_SEL_USB,
 			USB_IOEXP_1_PORT0_INPUTS,
 			USB_IOEXP_1_PORT1_INPUTS
@@ -191,7 +222,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_ioexp(r24bb->codec_ioexp,
-			r24bb->iicps1, &(r24bb->regs->i2c_sel),
+			r24bb->iicps1, r24bb->scugic,
+			XPAR_FABRIC_IRQ_F2P_01_INTR,
+			&(r24bb->regs->i2c_sel),
 			IOEXP_IICPS, 0x20, I2C_SEL_CODEC,
 			CODEC_IOEXP_PORT0_INPUTS,
 			CODEC_IOEXP_PORT1_INPUTS
@@ -219,6 +252,18 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 
+	// _return_if_error_(XScuGic_Connect(scugic, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)scugic));
+	
+	// _return_if_error_(XScuGic_Connect(r24bb->scugic, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)r24bb));
+	// XScuGic_Enable(r24bb->scugic, INTC_DEVICE_INT_ID);
+
+	// XGpioPs_SetCallbackHandler(r24bb->gpiops, (void *)r24bb, codec_ioexp_intr_handler);
+	// _return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_XGPIOPS_0_INTR, (Xil_ExceptionHandler)XGpioPs_IntrHandler, (void *)r24bb->gpiops));
+	// XScuGic_Enable(r24bb->scugic, XPAR_XGPIOPS_0_INTR);
+
+
+
+
 
 
 	// init_usb(r24bb->usb);
@@ -226,7 +271,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	r24bb->serial = get_serial(r24bb);
 
 
-	get_root_context()->name[2] = '0' + r24bb->serial;
+	struct cmd_context *root_ctx = get_root_context();
+	root_ctx->name[2] = '0' + r24bb->serial;
+	root_ctx->arg =  (void*)r24bb;
 
 	init_adc_channel_context("ina", r24bb->ina, NULL);
 	init_adc_channel_context("inb", r24bb->inb, NULL);
@@ -283,6 +330,12 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
 	ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);
+
+
+
+	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
+	
+	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
 }

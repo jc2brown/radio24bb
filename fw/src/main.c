@@ -9,6 +9,7 @@
 #include "xparameters_ps.h"
 #include "xscugic.h"
 #include "xadc.h"
+#include "gpiops.h"
 
 #include "roe.h"
 
@@ -16,7 +17,6 @@
 
 #include "i2c.h"
 
-#include "regs.h"
 #include "ina219.h"
 
 #include "aic3204.h"
@@ -34,6 +34,8 @@
 
 void usb_handler(void *arg, struct command *cmd) {
 
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+
 	static int n = 0;
 	static char msg[1024];
 
@@ -44,10 +46,12 @@ void usb_handler(void *arg, struct command *cmd) {
 	sprintf(msg, "Hello #%d\n", n++);
 
 	for (char *c = msg; *c != '\0'; ++c) {
-		USB_WR_DATA = *c;
+		// USB_WR_DATA = *c;
+		r24bb->regs->usb_wr_data = *c;
 	}
 
-	USB_WR_PUSH = 1;
+	// USB_WR_PUSH = 1;
+	r24bb->regs->usb_wr_push = 1;
 /*
 
 	for (int i = 0; i < 1024; ++i) {
@@ -55,6 +59,24 @@ void usb_handler(void *arg, struct command *cmd) {
 	}
 */
 }
+
+
+
+
+int pin_value = 0;
+void gpio_handler(void *arg, struct command *cmd) {
+	xil_printf(".\n");
+	
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	XGpioPs_SetDirectionPin(r24bb->gpiops, 57, 1); // output
+	XGpioPs_SetOutputEnablePin(r24bb->gpiops, 57, 1);
+	pin_value = !pin_value;
+	XGpioPs_WritePin(r24bb->gpiops, 57, pin_value);
+	xil_printf("pinstat: %d\n", XGpioPs_ReadPin(r24bb->gpiops, INTR_IN_PIN));
+	xil_printf("intstat: %d\n", XGpioPs_IntrGetStatusPin(r24bb->gpiops, INTR_IN_PIN));
+	
+}
+
 
 
 /*
@@ -275,188 +297,6 @@ void led_handler(void *arg, struct command *cmd) {
 
 
 
-static void IntrHandler(void *CallBackRef, u32 Bank, u32 Status) {
-	XGpioPs *Gpio = (XGpioPs *)CallBackRef;
-	u32 DataRead;
-	print("INT!\n");
-}
-
-
-
-#define INTC_DEVICE_ID		XPAR_SCUGIC_0_DEVICE_ID
-#define INTC_DEVICE_INT_ID	XPAR_FABRIC_IRQ_F2P_01_INTR
-
-
-/*
- * Create a shared variable to be used by the main thread of processing and
- * the interrupt processing
- */
-volatile static int InterruptProcessed = FALSE;
-
-
-int SetUpInterruptSystem(XScuGic *XScuGicInstancePtr) {
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler) XScuGic_InterruptHandler,	XScuGicInstancePtr);
-	Xil_ExceptionEnable();
-
-	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
-	return XST_SUCCESS;
-}
-
-
-
-void DeviceDriverHandler(void *CallbackRef) {
-	InterruptProcessed = TRUE;
-	print("int\n");
-}
-
-
-
-static u32 Input_Pin; /* Switch button */
-XGpioPs *gpiops_ptr ;
-
-
-int ScuGicExample() {
-
-
-	XScuGic InterruptController; 	     /* Instance of the Interrupt Controller */
-
-	int Status;
-
-	/*
-	 * Initialize the interrupt controller driver so that it is ready to
-	 * use.
-	 */
-	XScuGic_Config *GicConfig = XScuGic_LookupConfig(XPAR_SCUGIC_SINGLE_DEVICE_ID);
-	if (NULL == GicConfig) {
-		return XST_FAILURE;
-	}
-
-	Status = XScuGic_CfgInitialize(&InterruptController, GicConfig, GicConfig->CpuBaseAddress);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-
-	/*
-	 * Perform a self-test to ensure that the hardware was built
-	 * correctly
-	 */
-	Status = XScuGic_SelfTest(&InterruptController);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-
-	/*
-	 * Setup the Interrupt System
-	 */
-	Status = SetUpInterruptSystem(&InterruptController);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-	/*
-	 * Connect a device driver handler that will be called when an
-	 * interrupt for the device occurs, the device driver handler performs
-	 * the specific interrupt processing for the device
-	 */
-	Status = XScuGic_Connect(&InterruptController, INTC_DEVICE_INT_ID, (Xil_ExceptionHandler)DeviceDriverHandler, (void *)&InterruptController);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-  	//XScuGic_SetPriorityTriggerType(&InterruptController, INTC_DEVICE_INT_ID,0x00, 0x3); 
-	/*
-	 * Enable the interrupt for the device and then cause (simulate) an
-	 * interrupt so the handlers will be called
-	 */
-	XScuGic_Enable(&InterruptController, INTC_DEVICE_INT_ID);
-
-
-	return XST_SUCCESS;
-
-
-	Status = XScuGic_Connect(&InterruptController, XPAR_XGPIOPS_0_INTR,
-				(Xil_ExceptionHandler)XGpioPs_IntrHandler,
-				(void *)gpiops_ptr);
-	if (Status != XST_SUCCESS) {
-		return Status;
-	}
-
-
-
-	XGpioPs_SetDirectionPin(gpiops_ptr, 54, 0x0);
-	XGpioPs_SetDirectionPin(gpiops_ptr, 55, 0x0);
-
-
-	XGpioPs_SetIntrType(gpiops_ptr, 2, 0x00, 0xFFFFFFFF, 0x00);
-	XGpioPs_SetCallbackHandler(gpiops_ptr, (void *)gpiops_ptr, IntrHandler);
-
-
-	// Enable the GPIO interrupts of Bank 0
-	XGpioPs_IntrEnable(gpiops_ptr, 2, 0x03);
-	XGpioPs_SetIntrTypePin(gpiops_ptr, 55, 3);
-
-	// Enable the interrupt for the GPIO device. 
-	XScuGic_Enable(&InterruptController, XPAR_XGPIOPS_0_INTR);
-
-
-	/*
-	// Enable interrupts in the Processor. 
-	Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);
-
-*/
-
-
-
-	return XST_SUCCESS;
-
-
-
-
-
-
-
-
-
-	XScuGic_InterruptMaptoCpu(&InterruptController, XPAR_CPU_ID, INTC_DEVICE_INT_ID);
-	XScuGic_SetPriorityTriggerType(&InterruptController, INTC_DEVICE_INT_ID, (0+1)<<3, 3);
-
-	return XST_SUCCESS;
-	/*
-	 *  Simulate the Interrupt
-	 */
-	Status = XScuGic_SoftwareIntr(&InterruptController, INTC_DEVICE_INT_ID, XSCUGIC_SPI_CPU0_MASK);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
- 
-
- 
-
-
-
-	/*
-	 * Wait for the interrupt to be processed, if the interrupt does not
-	 * occur this loop will wait forever
-	 */
-	while (1) {
-		/*
-		 * If the interrupt occurred which is indicated by the global
-		 * variable which is set in the device driver handler, then
-		 * stop waiting
-		 */
-		if (InterruptProcessed) {
-			break;
-		}
-	}
-
-	return XST_SUCCESS;
-}
-
-
-
-
 
 
 
@@ -480,8 +320,6 @@ int main()
 
 	//_return_if_error_(ina219_config());
 
-	// int result = ScuGicExample();
-	// xil_printf("gic=%d\n", result);
 
 
 	xil_printf("Starting Baseband... \n");
@@ -498,6 +336,7 @@ int main()
 	xil_printf("  S/N: %d\n", get_serial(r24bb));
 
 
+
 	// add_command(NULL, "xadc", xadc_handler);
 
 	//add_command(NULL, "tonea", tonea_handler);
@@ -510,6 +349,7 @@ int main()
 	add_command(NULL, "info", info_handler);
 	add_command(NULL, "led", led_handler);
 
+	add_command(NULL, "gpio", gpio_handler);	
 
 
 	issue_command("outa att 0", NULL);

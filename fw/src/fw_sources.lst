@@ -11,6 +11,7 @@ ioexp.c
 list.c
 mpx.c
 radio24bb.c
+scugic.c
 spips.c 
 stringmap.c
 xadc.c

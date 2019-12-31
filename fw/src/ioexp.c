@@ -1,6 +1,6 @@
 
 #include <stdlib.h>
-
+#include "xscugic.h"
 #include "roe.h"
 #include "iicps.h"
 
@@ -21,6 +21,16 @@
 #define IOEXP_REG_INTMASK1 0x4B
 
 
+
+
+void ioexp_intr_handler(void *arg) {
+	struct ioexp *ioe = (struct ioexp *)arg;
+	u8 port0_value;
+	u8 port1_value;
+	ioexp_read_port(ioe, 0, &port0_value);
+	ioexp_read_port(ioe, 1, &port1_value);
+	xil_printf("codec_ioexp intr read port0=0x%02X port1=0x%02X\n", port0_value, port1_value);
+}
 
 
 
@@ -72,6 +82,8 @@ int ioexp_read_register(struct ioexp *ioe, uint8_t reg, uint8_t *value) {
 int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
+		XScuGic *scugic,
+		int intr_id,
 		uint32_t *bus_sel_ptr,
 		int if_type, 
 		uint8_t bus_addr, 
@@ -82,6 +94,7 @@ int init_ioexp(
 
 	xil_printf("init_ioexp: if_type=%d  bus_addr=0x%02X\n", if_type, bus_addr);
 	
+	ioe->scugic = scugic;
 	ioe->iicps = iicps;
 	ioe->bus_sel_ptr = bus_sel_ptr;
 
@@ -104,11 +117,21 @@ int init_ioexp(
 	case IOEXP_IICPS:
 		_return_if_error_(ioexp_write_register(ioe, IOEXP_REG_CFG0, port0_inputs));
 		_return_if_error_(ioexp_write_register(ioe, IOEXP_REG_CFG1, port1_inputs));
-		return XST_SUCCESS;
+		_return_if_error_(ioexp_write_register(ioe, IOEXP_REG_INTMASK0, !port0_inputs));
+		_return_if_error_(ioexp_write_register(ioe, IOEXP_REG_INTMASK1, !port1_inputs));
+		break;
 	// case IOEXP_GPIO:
 	// 	xil_printf("TODO!\n");		
 	// 	break;
+		default:
+			return XST_NO_FEATURE;
 	}
+
+	if (intr_id != 0) {
+		_return_if_error_(XScuGic_Connect(ioe->scugic, intr_id, (Xil_ExceptionHandler)ioexp_intr_handler, (void *)ioe));
+		XScuGic_Enable(ioe->scugic, intr_id);
+	}
+	ioexp_intr_handler((void *)ioe);
 	
 	return XST_SUCCESS;
 }

@@ -12,6 +12,7 @@
 
 struct ioexp {
 	XIicPs *iicps;
+	XScuGic *scugic;
 	uint32_t *bus_sel_ptr;
 	int if_type;
 	uint8_t bus_addr;
@@ -27,6 +28,8 @@ struct ioexp *make_ioexp();
 int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
+		XScuGic *scugic,
+		int intr_id,
 		uint32_t *bus_sel_ptr,
 		int if_type, 
 		uint8_t bus_addr, 
