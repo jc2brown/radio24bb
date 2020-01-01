@@ -6,7 +6,7 @@
 
 
 
-static XUartPs *stdio_uartps; 
+static XUartPs *stdio_uartps = NULL; 
 
 volatile int TotalReceivedCount;
 volatile int TotalSentCount;
@@ -16,12 +16,29 @@ int TotalErrorCount;
 static volatile int stdio_uartps_tx_pending = 0;
 // static int stdio_uartps_rx_pending = 0;
 
+
+
+
+
+
+
+
 void outbyte(char c) {
-	stdio_uartps_tx_pending = 1;
-	XUartPs_Send(stdio_uartps, &c, 1);
-	while (stdio_uartps_tx_pending) { 
+
+	if (stdio_uartps == NULL) {
+		XUartPs_SendByte(STDOUT_BASEADDRESS, c);
+		return;
+	}
+
+	for (int i = 0; i < 10000; ++i) {
+		if (!stdio_uartps_tx_pending) { 
+			break;
+		}
 		usleep(10);
 	}
+
+	stdio_uartps_tx_pending = 1;
+	XUartPs_Send(stdio_uartps, &c, 1);
 }
 
 
@@ -40,8 +57,8 @@ volatile int TotalSentCount;
 int TotalErrorCount;
 
 
-void uartps_handler(void *CallBackRef, u32 Event, unsigned int EventData)
-{
+void uartps_handler(void *CallBackRef, u32 Event, unsigned int EventData) {
+
 	/* All of the data has been sent */
 	if (Event == XUARTPS_EVENT_SENT_DATA) {
 		stdio_uartps_tx_pending = 0;
@@ -112,6 +129,7 @@ int init_uartps(XUartPs *uartps, XScuGic *scugic, int device_id, int intr_id) {
 	);
 	XUartPs_SetRecvTimeout(uartps, 8);
 	XUartPs_SetOperMode(uartps, XUARTPS_OPER_MODE_NORMAL);
+	stdio_uartps = uartps;
 	return XST_SUCCESS;
 }
 

@@ -66,7 +66,7 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 
 
 #define IICPS0_CLK_RATE 400000
-#define IICPS1_CLK_RATE 400000
+#define IICPS1_CLK_RATE 100000
 
 #define I2C_SEL_USB 0
 #define I2C_SEL_CODEC 1
@@ -112,6 +112,7 @@ struct radio24bb *make_radio24bb() {
 
 
 	r24bb->scugic = make_scugic();
+	r24bb->uartps = make_uartps();
 	r24bb->gpiops = make_gpiops();
 	r24bb->spips1 = make_spips();
 	r24bb->iicps0 = make_iicps();
@@ -198,7 +199,7 @@ int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
 		(g ? CODEC_IOEXP_LINE_OUT_LED_G : 0) |
 		(b ? CODEC_IOEXP_LINE_OUT_LED_B : 0);
 	port0_value = ~port0_value;
-	ioexp_write_port(r24bb->codec_ioexp, 0, port0_value);
+	_return_if_error_(ioexp_write_port(r24bb->codec_ioexp, 0, port0_value));
 	return XST_SUCCESS;
 }
 
@@ -206,15 +207,19 @@ int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
 
 int update_codec_ioexp(struct radio24bb *r24bb) {
 
+
 	u8 port1_value;
-	_return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value));
 
+	// _return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value));
+	// _return_if_error_(set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET)));
+	// _return_if_error_(set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET)));
 
+	ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value);
 
-	_return_if_error_(set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET)));
-	_return_if_error_(set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET)));
+	xil_printf("0x%02X\n", port1_value);
 
-
+	set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET));
+	set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET));
 
 	// uint8_t port0_value = 
 	// 	((port1_value & CODEC_IOEXP_LINE_IN_DET) ? CODEC_IOEXP_LINE_IN_LED_B : 0) |
@@ -305,14 +310,14 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 		init_scugic(r24bb->scugic, 
 			XPAR_SCUGIC_0_DEVICE_ID
 	));
-
+/*
 	_return_if_error_(
 		init_uartps(r24bb->uartps, 
 			r24bb->scugic, 
-			XPAR_XUARTPS_0_DEVICE_ID,
-			XPAR_XUARTPS_0_INTR
+			XPAR_XUARTPS_0_DEVICE_ID, // Auto-numbered 0 but actual peripheral is PS UART 1
+			XPAR_PS7_UART_1_INTR 
 	));
-
+*/
 	_return_if_error_(
 		init_gpiops(r24bb->gpiops, 
 			XPAR_PS7_GPIO_0_DEVICE_ID,
@@ -416,16 +421,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR, (Xil_ExceptionHandler)update_usb_ioexp_0, (void *)r24bb));
-	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR);
-
-	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR, (Xil_ExceptionHandler)update_codec_ioexp, (void *)r24bb));
-	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR);
-
-
-	update_usb_ioexp_0(r24bb);
-	update_codec_ioexp(r24bb);
-
 
 
 	// init_usb(r24bb->usb);
@@ -497,10 +492,24 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 
+	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR, (Xil_ExceptionHandler)update_usb_ioexp_0, (void *)r24bb));
+	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_00_INTR);
+
+	_return_if_error_(XScuGic_Connect(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR, (Xil_ExceptionHandler)update_codec_ioexp, (void *)r24bb));
+	XScuGic_Enable(r24bb->scugic, XPAR_FABRIC_IRQ_F2P_01_INTR);
+
+
 
 
 	//Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);	
 	Xil_ExceptionEnable();
+
+
+	update_usb_ioexp_0(r24bb);
+	update_codec_ioexp(r24bb);
+
+
+
 
 	return XST_SUCCESS;
 }

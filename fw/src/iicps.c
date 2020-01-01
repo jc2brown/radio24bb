@@ -61,8 +61,12 @@ s32 iicps_write(XIicPs *iicps, u8 bus_addr, u8 *WriteBuffer, u16 ByteCount) {
 
 
 s32 iicps_write_1byte(XIicPs *iicps, u8 bus_addr, u8 byte0) {
-	_return_if_error_(XIicPs_MasterSendPolled(iicps, &byte0, 1, bus_addr));
+	_return_if_error_(XIicPs_MasterSendPolled(iicps, &byte0, 1, bus_addr), "byte0=0x%02X, bus_addr=0x%02X\n", byte0, bus_addr);
+	// XIicPs_MasterSendPolled(iicps, &byte0, 1, bus_addr);
+	//xil_printf("XIICPS_ISR: 0x%02X\n", XIicPs_ReadReg(iicps->Config.BaseAddress, XIICPS_ISR_OFFSET));
 	// TODO: timeout?
+	
+	_return_if_error_(iicps_wait_for_bus(iicps, 100));
 	return XST_SUCCESS;
 }
 

@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include "sleep.h"
 #include "roe.h"
 #include "iicps.h"
 
@@ -33,6 +34,11 @@ struct ioexp *make_ioexp() {
 
 
 int ioexp_write_register(struct ioexp *ioe, uint8_t reg, uint8_t value) {
+	
+	// This delay is required to prevent some NACK errors
+	// Probably because we only have the weak FPGA pullups on the ioexp clk/data lines
+	usleep(100);
+
 	trace("ioexp_write_register  bus_sel=%d  bus_addr=0x%02X  reg=0x%02X  value=0x%02X\n", ioe->bus_sel, ioe->bus_addr, reg, value);
 	
 	switch (ioe->if_type) {
