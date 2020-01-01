@@ -589,6 +589,14 @@ int main()
 
 
 
+	int avail = r24bb->uart->rx_queue->size;
+	if (avail != 0) {
+		int c;
+		for (int i = 0; i < avail; ++i) {
+			queue_get(r24bb->uart->rx_queue, (void **)&c);
+		}
+		xil_printf("\n");
+	}
 
 
 
@@ -600,11 +608,16 @@ int main()
 		//int ireg = mfcpsr();
 		// Xil_ExceptionDisable();
 
-		if (r24bb->uart->rx_queue->size != 0) {
+		int avail = r24bb->uart->rx_queue->size;
+		if (avail != 0) {
 			int c;
-			queue_get(r24bb->uart->rx_queue, (void **)&c);
-			// xil_printf("%c\n", (char)c);
-			outbyte((char)c);
+			for (int i = 0; i < avail; ++i) {
+				queue_get(r24bb->uart->rx_queue, (void **)&c);
+				xil_printf("%c", (char)c);
+//				outbyte((char)c);
+			}
+			xil_printf("\n");
+			fatfs_ls();
 		}
 
 		//mtcpsr(ireg);

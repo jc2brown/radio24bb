@@ -41,16 +41,29 @@ void uart_send(struct uartps *uart) {
 	}
 	*/
 
-	int i;
-	queue_get(uart->tx_queue, (void **)&i);
-	stdio_uart->tx_pending = 1;
-	// XUartPs_Send(uart->xuartps, (void *)&c, 1);
-	_c = (char)i;
+	int num_contiguous_read_bytes;
 
-	//usleep(1000);
+	if (uart->tx_queue->tail <= uart->tx_queue->head) {
+		num_contiguous_read_bytes = uart->tx_queue->head - uart->tx_queue->tail;
+	}
+	else {
+		num_contiguous_read_bytes = uart->tx_queue->capacity - uart->tx_queue->tail;
+	}
 
 
-	XUartPs_Send(uart->xuartps, &_c, 1);
+	// int i;
+	// queue_get(uart->tx_queue, (void **)&i);
+
+
+
+	for (int i = 0; i < num_contiguous_read_bytes; ++i) {
+		queue_get(uart->tx_queue, (void **)&uart->tx_buf[i]);
+	}
+
+	uart->tx_pending = 1;
+	// _c = (char)i;
+
+	XUartPs_Send(uart->xuartps, uart->tx_buf, num_contiguous_read_bytes);
 
 
 	// Xil_ExceptionEnable();
@@ -165,6 +178,10 @@ void uart_handler(void *arg, u32 Event, unsigned int EventData) {
 	if (Event == XUARTPS_EVENT_SENT_DATA) {
 		uart->tx_pending = 0;
 		uart->TotalSentCount = EventData;
+
+
+		// uart->tx_queue->tail = (uart->tx_queue->tail + EventData) % uart->tx_queue->capacity;
+		// uart->tx_queue->size -= EventData;
 
 		uart_send(uart);
 /*

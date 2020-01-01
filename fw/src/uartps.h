@@ -22,6 +22,7 @@ struct uartps {
 	int TotalErrorCount;
 	int rx_pending;
 	int tx_pending;
+	char tx_buf[4096];
 	char rx_buf[2][4096];
 	int rx_buf_ptr;
 };
