@@ -11,6 +11,8 @@
 #include "xspips.h"
 #include "ff.h"
 
+#include "queue.h"
+
 #include "ioexp.h"
 #include "aic3204.h"
 #include "adc.h"
@@ -21,7 +23,7 @@ struct radio24bb {
 
 	// Zynq peripherals
 	XScuGic *scugic;
-	XUartPs *uartps;
+	struct uartps *uart;
 	XGpioPs *gpiops;
 	XSpiPs *spips1;
 	XIicPs *iicps0;

@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include "xpseudo_asm.h"
 
 #include "radio24bb.h"
 
@@ -109,35 +110,71 @@ struct radio24bb *make_radio24bb() {
 
 
 
-
-
 	r24bb->scugic = make_scugic();
-	r24bb->uartps = make_uartps();
+	if (r24bb->scugic == NULL) return NULL;
+
+	r24bb->uart = make_uartps();
+	if (r24bb->uart == NULL) return NULL;
+
 	r24bb->gpiops = make_gpiops();
+	if (r24bb->gpiops == NULL) return NULL;
+
 	r24bb->spips1 = make_spips();
+	if (r24bb->spips1 == NULL) return NULL;
+
 	r24bb->iicps0 = make_iicps();
+	if (r24bb->iicps0 == NULL) return NULL;
+
 	r24bb->iicps1 = make_iicps();
+	if (r24bb->iicps1 == NULL) return NULL;
+
 
 	r24bb->fatfs = make_fatfs();
+	if (r24bb->fatfs == NULL) return NULL;
+
 
 	r24bb->xadc = (XAdcPs *)malloc(sizeof(XAdcPs));
+	if (r24bb->xadc == NULL) return NULL;
+
 
 	r24bb->ina = make_adc_channel();
+	if (r24bb->ina == NULL) return NULL;
+
 	r24bb->inb = make_adc_channel();
+	if (r24bb->inb == NULL) return NULL;
+
 
 	r24bb->outa = make_dac_channel();
+	if (r24bb->outa == NULL) return NULL;
+
 	r24bb->outb = make_dac_channel();
+	if (r24bb->outb == NULL) return NULL;
+
 
 	r24bb->codec = make_aic3204();
+	if (r24bb->codec == NULL) return NULL;
+
 
 	r24bb->usb_ioexp_0 = make_ioexp();
+	if (r24bb->usb_ioexp_0 == NULL) return NULL;
+
 	r24bb->usb_ioexp_1 = make_ioexp();
+	if (r24bb->usb_ioexp_1 == NULL) return NULL;
+
 	r24bb->codec_ioexp = make_ioexp();
+	if (r24bb->codec_ioexp == NULL) return NULL;
+
 
 	r24bb->ddsa = make_dds_channel();
+	if (r24bb->ddsa == NULL) return NULL;
+
 	r24bb->ddsb = make_dds_channel();
+	if (r24bb->ddsb == NULL) return NULL;
+
 
 	r24bb->mpx = make_mpx_channel();
+	if (r24bb->mpx == NULL) return NULL;
+
 
 	return r24bb;
 };
@@ -206,27 +243,10 @@ int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
 
 
 int update_codec_ioexp(struct radio24bb *r24bb) {
-
-
 	u8 port1_value;
-
-	// _return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value));
-	// _return_if_error_(set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET)));
-	// _return_if_error_(set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET)));
-
-	ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value);
-
-	xil_printf("0x%02X\n", port1_value);
-
+	_return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value));
 	set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET));
 	set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET));
-
-	// uint8_t port0_value = 
-	// 	((port1_value & CODEC_IOEXP_LINE_IN_DET) ? CODEC_IOEXP_LINE_IN_LED_B : 0) |
-	// 	((port1_value & CODEC_IOEXP_LINE_OUT_DET) ? CODEC_IOEXP_LINE_OUT_LED_B : 0);
-
-	// ioexp_write_port(ioe, 0, ~port0_value);
-
 	return XST_SUCCESS;
 }
 
@@ -270,7 +290,10 @@ int update_codec_ioexp(struct radio24bb *r24bb) {
 int update_usb_ioexp_0(struct radio24bb *r24bb) {
 	// Critical section
 	// - need to guard bus_sel (modified by ioexp_read_port  shared by usb_ioexp_0 and usb_ioexp_1
-	Xil_ExceptionDisable(); 
+	//Xil_ExceptionDisable(); 
+
+	int ireg = mfcpsr();
+	Xil_ExceptionDisable();
 
 	u8 ioe1_port0_value;
 	ioexp_read_port(r24bb->usb_ioexp_1, 0, &ioe1_port0_value);
@@ -281,16 +304,10 @@ int update_usb_ioexp_0(struct radio24bb *r24bb) {
 
 	ioexp_write_port(r24bb->usb_ioexp_0, 0, ~ioe0_port0_value);
 
-	Xil_ExceptionEnable();
+	// Xil_ExceptionEnable();
+	mtcpsr(ireg);
 	return XST_SUCCESS;
 }
-
-
-
-
-
-
-
 
 
 
@@ -310,14 +327,15 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 		init_scugic(r24bb->scugic, 
 			XPAR_SCUGIC_0_DEVICE_ID
 	));
-/*
+
 	_return_if_error_(
-		init_uartps(r24bb->uartps, 
+		init_uartps(r24bb->uart, 
 			r24bb->scugic, 
 			XPAR_XUARTPS_0_DEVICE_ID, // Auto-numbered 0 but actual peripheral is PS UART 1
-			XPAR_PS7_UART_1_INTR 
+			XPAR_PS7_UART_1_INTR
 	));
-*/
+
+
 	_return_if_error_(
 		init_gpiops(r24bb->gpiops, 
 			XPAR_PS7_GPIO_0_DEVICE_ID,
@@ -339,6 +357,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 		init_iicps(r24bb->iicps1, 
 			XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE
 	));
+
 
 	_return_if_error_(
 		init_fatfs(r24bb->fatfs
@@ -504,6 +523,8 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	//Xil_ExceptionEnableMask(XIL_EXCEPTION_IRQ);	
 	Xil_ExceptionEnable();
 
+	// Switch to buffered interrupt-driven UART mode
+	stdio_uart = r24bb->uart;
 
 	update_usb_ioexp_0(r24bb);
 	update_codec_ioexp(r24bb);

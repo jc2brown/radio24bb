@@ -184,7 +184,7 @@ void print_ctx_path(struct cmd_context *ctx) {
 
 static struct cmd_context *root_ctx;
 static struct cmd_context *ctx;
-static struct command cmd;
+ static struct command cmd;
 
 
 

@@ -10,6 +10,7 @@
 #include "xscugic.h"
 #include "xadc.h"
 #include "gpiops.h"
+#include "uartps.h"
 #include "fatfs.h"
 
 #include "roe.h"
@@ -509,16 +510,6 @@ int main()
 {
 
 
-/*
-
-	XUartPs_ResetHw(XPAR_XUARTPS_0_BASEADDR);
-	XUartPs_Config *uart_config = XUartPs_LookupConfig(XPAR_XUARTPS_0_DEVICE_ID);
-	XUartPs_CfgInitialize(&uart, uart_config, XPAR_XUARTPS_0_BASEADDR);
-	XUartPs_SetOptions(&uart, XUartPs_GetOptions(&uart)|XUARTPS_OPTION_RESET_RX);
-	XUartPs_SetBaudRate_Faster(&uart, 921600);
-
-*/
-
 
 	xil_printf("\n\n");
 	xil_printf("##############################################\n");
@@ -532,7 +523,12 @@ int main()
 
 	xil_printf("Allocating devices... \n");
 	struct radio24bb *r24bb = make_radio24bb();
+	if (r24bb == NULL) {
+		xil_printf("FATAL: failed allocating devices.\n");
+		while (1);
+	}
 	xil_printf("Done allocating devices.\n");
+
 	
 	xil_printf("Initializing devices... \n");
 	init_radio24bb(r24bb, R24BB_REGS);
@@ -599,8 +595,25 @@ int main()
 
 
 	while (1) {
-		handle_command();
-		fatfs_ls();
+
+
+		//int ireg = mfcpsr();
+		// Xil_ExceptionDisable();
+
+		if (r24bb->uart->rx_queue->size != 0) {
+			int c;
+			queue_get(r24bb->uart->rx_queue, (void **)&c);
+			// xil_printf("%c\n", (char)c);
+			outbyte((char)c);
+		}
+
+		//mtcpsr(ireg);
+
+		usleep(1000);
+
+
+		//handle_command();
+		//fatfs_ls();
 	}
 
 
