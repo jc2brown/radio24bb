@@ -3,6 +3,7 @@ aic3204.c
 command.c
 dac.c  
 dds.c
+fatfs.c
 gpiops.c
 i2c.c  
 iicps.c

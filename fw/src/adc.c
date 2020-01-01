@@ -10,6 +10,56 @@
 
 
 
+#undef trace
+#define trace(...)
+//#define trace xil_printf
+
+
+
+
+
+
+const double ina_filter0_coef[21] = {
+        0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0
+};
+/*
+const double ina_filter1_coef[21] = {
+	-0.0026459203, 0.0017194303, -0.0030456384, 0.00019475492, -0.0028101971, -0.0038461867,
+	0.000098695584, -0.018084701, 0.030485547, -0.43251019, 0.43251019, -0.030485547,
+	0.018084701, -0.000098695584, 0.0038461867, 0.0028101971, -0.00019475492, 0.0030456384,
+	-0.0017194303, 0.0026459203, 0
+};
+
+
+// 0.5dB-flat between 7MHz-13MHz
+const double ina_filter2_coef[21] = {
+		0.0086061177, -0.014499215, 0.014741051,
+			0.052044280, -0.033934747, -0.039228125, 0.049100553, -0.24203432, -0.46529025,
+			0.24094970, 0.86553072, 0.24094970, -0.46529025, -0.24203432, 0.049100553,
+			-0.039228125, -0.033934747, 0.052044280, 0.014741051, -0.014499215, 0.0086061177
+};
+
+
+
+const double ina_filter3_coef[21] = {
+		0.0091849059, -0.019084909, 0.0033509231,
+			0.040091750, -0.036572322, -0.013564985, 0.12903680, -0.12903350, -0.42604124,
+			0.11707684, 0.65213891, 0.11707684, -0.42604124, -0.12903350, 0.12903680,
+			-0.013564985, -0.036572322, 0.040091750, 0.0033509231, -0.019084909, 0.0091849059
+
+};
+*/
+
+
+
+
+
+
+
 
 
 struct adc_channel *make_adc_channel() {
@@ -27,7 +77,7 @@ int init_adc_channel_regs(struct adc_channel_regs *regs) {
 	regs->offset = 0;
 
 	for (int i = 0; i < 21; ++i) {
-		regs->filter_coef = (uint32_t)(ina_filter1_coef[i] * (double)(1<<19));
+		regs->filter_coef = (uint32_t)(ina_filter0_coef[i] * (double)(1<<19));
 	}
 
 	regs->stat_cfg = 0;
@@ -46,7 +96,7 @@ int init_adc_channel_regs(struct adc_channel_regs *regs) {
 
 
 int init_adc_channel(struct adc_channel *channel, uint32_t regs_addr) {
-	xil_printf("init_adc_channel\n");
+	trace("init_adc_channel\n");
 	channel->regs = (struct adc_channel_regs *)regs_addr;
 	_return_if_error_(init_adc_channel_regs(channel->regs));
 	return XST_SUCCESS;

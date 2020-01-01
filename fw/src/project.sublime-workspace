@@ -1,0 +1,1569 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"print_c",
+				"print_cmd_ok"
+			],
+			[
+				"convert",
+				"convert_single_channel_color_params"
+			],
+			[
+				"word",
+				"word_out_size"
+			],
+			[
+				"unknown_",
+				"unknown_cmd_ack"
+			],
+			[
+				"chunk",
+				"chunk_size"
+			],
+			[
+				"num_bytes",
+				"num_bytes_per_row"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "aic3204.c",
+			"settings":
+			{
+				"buffer_size": 14973,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "main.c",
+			"settings":
+			{
+				"buffer_size": 15846,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "command.c",
+			"settings":
+			{
+				"buffer_size": 7907,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "ioexp.c",
+			"settings":
+			{
+				"buffer_size": 4456,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "iicps.c",
+			"settings":
+			{
+				"buffer_size": 4734,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "command.h",
+			"settings":
+			{
+				"buffer_size": 3039,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "radio24bb.h",
+			"settings":
+			{
+				"buffer_size": 1376,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "radio24bb.c",
+			"settings":
+			{
+				"buffer_size": 10811,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/Projects/Baseband/radio24bb/fw/tools/build_project.tcl",
+			"settings":
+			{
+				"buffer_size": 171,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/Projects/Baseband/radio24bb/fw/tools/gen_hw_bsp.tcl",
+			"settings":
+			{
+				"buffer_size": 1200,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/Projects/Baseband/radio24bb/fw/Makefile",
+			"settings":
+			{
+				"buffer_size": 6237,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "spips.c",
+			"settings":
+			{
+				"buffer_size": 607,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/Projects/Baseband/radio24bb/fw/tools/init_microzed7020.tcl",
+			"settings":
+			{
+				"buffer_size": 1541,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/D/Projects/Baseband/radio24bb/fw/tools/boot_microzed7020.tcl",
+			"settings":
+			{
+				"buffer_size": 1204,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "fatfs.c",
+			"settings":
+			{
+				"buffer_size": 851,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "#include <stdlib.h>\n#include \"ff.h\"\n#include \"fatfs.h\"\n#include \"roe.h\"\n\n\nint open_wav_file(char *path) {\n\n\tFIL *f;\n\n\tRes = f_open(&fil, path, FA_CREATE_ALWAYS | FA_WRITE | FA_READ);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\t/*\n\t * Pointer to beginning of file .\n\t */\n\tRes = f_lseek(&fil, 0);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\t/*\n\t * Write data to file.\n\t */\n\tRes = f_write(&fil, (const void*)SourceAddress, FileSize,\n\t\t\t&NumBytesWritten);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\t/*\n\t * Pointer to beginning of file .\n\t */\n\tRes = f_lseek(&fil, 0);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\t/*\n\t * Read data from file.\n\t */\n\tRes = f_read(&fil, (void*)DestinationAddress, FileSize,\n\t\t\t&NumBytesRead);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\t/*\n\t * Data verification\n\t */\n\tfor(BuffCnt = 0; BuffCnt < FileSize; BuffCnt++){\n\t\tif(SourceAddress[BuffCnt] != DestinationAddress[BuffCnt]){\n\t\t\treturn XST_FAILURE;\n\t\t}\n\t}\n\n\t/*\n\t * Close file.\n\t */\n\tRes = f_close(&fil);\n\tif (Res) {\n\t\treturn XST_FAILURE;\n\t}\n\n\n\n\n}",
+			"settings":
+			{
+				"buffer_size": 997,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_intr_example.c",
+			"settings":
+			{
+				"buffer_size": 18573,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_class_storage.h",
+			"settings":
+			{
+				"buffer_size": 5690,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/dmaps_v2_3/examples/xdmaps_example_w_intr.c",
+			"settings":
+			{
+				"buffer_size": 12334,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "fatfs.h",
+			"settings":
+			{
+				"buffer_size": 128,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "fw_sources.lst",
+			"settings":
+			{
+				"buffer_size": 165,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				],
+				[
+					"Packages/ShellScript/ShellScript.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/verilog.sublime-build",
+					""
+				],
+				[
+					"Packages/User/verilog.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/User/verilog.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/verilog.sublime-build",
+					""
+				],
+				[
+					"Packages/User/verilog.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/User/verilog.sublime-build",
+				"Run"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"hex",
+				"HexViewer: Toggle Hex View"
+			],
+			[
+				"remove ",
+				"Package Control: Remove Package"
+			],
+			[
+				"c++",
+				"Set Syntax: C++"
+			],
+			[
+				"build ",
+				"Build: New Build System"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"verilog ",
+				"Verilog: Linting"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			],
+			[
+				"hier",
+				"Verilog: Show Hierarchy"
+			],
+			[
+				"status",
+				"Git: Status"
+			],
+			[
+				"gs",
+				"Git: Status"
+			],
+			[
+				"gic",
+				"Git: Commit"
+			],
+			[
+				"gipus",
+				"Git: Push"
+			],
+			[
+				"gia",
+				"Git: Add All"
+			],
+			[
+				"gin",
+				"Git: Init"
+			],
+			[
+				"new syn",
+				"PackageDev: New Syntax Definition"
+			],
+			[
+				"packa",
+				"PackageDev: New Syntax Definition"
+			],
+			[
+				"veri",
+				"Verilog: Show Hierarchy"
+			],
+			[
+				"c",
+				"Set Syntax: C"
+			],
+			[
+				"veril",
+				"Set Syntax: Verilog"
+			],
+			[
+				"syste",
+				"Set Syntax: SystemVerilog"
+			],
+			[
+				"make",
+				"Build With: Make"
+			],
+			[
+				"clean",
+				"Build With: Make - Clean"
+			],
+			[
+				"plain",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"sys",
+				"Set Syntax: SystemVerilog"
+			],
+			[
+				"system",
+				"Set Syntax: SystemVerilog"
+			],
+			[
+				"fsm",
+				"Verilog: Insert FSM template"
+			],
+			[
+				"lint",
+				"Verilog: Linting"
+			],
+			[
+				"verilog",
+				"Verilog: Linting"
+			],
+			[
+				"ver",
+				"Verilog: Insert FSM template"
+			],
+			[
+				"font",
+				"Preferences: Package Control Settings – Default"
+			],
+			[
+				"key",
+				"Preferences: Key Bindings"
+			],
+			[
+				"color",
+				"UI: Select Color Scheme"
+			],
+			[
+				"reve",
+				"File: Revert"
+			],
+			[
+				"pref",
+				"Preferences: Settings"
+			],
+			[
+				"rev",
+				"File: Revert"
+			],
+			[
+				"user ",
+				"Preferences: HexViewer Key Bindings – User"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"rel",
+				"HexViewer: Reload Hex View"
+			],
+			[
+				"hex v",
+				"Preferences: HexViewer Key Bindings – User"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 130.0,
+		"history":
+		[
+			"pip",
+			"pip install numpy",
+			"which python",
+			"help",
+			"install Package->SystemVerilog",
+			"install",
+			"install Package",
+			"install Package->SystemVerilog"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/xilffs_v3_9/src/include/ff.h",
+		"/D/Projects/Baseband/radio24bb/fw/Makefile",
+		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/spips.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/mpx.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/mpx.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/dds.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/dds.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/src/xscugic.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/src/xscugic_intr.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/gpiops_v3_3/src/xgpiops_intr.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/gpiops_v3_3/src/xgpiops.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/aic3204.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/gpiops.h",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/tmrctr_v4_4/src/xtmrctr_intr.c",
+		"/C/Users/Chris/AppData/Local/Temp/Pl_timer_intr_test.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/gpiops.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/aic3204.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/adc.c",
+		"/C/Users/Chris/Desktop/DigikeyToBuy.txt",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/gpiops_v3_3/examples/xgpiops_intr_example.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/scugic.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/scugic.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/fatfs.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/lib/sw_services/xilffs_v3_9/examples/xilffs_polled_example.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/ioexp.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/ioexp.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/iicps.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/iicps.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/command.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/command.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/main.c",
+		"/D/Projects/Baseband/radio24bb/fw/tools/gen_hw_bsp.tcl",
+		"/C/Users/Chris/Desktop/xmas.wav",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/include/xparameters.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/dac.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/dac.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/regs.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/fw_sources.lst",
+		"/D/Projects/Baseband/radio24bb/fw/src/adc.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/spi.h",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/include/xparameters_ps.h",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/examples/xscugic_low_level_example.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/examples/xscugic_example.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/tmrctr_v4_4/src/xtmrctr_l.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/tmrctr_v4_4/src/xtmrctr_g.c",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/tmrctr_v4_4/src/xtmrctr_i.h",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/tmrctr_v4_4/src/xtmrctr.c",
+		"/C/Users/Chris/AppData/Local/Temp/Pl_timer_intr_test-1.c",
+		"/C/Local/zopaz_fw/ucos/ucos_scugic_v1_43/ucos_scugic.c",
+		"/C/Local/zopaz_fw/src/ZynqIntc.hpp",
+		"/C/Local/zopaz_fw/src/Device.cpp",
+		"/C/Local/zopaz_fw/src/ZopazBSP.cpp",
+		"/C/Local/zopaz_fw/src/Zopaz.cpp",
+		"/C/Local/zopaz_fw/src/main.cpp",
+		"/C/Local/zopaz_lite/xdc/maple_top_location_io.xdc",
+		"/C/Xilinx/SDK/2018.3/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_10/examples/xscugic_example.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/i2c.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/ina219.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/i2c.c",
+		"/C/Local/zopaz_lite/hdl/i2c_mux_iobuf.v",
+		"/C/Xilinx/SDK/2018.3/data/embeddedsw/XilinxProcessorIPLib/drivers/iicps_v3_8/src/xiicps_master.c",
+		"/C/Xilinx/SDK/2018.3/data/embeddedsw/XilinxProcessorIPLib/drivers/iicps_v3_8/src/xiicps.c",
+		"/C/Xilinx/SDK/2018.3/data/embeddedsw/XilinxProcessorIPLib/drivers/iicps_v3_8/src/xiicps.h",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/fir_cell.sv",
+		"/D/Documents/D3XXPython_Release1.0/D3XXPython_Release1.0/ftd3xx/ftd3xx.py",
+		"/D/Documents/D3XXPython_Release1.0/D3XXPython_Release1.0/ftd3xx/demo/apiusage.py",
+		"/D/Documents/D3XXPython_Release1.0/D3XXPython_Release1.0/ftd3xx/demo/demo1.py",
+		"/C/Xilinx/SDK/2018.3/data/embeddedsw/XilinxProcessorIPLib/drivers/xadcps_v2_3/examples/xadcps_polled_printf_example.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/xadc.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/xadc.c",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/fir_filter.sv",
+		"/D/Documents/FT600DataLoopbackDemoApp_v1.3.0.2/FT600DataLoopbackDemoApp_v1.3.0.2/FT600DataLoopback_Output/20191226_214006_PayloadEP02.txt",
+		"/D/Documents/FT600DataLoopbackDemoApp_v1.3.0.2/FT600DataLoopbackDemoApp_v1.3.0.2/FT600DataLoopback_Output/20191226_190127_PayloadEP02.txt",
+		"/C/Xilinx/Vivado/2018.3/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dac_channel_regs.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dac_channel.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds_regs.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/r24bb_top.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/stereo_mpx.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/mpx_regs.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/i2s_rx.sv",
+		"/G/Software/Steam/steamapps/common/call of duty modern warfare 2/players/config_mp.cfg",
+		"/G/Software/Steam/steamapps/common/call of duty modern warfare 2/players/config.cfg",
+		"/D/Projects/Baseband/radio24bb/rtl/rtl_info.mk",
+		"/D/Projects/Baseband/radio24bb/Makefile",
+		"/D/Projects/Baseband/radio24bb/fw/tools/build_project.tcl",
+		"/D/Projects/Baseband/radio24bb/rtl/Makefile",
+		"/D/Projects/Baseband/radio24bb/rtl/scripts/run_synth.tcl",
+		"/D/Projects/Baseband/radio24bb_copy/fw/src/main.c",
+		"/C/Local/zopaz_lite/hdl/zopaz_lite.sv",
+		"/D/Projects/Baseband/radio24bb_copy/fw/src/regs.h",
+		"/D/Projects/Baseband/radio24bb_copy/rtl/hdl/regs.sv",
+		"/D/Projects/Baseband/radio24bb_copy/rtl/hdl/r24bb_top.sv",
+		"/D/Projects/Baseband/radio24bb_copy/rtl/hdl/dds_block.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/scripts/create_project.tcl",
+		"/C/Local/zopaz_lite/hdl/TopazWrapper.v",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/prbs.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/regs.sv",
+		"/D/Documents/D3XXPython_Release1.0/D3XXPython_Release1.0/ftd3xx/demo/out.dat",
+		"/D/Projects/Baseband/radio24bb - Copy/fw/src/main.c",
+		"/D/Christie/ADEM_Project/etc/SDK_Workspace/OLEDCTL/bootimage/OLEDCTL.bif",
+		"/D/Projects/Baseband/radio24bb/fw/tools/r24bb_top.bif",
+		"/D/Projects/Baseband/radio24bb/fw/r24bb_top.bif",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_app/Debug/makefile",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_app/Debug/src/subdir.mk",
+		"/F/r24bb_top.bif",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds_block.sv",
+		"/D/Projects/Baseband/radio24bb/TODO.txt",
+		"/D/Projects/Baseband/radio24bb/rtl/tb/tb_siggen.sv",
+		"/C/Program Files (x86)/SDR_Sharp/SDRSharp.exe.Config",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/gain_offset_clamp.sv",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/hdl_sources.lst",
+		"/D/Projects/Baseband/radio24bb/rtl/tb/tb_sources.lst",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli/main.c",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_app/src/fw_sources.lst",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli/command.h",
+		"/I/serial/terminal.py",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli3/command.cpp",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli3/main.c",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli2/main.c",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli/list.h",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli/list.cpp",
+		"/D/Projects/Baseband/radio24bb_extra/cli_work/cli/command.cpp",
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/include.mk",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/uartps_v3_6/examples/xuartps_polled_example.c"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 105.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"xil_printf",
+			"FfsSdPolledExample",
+			".a",
+			"XGpioPs_IntrHandler",
+			"DeviceDriverHandler",
+			"codec_ioexp_intr_handler",
+			"&InterruptController",
+			"INTR_IN_PIN",
+			"IntrHandler",
+			"ScuGicExample",
+			"calc_step_size",
+			"handle_dac_opt",
+			"make_aic3204",
+			"struct aic3204 *aic",
+			"write_register(",
+			"()",
+			"GPIO_INTERRUPT_ID",
+			"SetupInterruptSystem",
+			"xgpiops_ptr",
+			"xgpiops",
+			"zgpiops",
+			"IntrHandler",
+			"aic3204_dump",
+			"XPAR_FABRIC_IRQ_F2P_01_INTR",
+			"XIL_EXCEPTION_ID_INT",
+			"MasterSendPolled",
+			"XPAR_PS7_I2C_0_DEVICE_ID",
+			"iic",
+			"i2c",
+			"mpx",
+			"mpx_valid",
+			"REG_AUD_RATE",
+			"set_dac_osr",
+			"xpm",
+			"reset_m",
+			"amtone_script",
+			"tonea_handler",
+			"DDSB_REGS",
+			"dds",
+			"set_left_playback_config",
+			"ptm",
+			"set_adc_prb",
+			"P1_R2",
+			"/tb",
+			"tb_files",
+			"usb_wr_data",
+			"usb_wr_mux",
+			"USB_WR_MUX",
+			"USB",
+			"usb_wr_be",
+			"usb_wr_data_raw",
+			"fm",
+			"50",
+			"dac_",
+			"design_1",
+			"$(PROJECT)",
+			"$(BSP_DIR)",
+			"$(HW_DIR)",
+			"$(WORKSPACE_DIR)",
+			"$(FW_ROOT)",
+			"$(RTL_ROOT)",
+			"HW_DIR",
+			"hello",
+			"build_stamp",
+			"$(FW_ROOT).$(PROJECT).bsp.gen",
+			"$(FW_ROOT)$(PROJECT).elf",
+			"$(FW_ROOT).%.bsp.build",
+			"$(FW_ROOT).%.bsp.gen",
+			"$(HW_DIR)bsp/",
+			"$(FW_ROOT)$(PROJECT)_hw/",
+			"$(FW_ROOT)/",
+			"$(RTL_ROOT)/",
+			"$(ROOT)",
+			"PROJECT_ROOT",
+			"ina219",
+			"i2c",
+			"i2c_",
+			"ina219",
+			"ina",
+			"main",
+			"DEV_UART_A",
+			"DEV_UART_B",
+			"01 A0 01",
+			"30 01 A0 ",
+			"axi",
+			"zregs",
+			"clk_rstn",
+			"clk_mems",
+			"FIREHAW",
+			"emph",
+			"update_tx(",
+			"onrelease",
+			"bold",
+			"red",
+			"cmp1_wr_addr",
+			"onrelease",
+			"SortableTable",
+			"category",
+			"bandwidth",
+			"bandwit",
+			"MAX_NUM_cron_jobs",
+			"cron_tasks",
+			"classList",
+			"update_system_time",
+			"info(",
+			"this.",
+			"ntty.write",
+			"Serial",
+			"serve",
+			"temp=",
+			"temp",
+			"on_query_timeout",
+			"\\\"",
+			"Typie",
+			"Typies",
+			"Category",
+			"Categories",
+			"Type",
+			"Types",
+			"typie",
+			"typies",
+			"categories",
+			"category",
+			"type",
+			"types",
+			"PlotFrame",
+			"\t\n",
+			"VTPG"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"trace",
+			"scugic",
+			"calc_dds_step_size",
+			"aic",
+			"write_register(aic, ",
+			"write_register(aic",
+			"(struct aic3204 *aic)",
+			"mpx",
+			"mux",
+			"pm",
+			"am",
+			"dds_",
+			"r24bb_bd",
+			"Template_bd",
+			"$(PROJECT_TOP)",
+			"$(BSP_DIR)/",
+			"$(HW_DIR)/",
+			"$(WORKSPACE_DIR)/",
+			"$(FW_ROOT)/",
+			"$(RTL_ROOT)/",
+			"WORKSPACE_DIR",
+			"boot_stamp",
+			"$(BSP_GEN_STAMP)",
+			"$(ELF_FILE)",
+			"BSP_BUILD_STAMP",
+			"BSP_GEN_STAMP",
+			"$(BSP_DIR)",
+			"$(HW_DIR)",
+			"$(FW_ROOT)",
+			"$(RTL_ROOT)",
+			"$(FW_ROOT)",
+			"RTL_ROOT",
+			"zlregs",
+			"reset_n",
+			"clk",
+			"MAX_NUM_CRON_JOBS",
+			"cron_jobs",
+			"",
+			"ntty_write",
+			"\"",
+			"Category",
+			"Categories",
+			"Type",
+			"Types",
+			"Typie",
+			"Typies",
+			"category",
+			"categories",
+			"types",
+			"type",
+			"typie",
+			"typies",
+			"Vcctpg",
+			"cctpg.sv",
+			");",
+			";#ÿe",
+			"\\n"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 7,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "aic3204.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14973,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								171,
+								171
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\aic3204.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "main.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15846,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								211,
+								211
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\main.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "command.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7907,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								356,
+								356
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\command.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "ioexp.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4456,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								373,
+								314
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\ioexp.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "iicps.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4734,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								278,
+								278
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\iicps.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "command.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3039,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								276,
+								276
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\command.h",
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 57.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "radio24bb.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1376,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								210,
+								210
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\radio24bb.h",
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 228.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "radio24bb.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10811,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9923,
+								9923
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\radio24bb.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 8094.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/D/Projects/Baseband/radio24bb/fw/tools/build_project.tcl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 171,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\tools\\build_project.tcl",
+							"syntax": "Packages/TCL/Tcl.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "/D/Projects/Baseband/radio24bb/fw/tools/gen_hw_bsp.tcl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1200,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1200,
+								1200
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\tools\\gen_hw_bsp.tcl",
+							"syntax": "Packages/TCL/Tcl.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "/D/Projects/Baseband/radio24bb/fw/Makefile",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6237,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4862,
+								4862
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\Makefile",
+							"syntax": "Packages/Makefile/Makefile.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3515.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "spips.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 607,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								607,
+								607
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\spips.c",
+							"syntax": "Packages/C++/C.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "/D/Projects/Baseband/radio24bb/fw/tools/init_microzed7020.tcl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1541,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1541,
+								1541
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\tools\\init_microzed7020.tcl",
+							"syntax": "Packages/TCL/Tcl.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/D/Projects/Baseband/radio24bb/fw/tools/boot_microzed7020.tcl",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1204,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1177,
+								1177
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\tools\\boot_microzed7020.tcl",
+							"syntax": "Packages/TCL/Tcl.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "fatfs.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 851,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								74,
+								74
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\fatfs.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 997,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								478,
+								478
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_intr_example.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 18573,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12347,
+								12347
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "C:\\Xilinx\\SDK\\2018.2\\data\\embeddedsw\\XilinxProcessorIPLib\\drivers\\usbps_v2_4\\examples\\xusbps_intr_example.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3838.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_class_storage.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5690,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3736,
+								3736
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "C:\\Xilinx\\SDK\\2018.2\\data\\embeddedsw\\XilinxProcessorIPLib\\drivers\\usbps_v2_4\\examples\\xusbps_class_storage.h",
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1482.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/dmaps_v2_3/examples/xdmaps_example_w_intr.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7389,
+								7389
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "C:\\Xilinx\\SDK\\2018.2\\data\\embeddedsw\\XilinxProcessorIPLib\\drivers\\dmaps_v2_3\\examples\\xdmaps_example_w_intr.c",
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "fatfs.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 128,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								119,
+								104
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\fatfs.h",
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
+					"file": "fw_sources.lst",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 165,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								51,
+								51
+							]
+						],
+						"settings":
+						{
+							"load_file_name": "D:\\Projects\\Baseband\\radio24bb\\fw\\src\\fw_sources.lst",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 42.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SystemVerilog":
+	{
+		"height": 115.0
+	},
+	"output.exec":
+	{
+		"height": 484.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 391.0
+	},
+	"output.hex_viewer_inspector":
+	{
+		"height": 152.0
+	},
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
+	"project": "project.sublime-project",
+	"replace":
+	{
+		"height": 73.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 172.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

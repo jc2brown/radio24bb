@@ -9,8 +9,19 @@
 
 
 
+
+
+#undef trace
+#define trace(...)
+//#define trace xil_printf
+
+
+
+
+
+
 struct aic3204 *make_aic3204() {
-	xil_printf("make_aic3204\n");
+	trace("make_aic3204\n");
 	struct aic3204 *aic = (struct aic3204 *)malloc(sizeof(struct aic3204));
 	return aic;
 }
@@ -43,7 +54,7 @@ void transfer(struct aic3204 *aic, uint8_t addr, uint8_t data_in, uint8_t *data_
 
 void select_page(struct aic3204 *aic, uint8_t page) {
 	if (page != aic->page) {
-		xil_printf("page=%d\n", page);
+		trace("page=%d\n", page);
 		transfer(aic, 0, page, NULL);
 		aic->page = page;
 	}
@@ -54,7 +65,7 @@ void select_page(struct aic3204 *aic, uint8_t page) {
 void read_register(struct aic3204 *aic, uint8_t page, uint8_t reg, uint8_t *data_out) {
 	select_page(aic, page);
 	transfer(aic, (reg<<1)|1, 0, data_out);
-	xil_printf("rd reg 0x%02X: %d\n", reg, *data_out);
+	trace("rd reg 0x%02X: %d\n", reg, *data_out);
 
 }
 
@@ -63,15 +74,15 @@ void read_register(struct aic3204 *aic, uint8_t page, uint8_t reg, uint8_t *data
 void _write_register(struct aic3204 *aic, uint8_t page, uint8_t reg, uint8_t wr_data, int verify) {
 	select_page(aic, page);
 	transfer(aic, reg<<1, wr_data, NULL);
-	xil_printf("wr reg%02X <= %02X\n", reg, wr_data);
+	trace("wr reg%02X <= %02X\n", reg, wr_data);
 
 	if (verify) {
 		uint8_t rd_data;
 		transfer(aic, (reg<<1)|1, 0, &rd_data);
 		if (rd_data != wr_data) {
-			xil_printf("READBACK ERROR: expected 0x%02X from pg%d reg%02X but got 0x%02X\n", (int)wr_data, (int)page, (int)reg>>1, (int)rd_data);
+			trace("READBACK ERROR: expected 0x%02X from pg%d reg%02X but got 0x%02X\n", (int)wr_data, (int)page, (int)reg>>1, (int)rd_data);
 		} else {
-			xil_printf("Readback OK\n");			
+			trace("Readback OK\n");			
 		}
 	}
 }
@@ -807,7 +818,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 
 
 int init_aic3204(struct aic3204 *aic, XSpiPs *spips) {
-	xil_printf("init_aic3204\n");
+	trace("init_aic3204\n");
 	aic->spips = spips;	
 	aic->page = -1;
 

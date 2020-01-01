@@ -14,6 +14,9 @@
 #include "scugic.h"
 #include "iicps.h"
 #include "gpiops.h"
+#include "uartps.h"
+#include "ff.h"
+#include "fatfs.h"
 
 #include "sleep.h"
 #include "command.h"
@@ -25,6 +28,15 @@
 #include "mpx.h"
 
 #include "spips.h"
+
+
+
+
+#undef trace
+#define trace(...)
+//#define trace xil_printf
+
+
 
 
 void init_radio24bb_regs(struct radio24bb_regs *regs) {
@@ -91,7 +103,7 @@ void codec_ioexp_intr_handler(void *arg) {
 
 struct radio24bb *make_radio24bb() {	
 
-	xil_printf("make_radio24bb\n");
+	trace("make_radio24bb\n");
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
@@ -104,6 +116,8 @@ struct radio24bb *make_radio24bb() {
 	r24bb->spips1 = make_spips();
 	r24bb->iicps0 = make_iicps();
 	r24bb->iicps1 = make_iicps();
+
+	r24bb->fatfs = make_fatfs();
 
 	r24bb->xadc = (XAdcPs *)malloc(sizeof(XAdcPs));
 
@@ -169,6 +183,7 @@ int set_line_in_led(struct radio24bb *r24bb, int r, int g, int b) {
 		(b ? CODEC_IOEXP_LINE_IN_LED_B : 0);
 	port0_value = ~port0_value;
 	ioexp_write_port(r24bb->codec_ioexp, 0, port0_value);
+	return XST_SUCCESS;
 }
 
 
@@ -184,6 +199,7 @@ int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
 		(b ? CODEC_IOEXP_LINE_OUT_LED_B : 0);
 	port0_value = ~port0_value;
 	ioexp_write_port(r24bb->codec_ioexp, 0, port0_value);
+	return XST_SUCCESS;
 }
 
 
@@ -191,12 +207,12 @@ int set_line_out_led(struct radio24bb *r24bb, int r, int g, int b) {
 int update_codec_ioexp(struct radio24bb *r24bb) {
 
 	u8 port1_value;
-	ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value);
+	_return_if_error_(ioexp_read_port(r24bb->codec_ioexp, 1, &port1_value));
 
 
 
-	set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET));
-	set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET));
+	_return_if_error_(set_line_in_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_IN_DET)));
+	_return_if_error_(set_line_out_led(r24bb, 0, 0, (port1_value & CODEC_IOEXP_LINE_OUT_DET)));
 
 
 
@@ -282,12 +298,19 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	init_radio24bb_regs(r24bb->regs);
 
 
-	xil_printf("init_radio24bb\n");
+	trace("init_radio24bb\n");
 
 
 	_return_if_error_(
 		init_scugic(r24bb->scugic, 
-			XPAR_SCUGIC_0_DEVICE_ID //XPAR_SCUGIC_SINGLE_DEVICE_ID
+			XPAR_SCUGIC_0_DEVICE_ID
+	));
+
+	_return_if_error_(
+		init_uartps(r24bb->uartps, 
+			r24bb->scugic, 
+			XPAR_XUARTPS_0_DEVICE_ID,
+			XPAR_XUARTPS_0_INTR
 	));
 
 	_return_if_error_(
@@ -312,6 +335,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			XPAR_PS7_I2C_1_DEVICE_ID, IICPS1_CLK_RATE
 	));
 
+	_return_if_error_(
+		init_fatfs(r24bb->fatfs
+	));
 
 
 	_return_if_error_(

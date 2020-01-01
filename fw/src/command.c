@@ -10,7 +10,7 @@ void stub_handler() {
 }
 
 
-struct cmd_context *make_cmd_context(const char *name, void *arg) {
+struct cmd_context *make_cmd_context(char *name, void *arg) {
 	struct cmd_context *ctx = (struct cmd_context *)malloc(sizeof(struct cmd_context));
 	ctx->parent = NULL;
 	ctx->name = name;
@@ -30,7 +30,7 @@ void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx) {
 }
 
 
-void add_command(struct cmd_context *ctx, const char *name, void (*handler)(void *, struct command *)) {
+void add_command(struct cmd_context *ctx, char *name, void (*handler)(void *, struct command *)) {
 	if (ctx == NULL) {
 		ctx = get_root_context();
 	}
@@ -45,7 +45,7 @@ static bool print_cmd_ok = false;
 
 
 void print_cmd_responses(bool print_responses) {
-	print_cmd_ok = print_responses;
+	//print_cmd_ok = print_responses;
 }
 
 
@@ -55,7 +55,7 @@ void _run_script(char **script, int num_lines) {
 	for (int i = 0; i < num_lines; ++i) {
 		issue_command(script[i], NULL);
 	}
-	print_cmd_ok = true;
+	//print_cmd_ok = true;
 }
 
 
@@ -74,7 +74,7 @@ void init_command(struct command *cmd) {
 
 
 
-void tokenize_command(const char *cmd_str, struct command *cmd) {
+void tokenize_command(char *cmd_str, struct command *cmd) {
 	init_command(cmd);
 	for (char *c = (char*)cmd_str; *c != '\0'; ++c) {
 		if (isgraph(*c)) {
@@ -215,7 +215,7 @@ struct cmd_context *get_root_context() {
 
 
 
-struct cmd_context * issue_command(const char *cmd_str, struct cmd_context *ctx) {
+struct cmd_context * issue_command(char *cmd_str, struct cmd_context *ctx) {
 	struct command cmd;
 	init_command(&cmd);
 	tokenize_command(cmd_str, &cmd);

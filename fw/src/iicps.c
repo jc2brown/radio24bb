@@ -1,10 +1,6 @@
 
 
-
-
-
-
-
+#include <stdlib.h>
 #include "xiicps.h"
 #include "roe.h"
 #include "iicps.h"
@@ -12,15 +8,21 @@
 
 
 
+#undef trace
+#define trace(...)
+//#define trace xil_printf
+
+
+
 XIicPs *make_iicps() {
-	xil_printf("make_iicps\n");
+	trace("make_iicps\n");
 	XIicPs *iicps = (XIicPs *)malloc(sizeof(XIicPs));
 	return iicps;
 }
 
 
 int init_iicps(XIicPs *iicps, int device_id, int clk_rate) {
-	xil_printf("init_iicps\n");
+	trace("init_iicps\n");
 	XIicPs_Config *iicps_cfg = XIicPs_LookupConfig(device_id);
 	_return_if_null_(iicps_cfg);
 	_return_if_error_(XIicPs_CfgInitialize(iicps, iicps_cfg, iicps_cfg->BaseAddress));
@@ -65,7 +67,7 @@ s32 iicps_write_1byte(XIicPs *iicps, u8 bus_addr, u8 byte0) {
 }
 
 s32 iicps_write_2bytes(XIicPs *iicps, u8 bus_addr, u8 byte0, uint8_t byte1) {
-	xil_printf("iicps_write_2bytes\n");
+	trace("iicps_write_2bytes\n");
 	uint8_t buf[2] = { byte0, byte1 };
 	// _return_if_error_(XIicPs_MasterSendPolled(iicps, buf, 2, bus_addr));
 	_return_if_error_(iicps_write(iicps, bus_addr, buf, 2));

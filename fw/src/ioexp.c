@@ -20,17 +20,20 @@
 #define IOEXP_REG_INTMASK1 0x4B
 
 
+#undef trace
+#define trace(...)
+//#define trace xil_printf
 
 
 struct ioexp *make_ioexp() {
-	xil_printf("make_ioexp\n");
+	trace("make_ioexp\n");
 	struct ioexp *ioe = (struct ioexp *)malloc(sizeof(struct ioexp));
 	return ioe;
 }
 
 
 int ioexp_write_register(struct ioexp *ioe, uint8_t reg, uint8_t value) {
-	xil_printf("ioexp_write_register  bus_sel=%d  bus_addr=0x%02X  reg=0x%02X  value=0x%02X\n", ioe->bus_sel, ioe->bus_addr, reg, value);
+	trace("ioexp_write_register  bus_sel=%d  bus_addr=0x%02X  reg=0x%02X  value=0x%02X\n", ioe->bus_sel, ioe->bus_addr, reg, value);
 	
 	switch (ioe->if_type) {
 	case IOEXP_IICPS:
@@ -38,27 +41,27 @@ int ioexp_write_register(struct ioexp *ioe, uint8_t reg, uint8_t value) {
 		_return_if_error_(iicps_reg_write_1byte(ioe->iicps, ioe->bus_addr, reg, value));	
 		return XST_SUCCESS;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	default:
-		xil_printf("ERROR: ioexp_write_register: unsupported if_type: %d\n", ioe->if_type);
+		trace("ERROR: ioexp_write_register: unsupported if_type: %d\n", ioe->if_type);
 		return XST_NO_FEATURE;
 	}
 }
 
 
 int ioexp_read_register(struct ioexp *ioe, uint8_t reg, uint8_t *value) {
-	xil_printf("ioexp_read_register  bus_sel=%d  bus_addr=0x%02X  reg=0x%02X  \n", ioe->bus_sel, ioe->bus_addr, reg);
+	trace("ioexp_read_register  bus_sel=%d  bus_addr=0x%02X  reg=0x%02X  \n", ioe->bus_sel, ioe->bus_addr, reg);
 	switch (ioe->if_type) {
 	case IOEXP_IICPS:
 		*(ioe->bus_sel_ptr) = ioe->bus_sel;
 		_return_if_error_(iicps_reg_read_1byte(ioe->iicps, ioe->bus_addr, reg, value));	
 		return XST_SUCCESS;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	default:
-		xil_printf("ERROR: ioexp_write_register: unsupported if_type: %d\n", ioe->if_type);
+		trace("ERROR: ioexp_write_register: unsupported if_type: %d\n", ioe->if_type);
 		return XST_NO_FEATURE;
 	}
 }
@@ -79,13 +82,13 @@ int init_ioexp(
 		uint8_t port1_inputs
 ) {
 
-	xil_printf("init_ioexp: if_type=%d  bus_addr=0x%02X\n", if_type, bus_addr);
+	trace("init_ioexp: if_type=%d  bus_addr=0x%02X\n", if_type, bus_addr);
 	
 	ioe->iicps = iicps;
 	ioe->bus_sel_ptr = bus_sel_ptr;
 
 	if (! (if_type == IOEXP_IICPS /*|| if_type == IOEXP_GPIO*/) ) {
-		xil_printf("XST_INVALID_PARAM\n");
+		trace("XST_INVALID_PARAM\n");
 		return XST_INVALID_PARAM;
 	}
 	ioe->if_type = if_type;
@@ -93,7 +96,7 @@ int init_ioexp(
 
 	if (ioe->if_type == IOEXP_IICPS) {
 		if (! (bus_addr == 0x20 || bus_addr == 0x21) ) {
-			xil_printf("XST_INVALID_PARAM\n");
+			trace("XST_INVALID_PARAM\n");
 			return XST_INVALID_PARAM;
 		}
 		ioe->bus_addr = bus_addr;
@@ -107,7 +110,7 @@ int init_ioexp(
 		_return_if_error_(ioexp_write_register(ioe, IOEXP_REG_INTMASK1, !port1_inputs));
 		break;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 		default:
 			return XST_NO_FEATURE;
@@ -129,7 +132,7 @@ int ioexp_read_port(struct ioexp *ioe, int port, uint8_t *value) {
 		_return_if_error_(ioexp_read_register(ioe, 0x00+port, value));		
 		return XST_SUCCESS;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	}
 	return XST_NO_FEATURE;
@@ -148,7 +151,7 @@ int ioexp_write_port(struct ioexp *ioe, int port, uint8_t value) {
 		_return_if_error_(ioexp_write_register(ioe, 0x02+port, value));		
 		return XST_SUCCESS;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	}
 	return XST_NO_FEATURE;
@@ -163,10 +166,10 @@ int ioexp_read_pin(struct ioexp *ioe, int port) {
 		i2c_read(ioe->iicps, port);		
 		break;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	}
-	xil_printf("ERROR: ioexp_read: unsupported if_type: %d\n", ioe->if_type);	
+	trace("ERROR: ioexp_read: unsupported if_type: %d\n", ioe->if_type);	
 }
 */
 
@@ -192,9 +195,9 @@ uint8_t ioexp_write_pin(struct ioexp *ioe, int port, int pin_num, int pin_value)
 		i2c_read(ioe->iicps, port);		
 		break;
 	// case IOEXP_GPIO:
-	// 	xil_printf("TODO!\n");		
+	// 	trace("TODO!\n");		
 	// 	break;
 	}
-	xil_printf("ERROR: ioexp_read: unsupported if_type: %d\n", ioe->if_type);	
+	trace("ERROR: ioexp_read: unsupported if_type: %d\n", ioe->if_type);	
 }
 */

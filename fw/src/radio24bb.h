@@ -4,10 +4,12 @@
 #define R24BB_H
 
 #include "xscugic.h"
+#include "xuartps.h"
 #include "xgpiops.h"
 #include "xadcps.h"
 #include "xiicps.h"
 #include "xspips.h"
+#include "ff.h"
 
 #include "ioexp.h"
 #include "aic3204.h"
@@ -19,11 +21,15 @@ struct radio24bb {
 
 	// Zynq peripherals
 	XScuGic *scugic;
+	XUartPs *uartps;
 	XGpioPs *gpiops;
 	XSpiPs *spips1;
 	XIicPs *iicps0;
 	XIicPs *iicps1;
 	XAdcPs *xadc;
+
+	// File system
+	FATFS *fatfs;
 	
 	// Board devices
 	struct adc_channel *ina;

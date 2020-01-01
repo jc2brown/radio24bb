@@ -7,7 +7,8 @@ UNAME:=$(shell uname)
 
 .SUFFIXES:
 	
-COMPILER_FLAGS:=-Wall -O0 -g3 -c -fmessage-length=0 
+# COMPILER_FLAGS:=-Wall -O0 -g3 -c -fmessage-length=0 
+COMPILER_FLAGS:=-Werror -O0 -g3 -c -fmessage-length=0 
 # COMPILER_FLAGS:=-w -O0 -g3 -c -fmessage-length=0 
 CC_FLAGS:=$(COMPILER_FLAGS)
 CXX_FLAGS:=$(COMPILER_FLAGS)
@@ -74,14 +75,11 @@ BSP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_bsp
 APP_DIR:=$(WORKSPACE_DIR)/$(PROJECT_TOP)_app
 SRC_DIR:=$(FW_ROOT)/src
 
-SRC_LIST:=$(shell cat $(SRC_DIR)/fw_sources.lst)
-$(info $(SRC_LIST))
+SRC_LIST:=$(wildcard $(SRC_DIR)/*.c)
 
-OBJS:=$(basename $(SRC_LIST))
+OBJS:=$(basename $(notdir $(SRC_LIST)))
 OBJS:=$(addsuffix .o,$(OBJS))
 OBJS:=$(addprefix $(OBJ_DIR)/,$(OBJS))
-
-SRCS:=$(addprefix $(SRC_DIR)/,$(SRC_LIST))
 
 
 BSP_GEN_STAMP:=$(FW_ROOT)/.$(PROJECT_TOP).bsp.gen
@@ -233,4 +231,7 @@ $(FW_ROOT)/boot: $(BIT_FILE) $(ELF_FILE)
 	$(XSCT) $(FW_ROOT)/tools/init_$(BOARD).tcl $(BIT_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(INIT_STAMP)
 	$(XSCT) $(FW_ROOT)/tools/boot_$(BOARD).tcl $(ELF_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(BOOT_STAMP)
 
+.PHONY: $(FW_ROOT)/bootonly
+$(FW_ROOT)/bootonly: $(ELF_FILE)
+	$(XSCT) $(FW_ROOT)/tools/boot_$(BOARD).tcl $(ELF_FILE) $(wildcard $(HW_DIR)/ps*_init.tcl) $(BOOT_STAMP)
 

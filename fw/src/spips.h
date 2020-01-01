@@ -3,8 +3,8 @@
 
 #include "xspips.h"
 
-#ifndef SPI_H
-#define SPI_H
+#ifndef SPIPS_H
+#define SPIPS_H
 
 
 XSpiPs *make_spips();

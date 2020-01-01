@@ -10,6 +10,7 @@
 #include "xscugic.h"
 #include "xadc.h"
 #include "gpiops.h"
+#include "fatfs.h"
 
 #include "roe.h"
 
@@ -309,33 +310,26 @@ void led_handler(void *arg, struct command *cmd) {
 
 
 
+#if 0
 
 
 
-#include "xparameters.h"	/* SDK generated parameters */
-#include "xsdps.h"		/* SD device driver */
+#include "xparameters.h"	
+#include "xsdps.h"		
 #include "xil_printf.h"
 #include "ff.h"
 #include "xil_cache.h"
 #include "xplatform_info.h"
 
-/************************** Constant Definitions *****************************/
 
-
-/**************************** Type Definitions *******************************/
-
-/***************** Macros (Inline Functions) Definitions *********************/
-
-/************************** Function Prototypes ******************************/
 int FfsSdPolledExample(void);
 
-/************************** Variable Definitions *****************************/
-static FIL fil;		/* File object */
+static FIL fil;	
 static FATFS fatfs;
-/*
- * To test logical drive 0, FileName should be "0:/<File name>" or
- * "<file_name>". For logical drive 1, FileName should be "1:/<file_name>"
- */
+
+ //  To test logical drive 0, FileName should be "0:/<File name>" or
+ //  "<file_name>". For logical drive 1, FileName should be "1:/<file_name>"
+ 
 static char FileName[32] = "Test.bin";
 static char *SD_File;
 u32 Platform;
@@ -353,21 +347,8 @@ u8 SourceAddress[10*1024*1024] __attribute__ ((aligned(32)));
 #define TEST 7
 
 
-/*****************************************************************************/
-/**
-*
-* File system example using SD driver to write to and read from an SD card
-* in polled mode. This example creates a new file on an
-* SD card (which is previously formatted with FATFS), write data to the file
-* and reads the same data back to verify.
-*
-* @param	None
-*
-* @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
-*
-* @note		None
-*
-******************************************************************************/
+
+
 int FfsSdPolledExample(void)
 {
 	FRESULT Res;
@@ -379,7 +360,6 @@ int FfsSdPolledExample(void)
 	 * To test logical drive 0, Path should be "0:/"
 	 * For logical drive 1, Path should be "1:/"
 	 */
-	TCHAR *Path = "0:/";
 
 	Platform = XGetPlatform_Info();
 	if (Platform == XPLAT_ZYNQ_ULTRA_MP) {
@@ -389,31 +369,6 @@ int FfsSdPolledExample(void)
 		 */
 		FileSize = 8*1024;
 	}
-
-	for(BuffCnt = 0; BuffCnt < FileSize; BuffCnt++){
-		SourceAddress[BuffCnt] = TEST + BuffCnt;
-	}
-
-	/*
-	 * Register volume work area, initialize device
-	 */
-	Res = f_mount(&fatfs, Path, 0);
-
-	if (Res != FR_OK) {
-		return XST_FAILURE;
-	}
-
-	/*
-	 * Path - Path to logical driver, 0 - FDISK format.
-	 * 0 - Cluster size is automatically determined based on Vol size.
-	 */
-	//Res = f_mkfs(Path, 0, 0);
-	//if (Res != FR_OK) {
-	//	return XST_FAILURE;
-	//}
-
-
-
 
 	DIR dp;
 	Res = f_opendir(&dp, "0:/");
@@ -525,6 +480,7 @@ int FfsSdPolledExample(void)
 
 
 
+#endif
 
 
 
@@ -537,10 +493,11 @@ int FfsSdPolledExample(void)
 
 
 
+/*
+void outbyte(char c) {
 
-
-
-
+}
+*/
 
 
 
@@ -550,8 +507,22 @@ int FfsSdPolledExample(void)
 
 int main()
 {
-	xil_printf("\nHello\r\n");
-	usleep(100000);
+
+
+/*
+
+	XUartPs_ResetHw(XPAR_XUARTPS_0_BASEADDR);
+	XUartPs_Config *uart_config = XUartPs_LookupConfig(XPAR_XUARTPS_0_DEVICE_ID);
+	XUartPs_CfgInitialize(&uart, uart_config, XPAR_XUARTPS_0_BASEADDR);
+	XUartPs_SetOptions(&uart, XUartPs_GetOptions(&uart)|XUARTPS_OPTION_RESET_RX);
+	XUartPs_SetBaudRate_Faster(&uart, 921600);
+
+*/
+
+
+	xil_printf("\n\n");
+	xil_printf("##############################################\n");
+	xil_printf("\n");
 
 	//_return_if_error_(ina219_config());
 
@@ -567,8 +538,8 @@ int main()
 	init_radio24bb(r24bb, R24BB_REGS);
 	xil_printf("Done initializing devices.\n");
 
-	xil_printf("Baseband ready! \n");
-	xil_printf("  S/N: %d\n", get_serial(r24bb));
+	xil_printf("Baseband %d ready \n", get_serial(r24bb));
+	xil_printf("\n");
 
 
 
@@ -591,7 +562,13 @@ int main()
 	issue_command("outb att 3", NULL);
 
 
-	issue_command("led", NULL);
+	//issue_command("led", NULL);
+
+	issue_command("ina led 0", NULL);
+	issue_command("inb led 0", NULL);
+	issue_command("outa led 0", NULL);
+	issue_command("outb led 0", NULL);
+
 	issue_command("stereo", NULL);
 
 	print_cmd_responses(true);
@@ -599,7 +576,7 @@ int main()
 
 
 
-
+/*
 
 	int Status;
 
@@ -612,7 +589,7 @@ int main()
 	}
 
 	xil_printf("Successfully ran SD Polled File System Example Test \r\n");
-
+*/
 
 
 
@@ -623,6 +600,7 @@ int main()
 
 	while (1) {
 		handle_command();
+		fatfs_ls();
 	}
 
 

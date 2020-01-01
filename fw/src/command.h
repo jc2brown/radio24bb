@@ -34,9 +34,9 @@ struct command {
 typedef void (*handler_fcn)(void *, struct command *);
 
 
-struct cmd_context *make_cmd_context(const char *name, void *arg);
+struct cmd_context *make_cmd_context(char *name, void *arg);
 void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx);
-void add_command(struct cmd_context *ctx, const char *name, handler_fcn);
+void add_command(struct cmd_context *ctx, char *name, handler_fcn);
 
 void print_cmd_responses(bool print_responses);
 
@@ -47,7 +47,7 @@ struct cmd_context *get_root_context();
 
 
 
-struct cmd_context * issue_command(const char *cmd_str, struct cmd_context *ctx);
+struct cmd_context * issue_command(char *cmd_str, struct cmd_context *ctx);
 void handle_command();
 
 
