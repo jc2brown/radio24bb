@@ -216,39 +216,46 @@ char *pmtone_script[] = {
 
 
 void stereo_handler(void *arg, struct command *cmd) {
-	run_script(stereo_script);
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	run_script(r24bb->shell, stereo_script);
 }
 
 void amtone_handler(void *arg, struct command *cmd) {
-	run_script(amtone_script);
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	run_script(r24bb->shell, amtone_script);
 }
 	
 void fmtone_handler(void *arg, struct command *cmd) {
-	run_script(fmtone_script);
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	run_script(r24bb->shell, fmtone_script);
 }
 	
 void pmtone_handler(void *arg, struct command *cmd) {
-	run_script(pmtone_script);
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	run_script(r24bb->shell, pmtone_script);
 }
 	
 
 
 
 void loopa_handler(void *arg, struct command *cmd) {
-	issue_command("outa src ina", NULL);
-	issue_command("ina att 0", NULL);
-	issue_command("outa att 0", NULL);
-	issue_command("ina opt", NULL);
-	issue_command("outa opt", NULL);
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	issue_command(r24bb->shell, "outa src ina", NULL);
+	issue_command(r24bb->shell, "ina att 0", NULL);
+	issue_command(r24bb->shell, "outa att 0", NULL);
+	issue_command(r24bb->shell, "ina opt", NULL);
+	issue_command(r24bb->shell, "outa opt", NULL);
 }
 
 
 
 void info_handler(void *arg, struct command *cmd) {
+	//struct radio24bb *r24bb = (struct radio24bb *)arg;
 	xil_printf("INFO\n");
 }
 
 void led_handler(void *arg, struct command *cmd) {
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
 
 	int ina_led = 0;
 	int inb_led = 0;
@@ -261,27 +268,27 @@ void led_handler(void *arg, struct command *cmd) {
 
 		sprintf(buf, "ina led %d", ina_led);
 		ina_led = (ina_led + 1) % 8;
-		issue_command(buf, NULL);
+		issue_command(r24bb->shell, buf, NULL);
 
 		sprintf(buf, "inb led %d", inb_led);
 		inb_led = (inb_led + 1) % 8;
-		issue_command(buf, NULL);
+		issue_command(r24bb->shell, buf, NULL);
 
 		sprintf(buf, "outa led %d", outa_led);
 		outa_led = (outa_led + 1) % 8;
-		issue_command(buf, NULL);
+		issue_command(r24bb->shell, buf, NULL);
 
 		sprintf(buf, "outb led %d", outb_led);
 		outb_led = (outb_led + 1) % 8;
-		issue_command(buf, NULL);
+		issue_command(r24bb->shell, buf, NULL);
 
 		usleep(100000);
 	}
 
-	issue_command("ina led 0", NULL);
-	issue_command("inb led 0", NULL);
-	issue_command("outa led 0", NULL);
-	issue_command("outb led 0", NULL);
+	issue_command(r24bb->shell, "ina led 0", NULL);
+	issue_command(r24bb->shell, "inb led 0", NULL);
+	issue_command(r24bb->shell, "outa led 0", NULL);
+	issue_command(r24bb->shell, "outb led 0", NULL);
 
 }
 
@@ -542,30 +549,30 @@ int main()
 	// add_command(NULL, "xadc", xadc_handler);
 
 	//add_command(NULL, "tonea", tonea_handler);
-	add_command(NULL, "usb", usb_handler);
-	add_command(NULL, "stereo", stereo_handler);
-	add_command(NULL, "amtone", amtone_handler);
-	add_command(NULL, "fmtone", fmtone_handler);
-	add_command(NULL, "pmtone", pmtone_handler);
-	add_command(NULL, "loopa", loopa_handler);
-	add_command(NULL, "info", info_handler);
-	add_command(NULL, "led", led_handler);
+	add_command(r24bb->shell->root_ctx, "usb", usb_handler);
+	add_command(r24bb->shell->root_ctx, "stereo", stereo_handler);
+	add_command(r24bb->shell->root_ctx, "amtone", amtone_handler);
+	add_command(r24bb->shell->root_ctx, "fmtone", fmtone_handler);
+	add_command(r24bb->shell->root_ctx, "pmtone", pmtone_handler);
+	add_command(r24bb->shell->root_ctx, "loopa", loopa_handler);
+	add_command(r24bb->shell->root_ctx, "info", info_handler);
+	add_command(r24bb->shell->root_ctx, "led", led_handler);
 
-	add_command(NULL, "gpio", gpio_handler);	
-
-
-	issue_command("outa att 0", NULL);
-	issue_command("outb att 3", NULL);
+	add_command(r24bb->shell->root_ctx, "gpio", gpio_handler);
 
 
-	//issue_command("led", NULL);
+	issue_command(r24bb->shell, "outa att 0", NULL);
+	issue_command(r24bb->shell, "outb att 3", NULL);
 
-	issue_command("ina led 0", NULL);
-	issue_command("inb led 0", NULL);
-	issue_command("outa led 0", NULL);
-	issue_command("outb led 0", NULL);
 
-	issue_command("stereo", NULL);
+	issue_command(r24bb->shell, "led", NULL);
+
+	issue_command(r24bb->shell, "ina led 0", NULL);
+	issue_command(r24bb->shell, "inb led 0", NULL);
+	issue_command(r24bb->shell, "outa led 0", NULL);
+	issue_command(r24bb->shell, "outb led 0", NULL);
+
+	issue_command(r24bb->shell, "stereo", NULL);
 
 	print_cmd_responses(true);
 
@@ -600,7 +607,11 @@ int main()
 
 
 
+	char cmd_buf[1024];
+	char *cmd_buf_idx = cmd_buf;
 
+
+	cmd_prompt(r24bb->shell);
 
 	while (1) {
 
@@ -608,16 +619,30 @@ int main()
 		//int ireg = mfcpsr();
 		// Xil_ExceptionDisable();
 
+
+
 		int avail = r24bb->uart->rx_queue->size;
+
 		if (avail != 0) {
+			xil_printf("avail=%d\n", avail);
 			int c;
 			for (int i = 0; i < avail; ++i) {
-				queue_get(r24bb->uart->rx_queue, (void **)&c);
-				xil_printf("%c", (char)c);
+				int j;
+				queue_get(r24bb->uart->rx_queue, (void **)&j);
+				*cmd_buf_idx = (char)j;
+				if (*cmd_buf_idx == '\n') {
+					*(cmd_buf_idx+1) = '\0';
+					xil_printf("cmd=%s\n", cmd_buf);
+					handle_command(r24bb->shell, cmd_buf);
+					cmd_buf_idx = cmd_buf;
+				} else {
+					++cmd_buf_idx;
+				}
+				//xil_printf("%c", (char)c);
 //				outbyte((char)c);
 			}
 			xil_printf("\n");
-			fatfs_ls();
+			//fatfs_ls();
 		}
 
 		//mtcpsr(ireg);

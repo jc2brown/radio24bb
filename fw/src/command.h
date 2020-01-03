@@ -31,31 +31,50 @@ struct command {
 
 
 
+
+struct cmd_shell {	
+	struct cmd_context *root_ctx;
+	struct cmd_context *cur_ctx;
+	struct command *cmd;
+	int inited;
+};
+
+
+
+struct cmd_shell *make_cmd_shell(char *root_ctx_name, void *root_ctx_arg);
+//int init_cmd_shell(struct cmd_shell *shell, char *root_ctx_name, void *root_ctx_arg);
+
+struct cmd_context *make_cmd_context(char *name, void *arg);
+
+
+
+
+
 typedef void (*handler_fcn)(void *, struct command *);
 
 
-struct cmd_context *make_cmd_context(char *name, void *arg);
+//struct cmd_context *make_cmd_context();
 void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx);
 void add_command(struct cmd_context *ctx, char *name, handler_fcn);
 
 void print_cmd_responses(bool print_responses);
 
 
-void init_root_context();
-void set_root_context();
-struct cmd_context *get_root_context();
+void init_root_context(struct cmd_shell *shell);
+void set_root_context(struct cmd_shell *shell);
+struct cmd_context *get_root_context(struct cmd_shell *shell);
 
 
 
-struct cmd_context * issue_command(char *cmd_str, struct cmd_context *ctx);
-void handle_command();
+struct cmd_context * issue_command(struct cmd_shell *shell, char *cmd_str, struct cmd_context *ctx);
+void handle_command(struct cmd_shell *shell, char *cmd_str);
 
 
 
-#define run_script(script)  _run_script((script), sizeof((script))/sizeof(*(script)))
+#define run_script(shell, script)  _run_script((shell), (script), sizeof((script))/sizeof(*(script)))
 
 
-void _run_script(char **script, int num_lines);
+void _run_script(struct cmd_shell *shell, char **script, int num_lines);
 
 
 //void stub_handler();

@@ -17,9 +17,16 @@
 #include "aic3204.h"
 #include "adc.h"
 #include "dac.h"
+#include "command.h"
 
 
 struct radio24bb {	
+
+	int serial;
+
+	// System
+	struct cmd_shell *shell;
+	struct radio24bb_regs *regs;
 
 	// Zynq peripherals
 	XScuGic *scugic;
@@ -36,28 +43,22 @@ struct radio24bb {
 	// Board devices
 	struct adc_channel *ina;
 	struct adc_channel *inb;
-
 	struct dac_channel *outa;
 	struct dac_channel *outb;
-
-	struct dds_channel *ddsa;
-	struct dds_channel *ddsb;
-
-	struct mpx_channel *mpx;
-
 	struct aic3204 *codec;
-
 	struct ioexp *adc_ioexp;
 	struct ioexp *dac_ioexp;
 	struct ioexp *usb_ioexp_0;
 	struct ioexp *usb_ioexp_1;
 	struct ioexp *codec_ioexp;
 
+	// DSP devices
+	struct dds_channel *ddsa;
+	struct dds_channel *ddsb;
+	struct mpx_channel *mpx;
+
+
 	// Misc.
-	struct radio24bb_regs *regs;
-
-	int serial;
-
 };
 
 

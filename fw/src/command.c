@@ -2,7 +2,7 @@
 #include "stringmap.h"
 #include <stdbool.h>
 #include "command.h"
-
+#include "roe.h"
 #include "xil_printf.h"
 
 void stub_handler() {
@@ -10,30 +10,64 @@ void stub_handler() {
 }
 
 
+
+
+struct cmd_shell *make_cmd_shell(char *root_ctx_name, void *root_ctx_arg) {
+	
+	struct cmd_shell *shell = (struct cmd_shell *)malloc(sizeof(struct cmd_shell));
+	if (shell == NULL) return NULL;
+
+	shell->root_ctx = make_cmd_context(root_ctx_name, root_ctx_arg);
+	if (shell->root_ctx == NULL) return NULL;
+
+	shell->cmd = (struct command *)malloc(sizeof(struct command));
+	if (shell->cmd == NULL) return NULL;
+
+	shell->cur_ctx = shell->root_ctx;
+	shell->inited = 1;
+
+	return shell;
+}
+
+
+
+
+
+
 struct cmd_context *make_cmd_context(char *name, void *arg) {
+
 	struct cmd_context *ctx = (struct cmd_context *)malloc(sizeof(struct cmd_context));
+	if (ctx == NULL) return NULL;
+
+	ctx->subcontexts = make_stringmap_node("", NULL, NULL);
+	if (ctx->subcontexts == NULL) return NULL;
+
+	ctx->commands = make_stringmap_node("", stub_handler, NULL);
+	if (ctx->commands == NULL) return NULL;
+
 	ctx->parent = NULL;
 	ctx->name = name;
 	ctx->arg = arg;
-	ctx->subcontexts = make_stringmap_node("", NULL, NULL);
-	ctx->commands = make_stringmap_node("", stub_handler, NULL);
+
 	return ctx;
 }
 
 
+
+
+
+
 void add_subcontext(struct cmd_context *ctx, struct cmd_context *subctx) {
-	if (ctx == NULL) {
-		ctx = get_root_context();
-	}
+	if (ctx == NULL) return;
+//	assert(ctx != NULL);
 	subctx->parent = ctx;
 	stringmap_put(ctx->subcontexts, subctx->name, subctx);
 }
 
 
 void add_command(struct cmd_context *ctx, char *name, void (*handler)(void *, struct command *)) {
-	if (ctx == NULL) {
-		ctx = get_root_context();
-	}
+	if (ctx == NULL) return;
+//	assert(ctx != NULL);
 	stringmap_put(ctx->commands, name, handler);
 }
 
@@ -50,10 +84,10 @@ void print_cmd_responses(bool print_responses) {
 
 
 // TODO: add context
-void _run_script(char **script, int num_lines) {
+void _run_script(struct cmd_shell *shell, char **script, int num_lines) {
 	print_cmd_ok = false;
 	for (int i = 0; i < num_lines; ++i) {
-		issue_command(script[i], NULL);
+		issue_command(shell, script[i], NULL);
 	}
 	//print_cmd_ok = true;
 }
@@ -179,89 +213,88 @@ void print_ctx_path(struct cmd_context *ctx) {
 }
 
 
-
-
-
-static struct cmd_context *root_ctx;
-static struct cmd_context *ctx;
- static struct command cmd;
+// static struct cmd_context *root_ctx;
+// static struct cmd_context *ctx;
+// static struct command cmd;
 
 
 
 
-void init_root_context() {
+void init_root_context(struct cmd_shell *shell) {
 	static int inited = 0;
-	if (inited) {
+	if (shell->inited) {
 		return;
 	}
-	root_ctx = make_cmd_context("bbX", NULL);
-	inited = 1;
-	set_root_context();
+	shell->root_ctx = make_cmd_context("bbX", NULL);
+	shell->inited = 1;
+	set_root_context(shell);
 }
 
 
 
-void set_root_context() {
-	init_root_context();
-	ctx = root_ctx;
+void set_root_context(struct cmd_shell *shell) {
+	init_root_context(shell);
+	shell->cur_ctx = shell->root_ctx;
 }
 
 
-struct cmd_context *get_root_context() {
-	init_root_context();
-	return root_ctx;
+struct cmd_context *get_root_context(struct cmd_shell *shell) {
+	init_root_context(shell);
+	return shell->root_ctx;
 }
 
 
 
 
-struct cmd_context * issue_command(char *cmd_str, struct cmd_context *ctx) {
+struct cmd_context * issue_command(struct cmd_shell *shell, char *cmd_str, struct cmd_context *ctx) {
 	struct command cmd;
 	init_command(&cmd);
 	tokenize_command(cmd_str, &cmd);
 	if (ctx == NULL) {
-		ctx = get_root_context();
+		ctx = get_root_context(shell);
 	}
 	return dispatch_command(ctx, &cmd);
 }
 
 
-void handle_command() {
-
-
-
+void cmd_prompt(struct cmd_shell *shell) {
 	xil_printf("$ ");
-	print_ctx_path(ctx);
+	print_ctx_path(shell->cur_ctx);
 	xil_printf("> ");
+}
+
+
+void handle_command(struct cmd_shell *shell, char *cmd_str) {
 
 
 	//		xil_printf("$ %s> ", ctx->name);
 
+	strcpy(shell->cmd->line, cmd_str);
+	tokenize_command(shell->cmd->line, shell->cmd);
 
-	get_command(&cmd);
-	if (!strcmp("exit", cmd.tokens[0])) {
-		if (ctx != root_ctx) {
-			ctx = ctx->parent;
+	if (!strcmp("exit", shell->cmd->tokens[0])) {
+		if (shell->cur_ctx != shell->root_ctx) {
+			shell->cur_ctx = shell->cur_ctx->parent;
 		}
 	}
-	else if (!strcmp("root", cmd.tokens[0])) {
-		ctx = root_ctx;
+	else if (!strcmp("root", shell->cmd->tokens[0])) {
+		shell->cur_ctx = shell->root_ctx;
 	}
-	else if (!strcmp("help", cmd.tokens[0]) || !strcmp("ls", cmd.tokens[0])) {
+	else if (!strcmp("help", shell->cmd->tokens[0]) || !strcmp("ls", shell->cmd->tokens[0])) {
 
 		struct stringmap_node *map;
 
-		map = ctx->subcontexts;
+		map = shell->cur_ctx->subcontexts;
 		if (strcmp(map->key, "")) {
-			xil_printf("Sub-contexts of '%s' context:\n", ctx->name);
+			xil_printf("Sub-contexts of '%s' context:\n", shell->cur_ctx->name);
 			for (; map != NULL; map = map->next) {
 				xil_printf("   %s\n", map->key);
 			}
 		}
 
-		map = ctx->commands;
+		map = shell->cur_ctx->commands;
 		if (strcmp(map->key, "")) {
-			xil_printf("Commands of '%s' context:\n", ctx->name);
+			xil_printf("Commands of '%s' context:\n", shell->cur_ctx->name);
 			for (; map != NULL; map = map->next) {
 				xil_printf("   %s\n", map->key);
 			}
@@ -269,8 +302,9 @@ void handle_command() {
 
 	}
 	else {
-		ctx = dispatch_command(ctx, &cmd);
+		shell->cur_ctx = dispatch_command(shell->cur_ctx, shell->cmd);
 	}
+	cmd_prompt(shell);
 
 }
 

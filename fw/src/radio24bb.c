@@ -108,7 +108,8 @@ struct radio24bb *make_radio24bb() {
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
-
+	r24bb->shell = make_cmd_shell("bb#", r24bb);
+	if (r24bb->shell == NULL) return NULL;
 
 	r24bb->scugic = make_scugic();
 	if (r24bb->scugic == NULL) return NULL;
@@ -323,6 +324,11 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	trace("init_radio24bb\n");
 
 
+//	_return_if_error_(
+//		init_cmd_shell(r24bb->shell,
+//			"XxX", r24bb
+//	));
+
 	_return_if_error_(
 		init_scugic(r24bb->scugic, 
 			XPAR_SCUGIC_0_DEVICE_ID
@@ -446,21 +452,20 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	r24bb->serial = get_serial(r24bb);
 
-
-	struct cmd_context *root_ctx = get_root_context();
+	struct cmd_context *root_ctx = get_root_context(r24bb->shell);
 	root_ctx->name[2] = '0' + r24bb->serial;
 	root_ctx->arg =  (void*)r24bb;
 
-	init_adc_channel_context("ina", r24bb->ina, NULL);
-	init_adc_channel_context("inb", r24bb->inb, NULL);
+	init_adc_channel_context("ina", r24bb->ina, root_ctx);
+	init_adc_channel_context("inb", r24bb->inb, root_ctx);
 
-	init_dac_channel_context("outa", r24bb->outa, NULL);
-	init_dac_channel_context("outb", r24bb->outb, NULL);
+	init_dac_channel_context("outa", r24bb->outa, root_ctx);
+	init_dac_channel_context("outb", r24bb->outb, root_ctx);
 
-	init_dds_channel_context("ddsa", r24bb->ddsa, NULL);
-	init_dds_channel_context("ddsb", r24bb->ddsb, NULL);
+	init_dds_channel_context("ddsa", r24bb->ddsa, root_ctx);
+	init_dds_channel_context("ddsb", r24bb->ddsb, root_ctx);
 
-	init_mpx_channel_context("mpx", r24bb->mpx, NULL);
+	init_mpx_channel_context("mpx", r24bb->mpx, root_ctx);
 
 
 
