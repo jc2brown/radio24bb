@@ -47,7 +47,7 @@ struct cmd_shell *make_cmd_shell(char *root_ctx_name, void *root_ctx_arg);
 struct cmd_context *make_cmd_context(char *name, void *arg);
 
 
-
+void cmd_prompt(struct cmd_shell *shell);
 
 
 typedef void (*handler_fcn)(void *, struct command *);

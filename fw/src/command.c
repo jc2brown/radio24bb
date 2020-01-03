@@ -280,7 +280,7 @@ void handle_command(struct cmd_shell *shell, char *cmd_str) {
 	else if (!strcmp("root", shell->cmd->tokens[0])) {
 		shell->cur_ctx = shell->root_ctx;
 	}
-	else if (!strcmp("help", shell->cmd->tokens[0]) || !strcmp("ls", shell->cmd->tokens[0])) {
+	else if (!strcmp("help", shell->cmd->tokens[0]) /*|| !strcmp("ls", shell->cmd->tokens[0])*/) {
 
 		struct stringmap_node *map;
 

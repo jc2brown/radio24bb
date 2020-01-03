@@ -61,6 +61,12 @@ void usb_handler(void *arg, struct command *cmd) {
 }
 
 
+void handle_ls_cmd(void *arg, struct command *cmd) {
+	//struct radio24bb *r24bb = (struct radio24bb *)arg;
+	fatfs_ls();
+}
+
+
 
 
 int pin_value = 0;
@@ -559,6 +565,7 @@ int main()
 	add_command(r24bb->shell->root_ctx, "led", led_handler);
 
 	add_command(r24bb->shell->root_ctx, "gpio", gpio_handler);
+	add_command(r24bb->shell->root_ctx, "ls", handle_ls_cmd);
 
 
 	issue_command(r24bb->shell, "outa att 0", NULL);
@@ -624,7 +631,6 @@ int main()
 		int avail = r24bb->uart->rx_queue->size;
 
 		if (avail != 0) {
-			xil_printf("avail=%d\n", avail);
 			int c;
 			for (int i = 0; i < avail; ++i) {
 				int j;
@@ -632,7 +638,6 @@ int main()
 				*cmd_buf_idx = (char)j;
 				if (*cmd_buf_idx == '\n') {
 					*(cmd_buf_idx+1) = '\0';
-					xil_printf("cmd=%s\n", cmd_buf);
 					handle_command(r24bb->shell, cmd_buf);
 					cmd_buf_idx = cmd_buf;
 				} else {

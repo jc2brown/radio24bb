@@ -99,7 +99,7 @@ void codec_ioexp_intr_handler(void *arg) {
 
 
 
-
+static char *x = "bb#";
 
 
 struct radio24bb *make_radio24bb() {	
@@ -108,7 +108,7 @@ struct radio24bb *make_radio24bb() {
 
 	struct radio24bb *r24bb = (struct radio24bb *)malloc(sizeof(struct radio24bb));
 
-	r24bb->shell = make_cmd_shell("bb#", r24bb);
+	r24bb->shell = make_cmd_shell(x, r24bb);
 	if (r24bb->shell == NULL) return NULL;
 
 	r24bb->scugic = make_scugic();
