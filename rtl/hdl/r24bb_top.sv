@@ -866,6 +866,69 @@ ft601_if2 ft601_if_inst (
     
 /////////////////////////////////////////////////////////////
 //
+// Playback buffer
+//
+/////////////////////////////////////////////////////////////
+
+wire [31:0] pbka_wr_data;
+wire pbka_wr_en;
+wire pbka_full;
+
+
+
+reg CODEC_WCLK_d1;
+always @(posedge mclk) CODEC_WCLK_d1 <= CODEC_WCLK;
+
+wire pbka_rd_en = !CODEC_WCLK && CODEC_WCLK_d1;
+
+
+wire [31:0] pbka_rd_data;
+//wire pbka_rd_valid;
+wire pbka_rd_valid = pbka_rd_en;
+
+wire [15:0] pbka_l_data = pbka_rd_data[31:16];
+wire pbka_l_valid = pbka_rd_valid;
+
+wire [15:0] pbka_r_data = pbka_rd_data[15:0];
+wire pbka_r_valid = pbka_rd_valid;
+
+
+
+
+xpm_fifo_async #(
+    .DOUT_RESET_VALUE("0"),    // String
+    .FIFO_MEMORY_TYPE("block"), // String
+    .READ_MODE("fwft"),
+    .PROG_FULL_THRESH(512),    // DECIMAL
+    .FIFO_READ_LATENCY(1),     // DECIMAL
+    .FIFO_WRITE_DEPTH(1024),   // DECIMAL
+    .READ_DATA_WIDTH(32),      // DECIMAL
+    .WRITE_DATA_WIDTH(32),     // DECIMAL
+    .USE_ADV_FEATURES("1F0F") // Enable almost_empty, almost_full, and data_valid
+)
+pbka_buf (
+
+    .rst(reset),   
+    
+    .wr_clk(clk),
+    .din(pbka_wr_data),      
+    .wr_en(pbka_wr_en),    
+    .full(),
+    .prog_full(pbka_full), // When low, CPU may write up to 512 words  
+    
+    .rd_clk(mclk), 
+    .dout(pbka_rd_data),  
+    .data_valid(/*pbka_rd_valid*/),
+    .rd_en(pbka_rd_en)
+);
+
+
+
+
+
+    
+/////////////////////////////////////////////////////////////
+//
 // AIC3204 CODEC
 // 192kHz 4x32bit 24.6Mb/s
 //
@@ -1050,18 +1113,38 @@ rx_aud_cdc2 (
   .src_send(rx_data_valid_180_m)
 );
 
-
-wire [15:0] aud_out_l = aud_in_l;
-wire [15:0] aud_out_r = aud_in_r;
-wire tx_data_valid = rx_data_valid;
-
-
-
+/*
+wire [15:0] aud_out_l = pbka_l_data; // aud_in_l;
+wire [15:0] aud_out_r = pbka_r_data; // aud_in_r;
+wire tx_data_valid = pbka_rd_valid; //rx_data_valid;
+*/
 
 
-wire [15:0] aud_out_l_m;
-wire [15:0] aud_out_r_m;
-wire tx_data_valid_m;
+
+
+
+
+
+
+wire audout_mux;
+wire audout_mux_m;
+
+
+
+xpm_cdc_single xpm_cdc_single_inst (
+    .src_clk(clk),  
+    .src_in(audout_mux),     
+    .dest_clk(mclk),
+    .dest_out(audout_mux_m)     
+);
+
+
+
+wire [15:0] aud_out_l_m = (audout_mux_m == 0) ? aud_in_l_m : pbka_l_data;
+wire [15:0] aud_out_r_m = (audout_mux_m == 0) ? aud_in_r_m : pbka_r_data;
+wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : pbka_rd_valid;
+
+
 
 
 i2s_tx
@@ -1078,13 +1161,12 @@ tx
     
     .tx_data_l(aud_out_l_m),
     .tx_data_r(aud_out_r_m),
-    .tx_data_valid(tx_data_valid_m)
-    
+    .tx_data_valid(tx_data_valid_m)    
     
 );
 
 
-
+/*
 xpm_cdc_handshake #(
   .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
   .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
@@ -1094,13 +1176,13 @@ xpm_cdc_handshake #(
 tx_aud_cdc (
   .dest_out({aud_out_l_m, aud_out_r_m}),
   .dest_req(tx_data_valid_m),
-  .src_rcv(/*full*/),
+  .src_rcv(),
   .dest_clk(mclk),
   .src_clk(clk),
   .src_in({aud_out_l, aud_out_r}),
   .src_send(tx_data_valid)
 );
-
+*/
    
    
 
@@ -1472,7 +1554,13 @@ regs regs_inst (
     
     .serial(serial),
     
-    .i2c_sel(i2c_sel)
+    .i2c_sel(i2c_sel),
+    
+    .pbka_wr_data(pbka_wr_data),
+    .pbka_wr_en(pbka_wr_en),
+    .pbka_full(pbka_full),
+    
+    .audout_mux(audout_mux)
                 
 );    
     

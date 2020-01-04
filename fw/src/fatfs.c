@@ -9,6 +9,12 @@
 
 
 
+int fatfs_mkdir() {
+	
+}
+
+
+
 
 int fatfs_ls() {
 

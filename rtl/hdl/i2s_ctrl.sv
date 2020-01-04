@@ -28,6 +28,18 @@ module i2s_ctrl (
 // count[10] = 48.828125 kHz
 
 
+
+// clk = 9.728 MHz
+// count[0] = 4.864 MHz
+// count[1] = 2.432 MHz
+// count[2] = 1.216 MHz
+// count[3] = 608 kHz
+// count[4] = 304 kHz
+// count[5] = 152 kHz
+// count[6] = 76 kHz
+// count[7] = 38 kHz
+
+
 reg [31:0] count = 'h0;    
 
 always @(posedge clk) begin
@@ -54,7 +66,7 @@ always @(*) begin
     mpx_sel = count[7];
     
     // 38kHz
-    if (aud_rate == 0) begin        
+    if (aud_rate == 0) begin     
         bclk = count[2];
         wclk = count[7];
     end

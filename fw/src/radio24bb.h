@@ -64,22 +64,25 @@ struct radio24bb {
 
 
 struct radio24bb_regs {	
-	uint32_t leds;
-	uint32_t usb_wr_data;
-	uint32_t usb_wr_full;
-	uint32_t usb_rd_data;
-	uint32_t usb_rd_empty;
-	uint32_t usb_wr_mux;
-	uint32_t dac_cfg;
-	uint32_t dac_dce;
-	uint32_t aud_rate;
-	uint32_t usb_wr_push;
-	uint32_t usb_led_r;
-	uint32_t pwr_led_r;
-	uint32_t led0_brightness;
-	uint32_t led1_brightness;
-	uint32_t serial;
-	uint32_t i2c_sel;
+	volatile uint32_t leds;
+	volatile uint32_t usb_wr_data;
+	volatile uint32_t usb_wr_full;
+	volatile uint32_t usb_rd_data;
+	volatile uint32_t usb_rd_empty;
+	volatile uint32_t usb_wr_mux;
+	volatile uint32_t dac_cfg;
+	volatile uint32_t dac_dce;
+	volatile uint32_t aud_rate;
+	volatile uint32_t usb_wr_push;
+	volatile uint32_t usb_led_r;
+	volatile uint32_t pwr_led_r;
+	volatile uint32_t led0_brightness;
+	volatile uint32_t led1_brightness;
+	volatile uint32_t serial;
+	volatile uint32_t i2c_sel;
+	volatile uint32_t pbka_data;
+	volatile uint32_t pbka_full;
+	volatile uint32_t audout_mux;
 }; 
 
 

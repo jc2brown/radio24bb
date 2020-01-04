@@ -17,7 +17,7 @@ typedef int (*ioexp_update_fcn)(struct ioexp *);
 
 struct ioexp {
 	XIicPs *iicps;
-	uint32_t *bus_sel_ptr;
+	volatile uint32_t *bus_sel_ptr;
 	int if_type;
 	uint8_t bus_addr;
 	int bus_sel;
@@ -31,7 +31,7 @@ struct ioexp *make_ioexp();
 int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
-		uint32_t *bus_sel_ptr,
+		volatile uint32_t *bus_sel_ptr,
 		int if_type, 
 		uint8_t bus_addr, 
 		int bus_sel,

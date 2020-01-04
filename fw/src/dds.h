@@ -24,37 +24,37 @@ void init_dds_channel_context(char *name, void *arg, struct cmd_context *parent_
 
 struct dds_channel_regs {
 
-	uint32_t am_mux;
-	uint32_t am_raw;
-	uint32_t am_gain;
-	uint32_t am_offset;
-
-	uint32_t fm_mux;
-	uint32_t fm_raw;
-	uint32_t fm_gain;
-	uint32_t fm_offset;
-
-	uint32_t pm_mux;
-	uint32_t pm_raw;
-	uint32_t pm_gain;
-	uint32_t pm_offset;
-
-	uint32_t mux;
-
-	uint32_t raw;
-
-	uint32_t rom;
-
-	uint32_t step;
-
-	uint32_t prbs_gain;
-	uint32_t prbs_offset;
-
-	uint32_t stat_cfg;
-	uint32_t stat_min;
-	uint32_t stat_max;
-	uint32_t stat_limit;
-	uint32_t stat_count;
+	volatile uint32_t am_mux;
+	volatile uint32_t am_raw;
+	volatile uint32_t am_gain;
+	volatile uint32_t am_offset;
+ 
+	volatile uint32_t fm_mux;
+	volatile uint32_t fm_raw;
+	volatile uint32_t fm_gain;
+	volatile uint32_t fm_offset;
+ 
+	volatile uint32_t pm_mux;
+	volatile uint32_t pm_raw;
+	volatile uint32_t pm_gain;
+	volatile uint32_t pm_offset;
+ 
+	volatile uint32_t mux;
+ 
+	volatile uint32_t raw;
+ 
+	volatile uint32_t rom;
+ 
+	volatile uint32_t step;
+ 
+	volatile uint32_t prbs_gain;
+	volatile uint32_t prbs_offset;
+ 
+	volatile uint32_t stat_cfg;
+	volatile uint32_t stat_min;
+	volatile uint32_t stat_max;
+	volatile uint32_t stat_limit;
+	volatile uint32_t stat_count;
 
 };
 

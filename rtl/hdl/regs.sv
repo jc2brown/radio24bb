@@ -80,9 +80,17 @@ module regs (
     output reg [15:0] led0_brightness,
     output reg [15:0] led1_brightness,
     
-    input [2:0] serial ,
+    input [2:0] serial,
     
-    output reg i2c_sel
+    output reg i2c_sel,
+    
+    output reg [31:0] pbka_wr_data,
+    output reg pbka_wr_en,
+    input pbka_full,
+    
+    output reg audout_mux
+        
+    
     
 //    output reg [31:0] outa_raw,
     
@@ -188,6 +196,17 @@ localparam REG_SERIAL = 12'h038;
 
 localparam REG_I2C_SEL = 12'h03C;
 
+
+localparam REG_PBKA_WR_DATA = 12'h040;
+localparam REG_PBKA_FULL = 12'h044;
+
+localparam REG_AUDOUT_MUX = 12'h048;
+
+        
+    
+    
+    
+
 //localparam REG_OUTA_RAW = 12'h1400;
 
 //localparam REG_OUTA_WR_COUNT = 12'h1500;
@@ -268,6 +287,13 @@ begin
         
         i2c_sel <= 1'b0;
         
+        
+        pbka_wr_data <= 0;
+        pbka_wr_en <= 0;
+        
+        audout_mux <= 0;
+            
+        
 //        outa_raw <= 'h0;       
 //        outa_mux <= 'h0; 
         
@@ -286,6 +312,8 @@ begin
         usb_wr_en <= 1'b0;    
         usb_wr_push <= 1'b0;    
         dac_cfg_wr_en <= 1'b0;
+        pbka_wr_en <= 1'b0;
+        
         
 //        outa_dds_cfg_ce <= 1'b0;
                                 
@@ -370,6 +398,14 @@ begin
                 
                 REG_I2C_SEL: i2c_sel <= pwdata[0];
                 
+                
+                REG_PBKA_WR_DATA: begin
+                    pbka_wr_data <= pwdata;
+                    pbka_wr_en <= 1'b1;
+                end
+                                   
+                REG_AUDOUT_MUX: audout_mux <= pwdata[0];
+                        
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                
 //                REG_OUTA_MUX: outa_mux <= pwdata[2:0];   
@@ -445,6 +481,8 @@ begin
         REG_USB_RD_EMPTY: prdata = {31'h0, usb_rd_fifo_empty};
         
         REG_SERIAL: prdata = serial;
+        
+        REG_PBKA_FULL: prdata = {31'h0, pbka_full};
         
 //        REG_OUTA_WR_COUNT: prdata = dac_a_wr_count;
         

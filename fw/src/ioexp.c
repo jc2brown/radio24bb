@@ -80,7 +80,7 @@ int ioexp_read_register(struct ioexp *ioe, uint8_t reg, uint8_t *value) {
 int init_ioexp(
 		struct ioexp *ioe, 
 		XIicPs *iicps,
-		uint32_t *bus_sel_ptr,
+		volatile uint32_t *bus_sel_ptr,
 		int if_type, 
 		uint8_t bus_addr, 
 		int bus_sel,

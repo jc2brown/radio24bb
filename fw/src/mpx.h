@@ -24,19 +24,19 @@ void init_mpx_channel_context(char *name, void *arg, struct cmd_context *parent_
 
 struct mpx_channel_regs {
 
-	uint32_t pilot_gain;
-
-	uint32_t rom;
-
-	uint32_t step;
-
-	uint32_t stat_cfg;
-	uint32_t stat_min;
-	uint32_t stat_max;
-	uint32_t stat_limit;
-	uint32_t stat_count;
-
-	uint32_t filter_coef;
+	volatile uint32_t pilot_gain;
+ 
+	volatile uint32_t rom;
+ 
+	volatile uint32_t step;
+ 
+	volatile uint32_t stat_cfg;
+	volatile uint32_t stat_min;
+	volatile uint32_t stat_max;
+	volatile uint32_t stat_limit;
+	volatile uint32_t stat_count;
+ 
+	volatile uint32_t filter_coef;
 };
 
 
