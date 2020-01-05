@@ -399,7 +399,8 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	_return_if_error_(
 		init_aic3204(r24bb->codec,
-			r24bb->spips1
+			r24bb->spips1,
+			r24bb->shell->root_ctx
 	));
 
 

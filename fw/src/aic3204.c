@@ -116,6 +116,8 @@ void write_register_noverify(struct aic3204 *aic, uint8_t page, uint8_t reg, uin
 #define P0_R61  0x3D
 #define P0_R63  0x3F
 #define P0_R64  0x40
+#define P0_R65  0x41
+#define P0_R66  0x42
 #define P0_R81  0x51
 #define P0_R82  0x52
 
@@ -504,7 +506,8 @@ void set_left_hp_gain(struct aic3204 *aic) {
 	uint8_t buf = 
 		((0b0) << 7) | // Reserved
 		((0b0) << 6) | // Unmute
-		((0x00) << 0); // 0dB gain
+//		((0x00) << 0); // 0dB gain
+		((0x3A) << 0); // -6dB gain
 
 	write_register(aic, 1, P1_R16, buf); 
 }
@@ -516,7 +519,8 @@ void set_right_hp_gain(struct aic3204 *aic) {
 	uint8_t buf = 
 		((0b0) << 7) | // Reserved
 		((0b0) << 6) | // Unmute
-		((0x00) << 0); // 0dB gain
+//		((0x00) << 0); // 0dB gain
+		((0x3A) << 0); // -6dB gain
 
 	write_register(aic, 1, P1_R17, buf); 
 }
@@ -692,6 +696,28 @@ void dac_unmute(struct aic3204 *aic) {
 
 
 
+void dac_volume(struct aic3204 *aic, int gain_db) {
+
+	if (gain_db > 24 || gain_db < -63) {
+		xil_printf("ERROR: dac_volume: gain_db out of range\n");
+		return;
+	}
+
+	uint8_t value = gain_db << 1;
+
+	write_register(aic, 0, P0_R65, value);
+	write_register(aic, 0, P0_R66, value);
+
+}
+
+
+
+
+
+
+
+
+
 void aic3204_dump(struct aic3204 *aic) {
 	uint8_t buf;
 	for (int i = 0; i < 128; ++i) {
@@ -772,6 +798,14 @@ void dac_post_init(struct aic3204 *aic) {
 
 
 
+void aud_vol_handler(void *arg, struct command *cmd) {
+	struct aic3204 *aic = (struct aic3204 *)arg;
+	int vol = atoi(cmd->tokens[cmd->index++]);
+	dac_volume(aic, vol);
+}
+
+
+
 
 void aud_rate_handler(void *arg, struct command *cmd) {
 
@@ -817,7 +851,7 @@ void aud_rate_handler(void *arg, struct command *cmd) {
 
 
 
-int init_aic3204(struct aic3204 *aic, XSpiPs *spips) {
+int init_aic3204(struct aic3204 *aic, XSpiPs *spips, struct cmd_context *parent_ctx) {
 	trace("init_aic3204\n");
 	aic->spips = spips;	
 	aic->page = -1;
@@ -825,7 +859,8 @@ int init_aic3204(struct aic3204 *aic, XSpiPs *spips) {
 
 	struct cmd_context *aud = make_cmd_context("aud", (void*)aic);	
 	add_command(aud, "rate", aud_rate_handler);
-	add_subcontext(NULL, aud);
+	add_command(aud, "vol", aud_vol_handler);
+	add_subcontext(parent_ctx, aud);
 
 
 

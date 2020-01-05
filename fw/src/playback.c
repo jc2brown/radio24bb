@@ -52,7 +52,7 @@ void playback_open(struct playback *pbk, char *path) {
 
 	pbk->bytes_unread = pbk->wav.data.size;
 
-	FIL f;
+	//FIL f;
 	f_open(&pbk->fil, path, FA_READ);
 
 	//pbk->burst_count = 0;
@@ -99,6 +99,13 @@ int playback_maybe_fill_buffer(struct playback *pbk) {
 
 void playback_buffer_not_full_handler(void *arg) {
 	struct playback *pbk = (struct playback *)arg;
+
+/*
+	if (pbk->state != PBK_PLAYING) {
+		XScuGic_Disable(pbk->scugic, pbk->intr_id);
+	}
+*/
+
 	playback_maybe_fill_buffer(pbk);
 
 	int bytes_to_transfer = MIN(pbk->bytes_buffered, PBK_MAX_DMA_TRANSFER_SIZE);
@@ -135,7 +142,7 @@ void playback_play(struct playback *pbk) {
 	pbk->state = PBK_PLAYING;
 
 	CS_START();
-	XScuGic_Enable(pbk->scugic, XPAR_FABRIC_IRQ_F2P_02_INTR);
+	XScuGic_Enable(pbk->scugic, pbk->intr_id);
 	CS_END();
 
 
@@ -182,7 +189,7 @@ void playback_pause(struct playback *pbk) {
 
 
 	CS_START();
-	XScuGic_Disable(pbk->scugic, XPAR_FABRIC_IRQ_F2P_02_INTR);
+	XScuGic_Disable(pbk->scugic, pbk->intr_id);
 	CS_END();
 
 	pbk->state = PBK_PAUSED;
@@ -200,10 +207,16 @@ void playback_stop(struct playback *pbk) {
 	}
 
 	CS_START();
-	XScuGic_Disable(pbk->scugic, XPAR_FABRIC_IRQ_F2P_02_INTR);
+	XScuGic_Disable(pbk->scugic, pbk->intr_id);
 	CS_END();
 
 	pbk->state = PBK_STOPPED;
+
+	pbk->buf_ptr = pbk->buf;
+	pbk->bytes_buffered = 0;
+	pbk->bytes_unread = pbk->wav.data.size;
+	pbk->bytes_played = 0;
+
 }
 
 

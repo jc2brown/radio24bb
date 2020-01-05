@@ -1,6 +1,7 @@
 
 
 #include "xspips.h"
+#include "command.h"
 
 
 
@@ -18,7 +19,7 @@ struct aic3204 {
 
 
 struct aic3204 *make_aic3204();
-int init_aic3204(struct aic3204 *aic, XSpiPs *spips);
+int init_aic3204(struct aic3204 *aic, XSpiPs *spips, struct cmd_context *parent_ctx);
 
 
 
