@@ -199,9 +199,9 @@ proc create_root_design { parentCell } {
   set apb [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:apb_rtl:1.0 apb ]
 
   # Create ports
-  set IRQ_F2P_0 [ create_bd_port -dir I -from 1 -to 0 -type intr IRQ_F2P_0 ]
+  set IRQ_F2P_0 [ create_bd_port -dir I -from 2 -to 0 -type intr IRQ_F2P_0 ]
   set_property -dict [ list \
-   CONFIG.PortWidth {2} \
+   CONFIG.PortWidth {3} \
  ] $IRQ_F2P_0
   set pl_clk0 [ create_bd_port -dir O -type clk pl_clk0 ]
   set_property -dict [ list \

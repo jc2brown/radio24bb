@@ -10,6 +10,11 @@
 
 
 
+#define CS_START()   int ireg = mfcpsr(); Xil_ExceptionDisable()
+#define CS_END()     mtcpsr(ireg)
+
+
+
 
 XScuGic *make_scugic();
 int init_scugic(XScuGic *scugic, int device_id);

@@ -1435,7 +1435,8 @@ assign I2C_scl_i = 1;
 
 
 
-wire [1:0] IRQ_F2P_0 = {
+wire [2:0] IRQ_F2P_0 = {
+    !pbka_full,
     !CODEC_IO_INT_N,
     !USB_IO_INT_N
 };
@@ -1450,6 +1451,8 @@ wire [1:0] IRQ_F2P_0 = {
 assign GPIO_0_0_tri_i[0] = !USB_IO_INT_N;
 assign GPIO_0_0_tri_i[1] = !CODEC_IO_INT_N;
 assign GPIO_0_0_tri_i[2] = GPIO_0_0_tri_o[3];
+assign GPIO_0_0_tri_i[4] = pbka_full;
+
 
 r24bb_bd r24bb_bd_inst (
 

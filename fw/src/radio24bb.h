@@ -12,12 +12,12 @@
 #include "ff.h"
 
 #include "queue.h"
-
+#include "command.h"
 #include "ioexp.h"
 #include "aic3204.h"
 #include "adc.h"
 #include "dac.h"
-#include "command.h"
+#include "playback.h"
 
 
 struct radio24bb {	
@@ -56,7 +56,8 @@ struct radio24bb {
 	struct dds_channel *ddsa;
 	struct dds_channel *ddsb;
 	struct mpx_channel *mpx;
-
+		
+	struct playback *pbka;
 
 	// Misc.
 };

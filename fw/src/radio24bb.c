@@ -29,6 +29,7 @@
 #include "mpx.h"
 
 #include "spips.h"
+#include "playback.h"
 
 
 
@@ -177,6 +178,10 @@ struct radio24bb *make_radio24bb() {
 	if (r24bb->mpx == NULL) return NULL;
 
 
+	r24bb->pbka = make_playback();
+	if (r24bb->pbka == NULL) return NULL;
+
+
 	return r24bb;
 };
 
@@ -316,12 +321,11 @@ int update_usb_ioexp_0(struct radio24bb *r24bb) {
 
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
+	trace("init_radio24bb\n");
+
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
-
-
-	trace("init_radio24bb\n");
 
 
 //	_return_if_error_(
@@ -427,7 +431,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-
 	_return_if_error_(
 		init_dds_channel(r24bb->ddsa,
 			DDSA_REGS			
@@ -439,13 +442,19 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-
 	_return_if_error_(
 		init_mpx_channel(r24bb->mpx,
 			MPX_REGS			
 	));
 
 
+	_return_if_error_(
+		init_playback(r24bb->pbka, 
+			r24bb->scugic, 
+			XPAR_FABRIC_IRQ_F2P_02_INTR,
+			&(r24bb->regs->pbka_data), 
+			&(r24bb->regs->pbka_full)
+	));
 
 
 	// init_usb(r24bb->usb);
