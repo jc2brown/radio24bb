@@ -3,6 +3,8 @@
 #include "xil_printf.h"
 #include "xstatus.h"
 
+#include "roe.h"
+
 #include "playback.h"
 #include "ff.h"
 #include "wav.h"
@@ -24,27 +26,6 @@ struct playback *make_playback() {
 	if (pbk == NULL) return NULL;
 
 	return pbk;
-}
-
-
-
-
-int init_playback(struct playback *pbk, XScuGic *scugic, int intr_id, volatile uint32_t *hw_buf, volatile uint32_t *hw_buf_full) {
-
-	pbk->scugic = scugic;
-
-	pbk->state = PBK_CLOSED;
-
-	bytes_unread = 0;
-	bytes_buffered = 0;
-	bytes_played = 0;
-
-	pbk->hw_buf = hw_buf;
-	pbk->hw_buf_full = hw_buf_full;
-
-	_return_if_error_(XScuGic_Connect(pbk->scugic, pbk->intr_id, (Xil_ExceptionHandler)update_codec_ioexp, (void *)r24bb));
-
-	return XST_SUCCESS;
 }
 
 
@@ -92,7 +73,7 @@ void playback_open(struct playback *pbk, char *path) {
 // Return the number of bytes which were read from the file and added to the buffer.
 int playback_fill_buffer(struct playback *pbk) {
 	int buffer_space_available = PBK_BUF_CAPACITY - pbk->bytes_buffered;
-	UINT bytes_to_read = MIN(buffer_space_available, bytes_remaining_in_file);
+	UINT bytes_to_read = MIN(buffer_space_available, pbk->bytes_unread);
 	UINT bytes_read = 0;
 	f_read(&(pbk->fil), pbk->wav.data.buf, bytes_to_read, &bytes_read);
 	pbk->bytes_buffered += bytes_read;
@@ -114,16 +95,22 @@ void playback_buffer_not_full_handler(void *arg) {
 	struct playback *pbk = (struct playback *)arg;
 	playback_maybe_fill_buffer(pbk);
 
-	int transfer_size = MIN(pbk->bytes_buffered, PBK_MAX_DMA_TRANSFER_SIZE);
+	int bytes_to_transfer = MIN(pbk->bytes_buffered, PBK_MAX_DMA_TRANSFER_SIZE);
 
-	if (transfer_size == 0) {
+	if (bytes_to_transfer == 0) {
 		playback_stop(pbk);
 		return;
 	}
 
-	for (int i = 0; i < transfer_size/pbk->wav.fmt.block_align; ++i) {
+
+	pbk->bytes_buffered -= bytes_to_transfer;
+	pbk->bytes_played += bytes_to_transfer;
+
+	// Simulate DMA transfer
+	for (int i = 0; i < bytes_to_transfer/pbk->wav.fmt.block_align; ++i) {
 		*pbk->hw_buf = ((uint32_t *)pbk->buf)[i];
 	}
+
 
 }
 
@@ -135,7 +122,7 @@ void playback_play(struct playback *pbk) {
 		return;
 	}
 
-	playback_fill_buffer(pbk);
+	playback_maybe_fill_buffer(pbk);
 
 
 	pbk->state = PBK_PLAYING;
@@ -186,6 +173,11 @@ void playback_pause(struct playback *pbk) {
 		return;
 	}
 
+
+	CS_START();
+	XScuGic_Disable(pbk->scugic, XPAR_FABRIC_IRQ_F2P_02_INTR);
+	CS_END();
+
 	pbk->state = PBK_PAUSED;
 
 }
@@ -217,3 +209,31 @@ void playback_close(struct playback *pbk) {
 	pbk->state = PBK_CLOSED;
 
 }
+
+
+
+
+
+
+int init_playback(struct playback *pbk, XScuGic *scugic, int intr_id, volatile uint32_t *hw_buf, volatile uint32_t *hw_buf_full) {
+
+	pbk->scugic = scugic;
+	pbk->intr_id = intr_id;
+
+	pbk->state = PBK_CLOSED;
+
+	pbk->bytes_unread = 0;
+	pbk->bytes_buffered = 0;
+	pbk->bytes_played = 0;
+
+	pbk->hw_buf = hw_buf;
+	pbk->hw_buf_full = hw_buf_full;
+
+	_return_if_error_(XScuGic_Connect(pbk->scugic, pbk->intr_id, (Xil_ExceptionHandler)playback_buffer_not_full_handler, (void *)pbk));
+
+	return XST_SUCCESS;
+}
+
+
+
+
