@@ -42,12 +42,13 @@ void playback_open(struct playback *pbk, char *path) {
 	}
 
 	wavstat(path, &pbk->wav);
-
+/*
 	pbk->wav.data.buf = (uint8_t *)malloc(pbk->wav.data.size);
 	if (pbk->wav.data.buf == NULL) {
 		xil_printf("ERROR: failed to allocate %d bytes for data buffer\n", pbk->wav.data.size);
 		return;
 	}
+	*/
 
 	pbk->bytes_unread = pbk->wav.data.size;
 
@@ -75,7 +76,8 @@ int playback_fill_buffer(struct playback *pbk) {
 	int buffer_space_available = PBK_BUF_CAPACITY - pbk->bytes_buffered;
 	UINT bytes_to_read = MIN(buffer_space_available, pbk->bytes_unread);
 	UINT bytes_read = 0;
-	f_read(&(pbk->fil), pbk->wav.data.buf, bytes_to_read, &bytes_read);
+	f_read(&(pbk->fil), pbk->buf, bytes_to_read, &bytes_read);
+	pbk->buf_ptr = pbk->buf;
 	pbk->bytes_buffered += bytes_read;
 	pbk->bytes_unread -= bytes_read;
 	return bytes_read;
@@ -84,7 +86,11 @@ int playback_fill_buffer(struct playback *pbk) {
 
 // Fill the software buffer if it does not contain enough bytes to source a maximum-size DMA transfer
 int playback_maybe_fill_buffer(struct playback *pbk) {
-	if (pbk->bytes_buffered < PBK_MAX_DMA_TRANSFER_SIZE && pbk->bytes_unread > 0) {
+
+	// This doesn't work with the simple buffering scheme currently in use
+	//if (pbk->bytes_buffered < PBK_MAX_DMA_TRANSFER_SIZE && pbk->bytes_unread > 0) {
+
+	if (pbk->bytes_buffered == 0 && pbk->bytes_unread > 0) {
 		return playback_fill_buffer(pbk);
 	}
 	return 0;
@@ -108,9 +114,10 @@ void playback_buffer_not_full_handler(void *arg) {
 
 	// Simulate DMA transfer
 	for (int i = 0; i < bytes_to_transfer/pbk->wav.fmt.block_align; ++i) {
-		*pbk->hw_buf = ((uint32_t *)pbk->buf)[i];
+		*pbk->hw_buf = ((uint32_t *)pbk->buf_ptr)[i];
 	}
-
+	
+	pbk->buf_ptr += bytes_to_transfer;
 
 }
 
@@ -122,7 +129,7 @@ void playback_play(struct playback *pbk) {
 		return;
 	}
 
-	playback_maybe_fill_buffer(pbk);
+	//playback_maybe_fill_buffer(pbk);
 
 
 	pbk->state = PBK_PLAYING;

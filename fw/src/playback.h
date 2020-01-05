@@ -28,6 +28,7 @@ struct playback {
 	struct WAV wav;
 	enum PlaybackState state;
 	uint8_t *buf;
+	uint8_t *buf_ptr;
 
 	// int bytes_played;
 	// int bytes_buffered;
