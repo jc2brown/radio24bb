@@ -160,6 +160,22 @@ void handle_play_cmd(void *arg, struct command *cmd) {
 }
 
 
+
+
+
+void handle_stop_cmd(void *arg, struct command *cmd) {
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	// play(r24bb, path);
+
+	playback_stop(r24bb->pbka);
+	playback_close(r24bb->pbka);
+	//playback_close(r24bb->pbka);
+
+}
+
+
+
+
 void handle_wavstat_cmd(void *arg, struct command *cmd) {
 	struct radio24bb *r24bb = (struct radio24bb *)arg;
 	char *path = cmd->tokens[cmd->index++];
@@ -699,6 +715,7 @@ int main()
 	add_command(r24bb->shell->root_ctx, "stat", handle_stat_cmd);
 	add_command(r24bb->shell->root_ctx, "wavstat", handle_wavstat_cmd);
 	add_command(r24bb->shell->root_ctx, "play", handle_play_cmd);
+	add_command(r24bb->shell->root_ctx, "stop", handle_stop_cmd);
 
 
 	issue_command(r24bb->shell, "outa att 0", NULL);

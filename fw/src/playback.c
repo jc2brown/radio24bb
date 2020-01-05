@@ -211,7 +211,7 @@ void playback_stop(struct playback *pbk) {
 void playback_close(struct playback *pbk) {
 
 
-	free(pbk->wav.data.buf);
+	//free(pbk->wav.data.buf);
 
 	pbk->state = PBK_CLOSED;
 
