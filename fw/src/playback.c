@@ -113,23 +113,20 @@ void playback_dma_transfer(struct playback *pbk) {
 	pbk->bytes_played += bytes_to_transfer;
 
 
+	memset(&(pbk->dma_cmd), 0, sizeof(XDmaPs_Cmd));
+
+	pbk->dma_cmd.ChanCtrl.SrcBurstSize = 4;
+	pbk->dma_cmd.ChanCtrl.SrcBurstLen = 1;
+	pbk->dma_cmd.ChanCtrl.SrcInc = 1;
+	pbk->dma_cmd.ChanCtrl.DstBurstSize = 4;
+	pbk->dma_cmd.ChanCtrl.DstBurstLen = 1;
+	pbk->dma_cmd.ChanCtrl.DstInc = 0;
+	pbk->dma_cmd.BD.SrcAddr = (u32)(pbk->buf_ptr);
+	pbk->dma_cmd.BD.DstAddr = (u32)(pbk->hw_buf);
+	pbk->dma_cmd.BD.Length = bytes_to_transfer;
 
 
-
-	memset(&(pbka->dma_cmd), 0, sizeof(XDmaPs_Cmd));
-
-	pbka->dma_cmd.ChanCtrl.SrcBurstSize = 1;
-	pbka->dma_cmd.ChanCtrl.SrcBurstLen = 1;
-	pbka->dma_cmd.ChanCtrl.SrcInc = 1;
-	pbka->dma_cmd.ChanCtrl.DstBurstSize = 1;
-	pbka->dma_cmd.ChanCtrl.DstBurstLen = 1;
-	pbka->dma_cmd.ChanCtrl.DstInc = 0;
-	pbka->dma_cmd.BD.SrcAddr = (u32)(pbk->buf_ptr);
-	pbka->dma_cmd.BD.DstAddr = (u32)(pbk->hw_buf);
-	pbka->dma_cmd.BD.Length = bytes_to_transfer;
-
-
-	XDmaPs_Start(pbka->dmacps, pbka->dmacps_channel, &(pbka->dma_cmd), 0);
+	XDmaPs_Start(pbk->dmaps, pbk->dmaps_channel, &(pbk->dma_cmd), 0);
 	/*
 	// Simulate DMA transfer
 	for (int i = 0; i < bytes_to_transfer/pbk->wav.fmt.block_align; ++i) {
@@ -139,26 +136,29 @@ void playback_dma_transfer(struct playback *pbk) {
 
 	pbk->buf_ptr += bytes_to_transfer;
 
-
-
 }
 
 
+
 void playback_dma_done_handler(unsigned int channel, XDmaPs_Cmd *dma_cmd, void *arg) {
-	struct playback *pbk;
-	playback_dma_transfer(pbk);
+	struct playback *pbk = (struct playback *)arg;
+
+	CS_START();
+	XScuGic_Enable(pbk->scugic, pbk->not_full_intr_id);
+	CS_END();
+
 }
 
 
 
 void playback_buffer_not_full_handler(void *arg) {
 	struct playback *pbk = (struct playback *)arg;
+
+	CS_START();
+	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
+	CS_END();
+
 	playback_dma_transfer(pbk);
-/*
-	if (pbk->state != PBK_PLAYING) {
-		XScuGic_Disable(pbk->scugic, pbk->intr_id);
-	}
-*/
 
 }
 
@@ -170,13 +170,10 @@ void playback_play(struct playback *pbk) {
 		return;
 	}
 
-	//playback_maybe_fill_buffer(pbk);
-
-
 	pbk->state = PBK_PLAYING;
 
 	CS_START();
-	XScuGic_Enable(pbk->scugic, pbk->intr_id);
+	XScuGic_Enable(pbk->scugic, pbk->not_full_intr_id);
 	CS_END();
 
 
@@ -223,7 +220,7 @@ void playback_pause(struct playback *pbk) {
 
 
 	CS_START();
-	XScuGic_Disable(pbk->scugic, pbk->intr_id);
+	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
 	CS_END();
 
 	pbk->state = PBK_PAUSED;
@@ -241,7 +238,7 @@ void playback_stop(struct playback *pbk) {
 	}
 
 	CS_START();
-	XScuGic_Disable(pbk->scugic, pbk->intr_id);
+	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
 	CS_END();
 
 	pbk->state = PBK_STOPPED;
@@ -273,15 +270,17 @@ int init_playback(
 		struct playback *pbk, 
 		XScuGic *scugic, 
 		XDmaPs *dmaps, 
-		int intr_id, 
+		int not_full_intr_id, 
+		int dmaps_channel,
 		volatile uint32_t *hw_buf, 
 		volatile uint32_t *hw_buf_full
 ) {
 
 	pbk->scugic = scugic;
-	pbk->intr_id = intr_id;
+	pbk->not_full_intr_id = not_full_intr_id;
 
 	pbk->dmaps = dmaps;
+	pbk->dmaps_channel = dmaps_channel;
 
 	pbk->state = PBK_CLOSED;
 
@@ -292,9 +291,22 @@ int init_playback(
 	pbk->hw_buf = hw_buf;
 	pbk->hw_buf_full = hw_buf_full;
 
-	_return_if_error_(XScuGic_Connect(pbk->scugic, pbk->intr_id, (Xil_ExceptionHandler)playback_buffer_not_full_handler, (void *)pbk));
 
-	XDmaPs_SetDoneHandler(pbka->dmaps, pbka->dmaps_channel, playback_dma_done_handler, (void *)pbka);
+	_return_if_error_(
+		XScuGic_Connect(
+			pbk->scugic, 
+			pbk->not_full_intr_id, 
+			(Xil_ExceptionHandler)playback_buffer_not_full_handler, 
+			(void *)pbk
+	));
+
+
+	XDmaPs_SetDoneHandler(
+		pbk->dmaps, 
+		pbk->dmaps_channel, 
+		playback_dma_done_handler, 
+		(void *)pbk
+	);
 
 	return XST_SUCCESS;
 }

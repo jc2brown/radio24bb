@@ -30,6 +30,7 @@ struct radio24bb {
 
 	// Zynq peripherals
 	XScuGic *scugic;
+	XDmaPs *dmaps;
 	struct uartps *uart;
 	XGpioPs *gpiops;
 	XSpiPs *spips1;

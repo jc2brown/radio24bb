@@ -13,6 +13,7 @@
 #include "xiicps.h"
 #include "xspips.h"
 #include "scugic.h"
+#include "dmaps.h"
 #include "iicps.h"
 #include "gpiops.h"
 #include "uartps.h"
@@ -117,6 +118,9 @@ struct radio24bb *make_radio24bb() {
 
 	r24bb->scugic = make_scugic();
 	if (r24bb->scugic == NULL) return NULL;
+
+	r24bb->dmaps = make_dmaps();
+	if (r24bb->dmaps == NULL) return NULL;
 
 	r24bb->uart = make_uartps();
 	if (r24bb->uart == NULL) return NULL;
@@ -353,6 +357,13 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			r24bb->pbka
 	));
 
+
+
+
+
+
+
+
 	_return_if_error_(
 		init_uartps(r24bb->uart, 
 			r24bb->scugic, 
@@ -467,7 +478,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	_return_if_error_(
 		init_playback(r24bb->pbka, 
 			r24bb->scugic, 
-			XPAR_FABRIC_IRQ_F2P_02_INTR,
+			r24bb->dmaps,
+			XPAR_FABRIC_IRQ_F2P_02_INTR, // buffer not full
+			0, // dma channel
 			&(r24bb->regs->pbka_data), 
 			&(r24bb->regs->pbka_full)
 	));
