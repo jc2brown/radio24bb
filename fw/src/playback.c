@@ -237,6 +237,7 @@ int playback_maybe_fill_buffer(struct playback *pbk) {
 
 void playback_dma_transfer(struct playback *pbk) {
 
+
 	playback_maybe_fill_buffer(pbk);
 
 	int bytes_to_transfer = MIN(pbk->bytes_buffered, PBK_MAX_DMA_TRANSFER_SIZE);
@@ -296,7 +297,9 @@ void playback_buffer_not_full_handler(void *arg) {
 	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
 	CS_END();
 
-	playback_dma_transfer(pbk);
+	if (pbk->state == PBK_PLAYING) {
+		playback_dma_transfer(pbk);
+	}
 
 }
 
@@ -377,14 +380,16 @@ void playback_stop(struct playback *pbk) {
 
 	CS_START();
 	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
-	CS_END();
-
-	pbk->state = PBK_STOPPED;
 
 	pbk->buf_ptr = pbk->buf;
 	pbk->bytes_buffered = 0;
 	pbk->bytes_unread = pbk->wav.data.size;
 	pbk->bytes_played = 0;
+	f_lseek(&(pbk->fil), 0);
+
+	CS_END();
+
+	pbk->state = PBK_STOPPED;
 
 }
 
