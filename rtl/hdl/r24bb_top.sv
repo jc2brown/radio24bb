@@ -171,7 +171,7 @@ wire usb_rd_fifo_empty;
 
 wire signed [15:0] aud_in_l;
 wire signed [15:0] aud_in_r;
-wire signed [15:0] aud_in = aud_in_l + aud_in_r;
+wire signed [15:0] aud_in = (aud_in_l + aud_in_r) / 2;
 wire rx_data_valid;
 wire rx_data_valid_180;
 
@@ -199,6 +199,35 @@ wire signed [7:0] ddsb_data;
 
 
 
+/////////////////////////////////////////////////////////////
+//
+// Playback A
+//
+/////////////////////////////////////////////////////////////
+
+
+wire [15:0] pbka_l_m;
+wire pbka_l_valid_m;
+
+wire [15:0] pbka_r_m;
+wire pbka_r_valid_m;
+
+
+
+
+wire signed [15:0] pbka_l;
+wire pbka_l_valid;
+
+wire signed [15:0] pbka_r;
+wire pbka_r_valid;
+
+wire signed [15:0] pbka_mix;
+wire pbka_mix_valid;
+
+//wire signed [15:0] pbka_l;
+//wire signed [15:0] pbka_r;
+//wire signed [15:0] pbka = (pbka_l + pbka_r) / 2;
+//wire pbka_valid;
 
 
 /////////////////////////////////////////////////////////////
@@ -586,6 +615,8 @@ dac_channel outa_dac_channel (
         .ddsa_data(ddsa_data),
         .ddsb_data(ddsb_data),
         .aud_in(aud_in[15:8]),
+        .mpx_in(mpx[15:8]),
+        .pbka_in(pbka_mix[15:8]),
                         
         .usb_rd_data(usb_rd_data),
         .usb_rd_data_valid(usb_rd_valid),
@@ -626,6 +657,8 @@ dac_channel #(.FAST_FIR("false")) outb_dac_channel (
         .ddsa_data(ddsa_data),
         .ddsb_data(ddsb_data),
         .aud_in(aud_in[15:8]),
+        .mpx_in(mpx[15:8]),
+        .pbka_in(pbka_mix[15:8]),
         
                         
         .usb_rd_data(usb_rd_data),
@@ -875,23 +908,14 @@ wire pbka_wr_en;
 wire pbka_full;
 
 
-
 reg CODEC_WCLK_d1;
 always @(posedge mclk) CODEC_WCLK_d1 <= CODEC_WCLK;
 
-wire pbka_rd_en = !CODEC_WCLK && CODEC_WCLK_d1;
+wire pbka_rd_en_m = !CODEC_WCLK && CODEC_WCLK_d1;
+wire pbka_rd_en_180_m = CODEC_WCLK && !CODEC_WCLK_d1;
 
 
-wire [31:0] pbka_rd_data;
-//wire pbka_rd_valid;
-wire pbka_rd_valid = pbka_rd_en;
-
-wire [15:0] pbka_l_data = pbka_rd_data[31:16];
-wire pbka_l_valid = pbka_rd_valid;
-
-wire [15:0] pbka_r_data = pbka_rd_data[15:0];
-wire pbka_r_valid = pbka_rd_valid;
-
+wire [31:0] pbka_rd_data_m;
 
 
 
@@ -917,13 +941,49 @@ pbka_buf (
     .prog_full(pbka_full), // When low, CPU may write up to 512 words  
     
     .rd_clk(mclk), 
-    .dout(pbka_rd_data),  
-    .data_valid(/*pbka_rd_valid*/),
-    .rd_en(pbka_rd_en)
+    .dout(pbka_rd_data_m),  
+    .rd_en(pbka_rd_en_m)
 );
 
 
 
+wire pbka_rd_valid_m = pbka_rd_en_m;
+wire pbka_rd_valid_180_m = pbka_rd_en_180_m;
+
+
+assign pbka_l_m = pbka_rd_data_m[31:16];
+assign pbka_l_valid_m = pbka_rd_valid_m;
+
+assign pbka_r_m = pbka_rd_data_m[15:0];
+assign pbka_r_valid_m = pbka_rd_valid_m;
+
+
+
+wire pbka_valid;
+
+xpm_cdc_handshake #(
+  .DEST_EXT_HSK(0),   // DECIMAL; 0=internal handshake, 1=external handshake
+  .DEST_SYNC_FF(3),   // DECIMAL; range: 2-10
+  .SRC_SYNC_FF(3),    // DECIMAL; range: 2-10
+  .WIDTH(32)           // DECIMAL; range: 1-1024
+)
+pbka_cdc (
+  .src_clk(mclk),
+  .src_in(pbka_rd_data_m),
+  .src_send(pbka_rd_valid_m),
+  .dest_clk(clk),
+  .dest_out({pbka_l, pbka_r}),
+  .dest_req(pbka_valid)
+);
+
+
+
+assign pbka_l_valid = pbka_valid;
+
+assign pbka_r_valid = pbka_valid;
+
+assign pbka_mix = (pbka_l + pbka_r) / 2;
+assign pbka_mix_valid = pbka_valid;
 
 
     
@@ -1140,9 +1200,9 @@ xpm_cdc_single xpm_cdc_single_inst (
 
 
 
-wire [15:0] aud_out_l_m = (audout_mux_m == 0) ? aud_in_l_m : pbka_l_data;
-wire [15:0] aud_out_r_m = (audout_mux_m == 0) ? aud_in_r_m : pbka_r_data;
-wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : pbka_rd_valid;
+wire [15:0] aud_out_l_m = (audout_mux_m == 0) ? aud_in_l_m : pbka_l_m;
+wire [15:0] aud_out_r_m = (audout_mux_m == 0) ? aud_in_r_m : pbka_r_m;
+wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : (pbka_l_m && pbka_r_m);
 
 
 
@@ -1262,6 +1322,12 @@ stereo_mpx mpx_inst (
     .in_r(aud_in_r_m),
     .in_valid(rx_data_valid_m),    
     .in_valid_180(rx_data_valid_180_m),
+        
+    .pbka_l(pbka_l_m),
+    .pbka_r(pbka_r_m),    
+    .pbka_valid(pbka_rd_valid_m),
+    .pbka_valid_180(pbka_rd_valid_180_m),
+    
     .mpx_sel(mpx_sel),
     
     .mpx_out(mpx_m),
@@ -1324,6 +1390,7 @@ dds_block ddsa (
     .ddsb_data(ddsb_data),
     .aud_in(aud_in),
     .mpx_in(mpx),
+    .pbka_in(pbka_mix),
     
     .dds_data_out(ddsa_data)                                             
 );
@@ -1350,6 +1417,7 @@ dds_block ddsb (
     .ddsb_data(ddsb_data),
     .aud_in(aud_in),
     .mpx_in(mpx),
+    .pbka_in(pbka_mix),
     
     .dds_data_out(ddsb_data)                                             
 );

@@ -28,7 +28,9 @@ module mpx_regs (
     input [31:0] stat_count,    
 
     output reg [24:0] filter_cfg_din,
-    output reg filter_cfg_ce        
+    output reg filter_cfg_ce,
+    
+    output reg [3:0] mux
         
 );
 
@@ -45,6 +47,7 @@ localparam REG_STAT_LIMIT   = 12'h18;
 localparam REG_STAT_COUNT   = 12'h1C;
 
 localparam REG_FILTER_COEF  = 12'h20;
+localparam REG_MUX          = 12'h24;
 
 
 
@@ -64,6 +67,8 @@ begin
 
         filter_cfg_din <= 'h0;
         filter_cfg_ce <= 'h0;
+        
+        mux <= 'h0;
                    
     end
     else begin
@@ -91,7 +96,9 @@ begin
                     begin
                         filter_cfg_din <= pwdata[24:0];
                         filter_cfg_ce <= 1'b1;
-                    end         
+                    end      
+                
+                REG_MUX: mux <= pwdata[3:0];      
                     
             endcase
         end

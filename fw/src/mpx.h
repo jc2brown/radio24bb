@@ -37,6 +37,8 @@ struct mpx_channel_regs {
 	volatile uint32_t stat_count;
  
 	volatile uint32_t filter_coef;
+
+	volatile uint32_t mux;
 };
 
 

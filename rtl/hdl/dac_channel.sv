@@ -24,6 +24,8 @@ module dac_channel
         input [7:0] ddsa_data,
         input [7:0] ddsb_data,
         input [7:0] aud_in,
+        input [7:0] mpx_in,
+        input [7:0] pbka_in,
                         
         input [31:0] usb_rd_data,
         input usb_rd_data_valid,
@@ -75,18 +77,20 @@ wire signed [15:0] offset;
 wire [24:0] filter_cfg_din;
 wire filter_cfg_ce;         
             
-wire [2:0] mux; 
+wire [3:0] mux; 
 wire [31:0] raw;
       
           
-wire signed [7:0] dac_data =   (mux == 0) ? raw :
-                        (mux == 1) ? ina_data : 
-                        (mux == 2) ? inb_data :
-                        (mux == 3) ? ddsa_data : 
-                        (mux == 4) ? ddsb_data : 
-                        (mux == 5) ? usb_data : 
-                        (mux == 6) ? aud_in : 
-                        0; 
+wire signed [7:0] dac_data =    (mux == 0) ? raw :
+                                (mux == 1) ? ina_data : 
+                                (mux == 2) ? inb_data :
+                                (mux == 3) ? ddsa_data : 
+                                (mux == 4) ? ddsb_data : 
+                                (mux == 5) ? usb_data : 
+                                (mux == 6) ? aud_in : 
+                                (mux == 7) ? mpx_in : 
+                                (mux == 8) ? pbka_in : 
+                                0; 
   
   
 wire signed [7:0] dac_data_filtered;

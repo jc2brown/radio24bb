@@ -18,7 +18,9 @@ module dds_block (
     input signed [7:0] ddsa_data,
     input signed [7:0] ddsb_data,
     input signed [15:0] aud_in,
-    input signed [15:0] mpx_in
+    input signed [15:0] mpx_in,
+    input signed [15:0] pbka_in
+    
                     
 //    input [31:0] usb_rd_data,
 //    input usb_rd_data_valid,
@@ -100,6 +102,7 @@ wire signed [15:0] am_data = (am_mux == 0) ? signed'(am_raw) :
                              (am_mux == 3) ? signed'(ddsa_data) :
                              (am_mux == 4) ? signed'(ddsb_data) :
                              (am_mux == 5) ? signed'(aud_in) :
+                             (am_mux == 6) ? signed'(pbka_in) :
                              0;
                              
 wire signed [15:0] fm_data = (fm_mux == 0) ? signed'(fm_raw) :
@@ -109,6 +112,7 @@ wire signed [15:0] fm_data = (fm_mux == 0) ? signed'(fm_raw) :
                              (fm_mux == 4) ? signed'(ddsb_data) :
                              (fm_mux == 5) ? signed'(aud_in) :
                              (fm_mux == 6) ? signed'(mpx_in) :
+                             (fm_mux == 7) ? signed'(pbka_in) :
                              0;
 
 wire signed [15:0] pm_data = (pm_mux == 0) ? signed'(pm_raw) :
@@ -117,6 +121,7 @@ wire signed [15:0] pm_data = (pm_mux == 0) ? signed'(pm_raw) :
                              (pm_mux == 3) ? signed'(ddsa_data) :
                              (pm_mux == 4) ? signed'(ddsb_data) :
                              (pm_mux == 5) ? signed'(aud_in) :
+                             (pm_mux == 6) ? signed'(pbka_in) :
                              0;
                                   
                                  
@@ -251,6 +256,7 @@ always @(posedge clk) dac_data <=
         (mux == 3) ? inb_data : 
         (mux == 4) ? signed'(aud_in[15:8]) : 
         (mux == 5) ? signed'(mpx_in[15:8]) : 
+        (mux == 6) ? signed'(pbka_in[15:8]) : 
         0); // n.b parens are req'd around mux
         
     

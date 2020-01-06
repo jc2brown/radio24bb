@@ -82,7 +82,7 @@ int init_dds_channel(struct dds_channel *channel, uint32_t regs_addr) {
 
 void handle_dds_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_srcs[] = { "raw", "dds", "ina", "inb", "aud", "mpx" };
+	static char *dds_srcs[] = { "raw", "dds", "ina", "inb", "aud", "mpx", "pbka" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_srcs)/sizeof(*dds_srcs); ++i) {
@@ -139,7 +139,7 @@ void handle_dds_freq_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_am_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_am_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud" };
+	static char *dds_am_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud", "pbka" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_am_srcs)/sizeof(*dds_am_srcs); ++i) {
@@ -182,7 +182,7 @@ void handle_dds_am_offset_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_fm_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_fm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud", "mpx" };
+	static char *dds_fm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud", "mpx", "pbka" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_fm_srcs)/sizeof(*dds_fm_srcs); ++i) {
@@ -226,7 +226,7 @@ void handle_dds_fm_offset_cmd(void *arg, struct command *cmd) {
 
 void handle_dds_pm_src_cmd(void *arg, struct command *cmd) {
 	struct dds_channel *channel = (struct dds_channel *)arg;
-	static char *dds_pm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud" };
+	static char *dds_pm_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "aud", "pbka" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dds_pm_srcs)/sizeof(*dds_pm_srcs); ++i) {

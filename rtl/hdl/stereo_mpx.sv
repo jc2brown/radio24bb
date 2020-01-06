@@ -20,6 +20,12 @@ module stereo_mpx (
     input signed [15:0] in_r,
     input in_valid,
     input in_valid_180,
+    
+    input signed [15:0] pbka_l,
+    input signed [15:0] pbka_r,    
+    input pbka_valid,
+    input pbka_valid_180,
+    
     input mpx_sel,
     
     output reg signed [15:0] mpx_out,
@@ -27,6 +33,8 @@ module stereo_mpx (
     
 );
     
+    
+wire [3:0] mux;
     
 
 wire [24:0] filter_cfg_din;
@@ -54,8 +62,32 @@ wire [31:0] stat_count;
 
 
 
-wire signed [15:0] in_l_filtered;
-wire signed [15:0] in_r_filtered;
+
+wire signed [15:0] sig_l = (
+        (mux == 0) ? in_l :
+        (mux == 1) ? pbka_l :
+        0);
+
+wire signed [15:0] sig_r = (
+        (mux == 0) ? in_r :
+        (mux == 1) ? pbka_r :
+        0);
+
+        
+wire signed [15:0] sig_valid = (
+        (mux == 0) ? in_valid :
+        (mux == 1) ? pbka_valid :
+        0);
+
+                
+wire signed [15:0] sig_valid_180 = (
+        (mux == 0) ? in_valid_180 :
+        (mux == 1) ? pbka_valid_180 :
+        0);
+
+
+wire signed [15:0] sig_l_filtered;
+wire signed [15:0] sig_r_filtered;
 
 
 fast_fir_filter 
@@ -76,10 +108,10 @@ preemph_l_inst (
     
     .len(),    
 
-    .in(signed'(in_l)), 
-    .valid_in(in_valid),
+    .in(signed'(sig_l)), 
+    .valid_in(sig_valid),
     
-    .out(in_l_filtered),
+    .out(sig_l_filtered),
     .valid_out()
 
 );
@@ -105,10 +137,10 @@ preemph_r_inst (
     
     .len(),    
 
-    .in(signed'(in_r)), 
-    .valid_in(in_valid),
+    .in(signed'(sig_r)), 
+    .valid_in(sig_valid),
     
-    .out(in_r_filtered),
+    .out(sig_r_filtered),
     .valid_out()
 
 );
@@ -125,16 +157,16 @@ preemph_r_inst (
 
 
  
-reg signed [15:0] in;
+reg signed [15:0] mix;
 
 
 always @(posedge mclk) begin
     if (mreset) begin
-        in <= 0;
+        mix <= 0;
     end
     else begin    
         if (in_valid || in_valid_180) begin
-            in <= (mpx_sel ? in_l_filtered : in_r_filtered);
+            mix <= (mpx_sel ? sig_l_filtered : sig_r_filtered);
         end
     end
 end
@@ -149,7 +181,7 @@ always @(posedge mclk) begin
     end
     else begin
         mpx_valid <= in_valid || in_valid_180;
-        mpx_out <= scaled_pilot + in;
+        mpx_out <= scaled_pilot + mix;
     end
 end
 
@@ -259,7 +291,9 @@ mpx_regs regs_inst (
     .stat_count(stat_count),
 
     .filter_cfg_din(filter_cfg_din),
-    .filter_cfg_ce(filter_cfg_ce)
+    .filter_cfg_ce(filter_cfg_ce),
+    
+    .mux(mux)
           
         
 );

@@ -18,7 +18,7 @@ module dac_channel_regs (
     output reg [24:0] filter_cfg_din,
     output reg filter_cfg_ce,          
                           
-    output reg [2:0] mux,    
+    output reg [3:0] mux,    
     output reg [31:0] raw,
     
     output reg [1:0] stat_cfg,
@@ -96,7 +96,7 @@ begin
                     
                 REG_RAW: raw <= pwdata;   
                
-                REG_MUX: mux <= pwdata[2:0];   
+                REG_MUX: mux <= pwdata[3:0];   
                 
                 
                 REG_STAT_CFG: stat_cfg <= pwdata[1:0];
