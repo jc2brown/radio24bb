@@ -87,123 +87,12 @@ void handle_stat_cmd(void *arg, struct command *cmd) {
 
 
 
-/*
-
-void play(struct radio24bb *r24bb, char *path) {
-
-	struct WAV wav;
-
-	wavstat(path, &wav);
-
-	wav.data.buf = (uint8_t *)malloc(wav.data.size);
-	if (wav.data.buf == NULL) {
-		xil_printf("ERROR: failed to allocate %d bytes for data buffer\n", wav.data.size);
-		return;
-	}
-
-	FIL f;
-	f_open(&f, path, FA_READ);
-
-	UINT bytes_to_read = wav.data.size;
-	UINT bytes_read;
-	f_read(&f, (uint8_t *)wav.data.buf, bytes_to_read, &bytes_read);
-
-	if (bytes_read != bytes_to_read) {
-		xil_printf("ERROR: play: expected %d bytes but got %d\n", bytes_to_read, bytes_read);
-	}
-
-	f_close(&f);
-
-	r24bb->outa->regs->mux = 0;
-	r24bb->outb->regs->mux = 0;
-
-
-	int burst_count = 0;
-
-	r24bb->regs->audout_mux = 1;
-
-	for (int i = 0; i < wav.data.size/wav.fmt.block_align; i=i+1) {
-
-
-		if (burst_count == 0) {
-			while (r24bb->regs->pbka_full);
-		}
-
-		// We can only get away with casting the uint8_t-filled data buffer to uint32_t
-		// when the source file matches the 16 bits/sample * 2 channel format expected by pbka_data
-		r24bb->regs->pbka_data = ((uint32_t *)wav.data.buf)[i];
-
-		++burst_count;
-		if (burst_count == 512) {
-			burst_count = 0;
-		}
-	}
-
-
-	r24bb->regs->audout_mux = 0;
-
-	free(wav.data.buf);
-
-}
-
-*/
-
-void handle_play_cmd(void *arg, struct command *cmd) {
-	struct radio24bb *r24bb = (struct radio24bb *)arg;
-	char *path = cmd->tokens[cmd->index++];
-	// play(r24bb, path);
-
-	playback_open(r24bb->pbka, path);
-	playback_play(r24bb->pbka);
-	//playback_close(r24bb->pbka);
-
-}
-
-
-
-
-
-void handle_stop_cmd(void *arg, struct command *cmd) {
-	struct radio24bb *r24bb = (struct radio24bb *)arg;
-	// play(r24bb, path);
-
-	playback_stop(r24bb->pbka);
-	playback_close(r24bb->pbka);
-	//playback_close(r24bb->pbka);
-
-}
-
-
 
 
 void handle_wavstat_cmd(void *arg, struct command *cmd) {
 	struct radio24bb *r24bb = (struct radio24bb *)arg;
 	char *path = cmd->tokens[cmd->index++];
 	wavstat(path, NULL);
-
-
-/*
-	xil_printf("Read %d bytes\n", bytes_read);
-	if (bytes_read != bytes_to_read) {
-		xil_printf("ERROR: failed to read %d bytes\n", bytes_to_read-bytes_read);
-	}
-
-	char s[5];
-	s[0] = buf[0];
-	s[1] = buf[1];
-	s[2] = buf[2];
-	s[3] = buf[3];
-	s[4] = '\0';
-	xil_printf("#> %s\n", s);
-
-	if (strcmp(s, "RIFF")) {
-		xil_printf("ERROR: '%s' is not a wav file\n", path);
-	}
-*/
-
-	xil_printf("Done reading wav file\n");
-	xil_printf("\n");
-
 }
 
 
@@ -714,8 +603,6 @@ int main()
 	add_command(r24bb->shell->root_ctx, "ls", handle_ls_cmd);
 	add_command(r24bb->shell->root_ctx, "stat", handle_stat_cmd);
 	add_command(r24bb->shell->root_ctx, "wavstat", handle_wavstat_cmd);
-	add_command(r24bb->shell->root_ctx, "play", handle_play_cmd);
-	add_command(r24bb->shell->root_ctx, "stop", handle_stop_cmd);
 
 
 	issue_command(r24bb->shell, "outa att 0", NULL);
@@ -730,6 +617,8 @@ int main()
 	issue_command(r24bb->shell, "outb led 0", NULL);
 
 	issue_command(r24bb->shell, "stereo", NULL);
+
+	issue_command(r24bb->shell, "aud vol -18", NULL);
 
 	print_cmd_responses(true);
 

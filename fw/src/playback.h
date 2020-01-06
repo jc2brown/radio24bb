@@ -4,6 +4,7 @@
 
 #include "xscugic.h"
 #include "xdmaps.h"
+#include "command.h"
 
 #include "ff.h"
 #include "wav.h"
@@ -62,6 +63,8 @@ int init_playback(
 		struct playback *pbk, 
 		XScuGic *scugic, 
 		XDmaPs *dmaps, 
+		char *name,
+		struct cmd_context *parent_ctx,
 		int not_full_intr_id, 
 		int dmaps_channel,
 		volatile uint32_t *hw_buf, 

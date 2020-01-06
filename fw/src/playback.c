@@ -17,6 +17,141 @@
 #define PBK_BUF_CAPACITY 65536
 
 
+
+
+
+char *playback_state_str(int state) {
+
+	char *status_str = "UNKNOWN";
+	switch (state) {
+	case PBK_CLOSED: 
+		status_str = "CLOSED";
+		break;
+	case PBK_OPENED: 
+		status_str = "OPENED";
+		break;
+	case PBK_PLAYING: 
+		status_str = "PLAYING";
+		break;
+	case PBK_STOPPED: 
+		status_str = "STOPPED";
+		break;
+	case PBK_PAUSED: 
+		status_str = "PAUSED";
+		break;
+	}
+	return status_str;
+}
+
+
+int playback_elapsed_milliseconds(struct playback *pbk) {
+	if (pbk->state != PBK_PLAYING) {
+		return -1;
+	}
+
+	return (1000LL * pbk->bytes_played) / (pbk->wav.fmt.block_align * pbk->wav.fmt.sample_rate);
+}
+
+
+void decompose_time(int time_in_millis, int *hours, int *minutes, int *seconds, int *milliseconds) {
+
+	*milliseconds = time_in_millis % 1000;
+	int time_in_seconds = time_in_millis / 1000;
+
+	*seconds = time_in_seconds % 60;
+	int time_in_minutes = time_in_seconds / 60;
+
+	*minutes = time_in_minutes % 60;
+	int time_in_hours = time_in_minutes / 60;
+
+	*hours = time_in_hours;
+
+}
+
+
+void print_formatted_time(int time_in_millis) {
+	int hours;
+	int minutes;
+	int seconds;
+	int milliseconds;
+	decompose_time(time_in_millis, &hours, &minutes, &seconds, &milliseconds);
+	xil_printf("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds);
+}
+
+
+
+
+void playback_print_info(struct playback *pbk) {
+	char *status_str = playback_state_str(pbk->state);
+	xil_printf("state: %s\n", status_str);
+	xil_printf("elapsed: ");
+	print_formatted_time(playback_elapsed_milliseconds(pbk));
+	xil_printf("\n");
+}
+
+
+
+void playback_handle_info_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+	playback_print_info(pbk);
+}
+
+
+
+void playback_handle_open_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+	char *path = cmd->tokens[cmd->index++];
+	playback_open(pbk, path);
+}
+
+
+void playback_handle_close_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+	playback_close(pbk);
+}
+
+void playback_handle_play_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+
+	// If no arguments given...
+	if (cmd->index == cmd->num_tokens) {
+		// play the current file if one is opened...
+		if (pbk->state != PBK_CLOSED) {
+			playback_play(pbk);
+			return;
+		// otherwise print a message and do nothing
+		} else {
+			xil_printf("ERROR: no file opened\n");
+			return;
+		}
+	}
+
+	// If arguments are given...
+	else {
+		char *path = cmd->tokens[cmd->index++];
+		playback_open(pbk, path);
+		playback_play(pbk);
+	}
+}
+
+
+void playback_handle_stop_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+	playback_stop(pbk);
+}
+
+
+void playback_handle_pause_cmd(void *arg, struct command *cmd) {
+	struct playback *pbk = (struct playback *)arg;
+	playback_pause(pbk);
+}
+
+
+
+
+
+
+
 struct playback *make_playback() {
 
 	struct playback *pbk = (struct playback *)malloc(sizeof(struct playback));
@@ -34,9 +169,12 @@ struct playback *make_playback() {
 
 void playback_open(struct playback *pbk, char *path) {
 
+	// TODO: stat the given path and don't close the current file if the new path is not a wav file
+
+	// Close the current file if opened
 	if (pbk->state != PBK_CLOSED) {
-		xil_printf("ERROR: playback_open: already open\n");
-		return;
+		xil_printf("WARNING: closing previously-opened file\n");
+		playback_close(pbk);
 	}
 
 	wavstat(path, &pbk->wav);
@@ -270,6 +408,8 @@ int init_playback(
 		struct playback *pbk, 
 		XScuGic *scugic, 
 		XDmaPs *dmaps, 
+		char *name,
+		struct cmd_context *parent_ctx,
 		int not_full_intr_id, 
 		int dmaps_channel,
 		volatile uint32_t *hw_buf, 
@@ -307,6 +447,20 @@ int init_playback(
 		playback_dma_done_handler, 
 		(void *)pbk
 	);
+
+
+
+
+	struct cmd_context *playback_ctx = make_cmd_context(name, pbk);
+	add_subcontext(parent_ctx, playback_ctx);
+
+	add_command(playback_ctx, "info", playback_handle_info_cmd);
+	add_command(playback_ctx, "open", playback_handle_open_cmd);
+	add_command(playback_ctx, "close", playback_handle_close_cmd);
+	add_command(playback_ctx, "play", playback_handle_play_cmd);
+	add_command(playback_ctx, "pause", playback_handle_pause_cmd);
+	add_command(playback_ctx, "stop", playback_handle_stop_cmd);
+
 
 	return XST_SUCCESS;
 }

@@ -479,6 +479,8 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 		init_playback(r24bb->pbka, 
 			r24bb->scugic, 
 			r24bb->dmaps,
+			"pbka",
+			r24bb->shell->root_ctx,
 			XPAR_FABRIC_IRQ_F2P_02_INTR, // buffer not full
 			0, // dma channel
 			&(r24bb->regs->pbka_data), 
@@ -490,7 +492,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	r24bb->serial = get_serial(r24bb);
 
-	struct cmd_context *root_ctx = get_root_context(r24bb->shell);
+	struct cmd_context *root_ctx = r24bb->shell->root_ctx;
 	root_ctx->name[2] = '0' + r24bb->serial;
 	root_ctx->arg =  (void*)r24bb;
 
