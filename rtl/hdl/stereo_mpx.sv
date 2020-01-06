@@ -165,7 +165,7 @@ always @(posedge mclk) begin
         mix <= 0;
     end
     else begin    
-        if (in_valid || in_valid_180) begin
+        if (sig_valid || sig_valid_180) begin
             mix <= (mpx_sel ? sig_l_filtered : sig_r_filtered);
         end
     end
@@ -180,7 +180,7 @@ always @(posedge mclk) begin
         mpx_valid <= 0;
     end
     else begin
-        mpx_valid <= in_valid || in_valid_180;
+        mpx_valid <= sig_valid || sig_valid_180;
         mpx_out <= scaled_pilot + mix;
     end
 end
@@ -203,7 +203,7 @@ dds_inst (
     .cfg(dds_cfg),
     .cfg_ce(dds_cfg_ce), 
     
-    .sync(in_valid),
+    .sync(sig_valid),
     
     .step(dds_step),    
     .fm_data(0),
