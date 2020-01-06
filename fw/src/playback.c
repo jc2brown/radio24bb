@@ -32,8 +32,6 @@ struct playback *make_playback() {
 
 
 
-
-
 void playback_open(struct playback *pbk, char *path) {
 
 	if (pbk->state != PBK_CLOSED) {
@@ -97,14 +95,9 @@ int playback_maybe_fill_buffer(struct playback *pbk) {
 }
 
 
-void playback_buffer_not_full_handler(void *arg) {
-	struct playback *pbk = (struct playback *)arg;
 
-/*
-	if (pbk->state != PBK_PLAYING) {
-		XScuGic_Disable(pbk->scugic, pbk->intr_id);
-	}
-*/
+
+void playback_dma_transfer(struct playback *pbk) {
 
 	playback_maybe_fill_buffer(pbk);
 
@@ -119,12 +112,53 @@ void playback_buffer_not_full_handler(void *arg) {
 	pbk->bytes_buffered -= bytes_to_transfer;
 	pbk->bytes_played += bytes_to_transfer;
 
+
+
+
+
+	memset(&(pbka->dma_cmd), 0, sizeof(XDmaPs_Cmd));
+
+	pbka->dma_cmd.ChanCtrl.SrcBurstSize = 1;
+	pbka->dma_cmd.ChanCtrl.SrcBurstLen = 1;
+	pbka->dma_cmd.ChanCtrl.SrcInc = 1;
+	pbka->dma_cmd.ChanCtrl.DstBurstSize = 1;
+	pbka->dma_cmd.ChanCtrl.DstBurstLen = 1;
+	pbka->dma_cmd.ChanCtrl.DstInc = 0;
+	pbka->dma_cmd.BD.SrcAddr = (u32)(pbk->buf_ptr);
+	pbka->dma_cmd.BD.DstAddr = (u32)(pbk->hw_buf);
+	pbka->dma_cmd.BD.Length = bytes_to_transfer;
+
+
+	XDmaPs_Start(pbka->dmacps, pbka->dmacps_channel, &(pbka->dma_cmd), 0);
+	/*
 	// Simulate DMA transfer
 	for (int i = 0; i < bytes_to_transfer/pbk->wav.fmt.block_align; ++i) {
 		*pbk->hw_buf = ((uint32_t *)pbk->buf_ptr)[i];
 	}
-	
+	*/
+
 	pbk->buf_ptr += bytes_to_transfer;
+
+
+
+}
+
+
+void playback_dma_done_handler(unsigned int channel, XDmaPs_Cmd *dma_cmd, void *arg) {
+	struct playback *pbk;
+	playback_dma_transfer(pbk);
+}
+
+
+
+void playback_buffer_not_full_handler(void *arg) {
+	struct playback *pbk = (struct playback *)arg;
+	playback_dma_transfer(pbk);
+/*
+	if (pbk->state != PBK_PLAYING) {
+		XScuGic_Disable(pbk->scugic, pbk->intr_id);
+	}
+*/
 
 }
 
@@ -235,10 +269,19 @@ void playback_close(struct playback *pbk) {
 
 
 
-int init_playback(struct playback *pbk, XScuGic *scugic, int intr_id, volatile uint32_t *hw_buf, volatile uint32_t *hw_buf_full) {
+int init_playback(
+		struct playback *pbk, 
+		XScuGic *scugic, 
+		XDmaPs *dmaps, 
+		int intr_id, 
+		volatile uint32_t *hw_buf, 
+		volatile uint32_t *hw_buf_full
+) {
 
 	pbk->scugic = scugic;
 	pbk->intr_id = intr_id;
+
+	pbk->dmaps = dmaps;
 
 	pbk->state = PBK_CLOSED;
 
@@ -250,6 +293,8 @@ int init_playback(struct playback *pbk, XScuGic *scugic, int intr_id, volatile u
 	pbk->hw_buf_full = hw_buf_full;
 
 	_return_if_error_(XScuGic_Connect(pbk->scugic, pbk->intr_id, (Xil_ExceptionHandler)playback_buffer_not_full_handler, (void *)pbk));
+
+	XDmaPs_SetDoneHandler(pbka->dmaps, pbka->dmaps_channel, playback_dma_done_handler, (void *)pbka);
 
 	return XST_SUCCESS;
 }

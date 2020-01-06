@@ -24,6 +24,8 @@ struct playback {
 	XScuGic *scugic;
 	int intr_id;
 
+	XDmaPs_Cmd dma_cmd;
+
 	FIL fil;
 	struct WAV wav;
 	enum PlaybackState state;

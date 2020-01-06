@@ -41,6 +41,9 @@
 
 
 
+
+
+
 void init_radio24bb_regs(struct radio24bb_regs *regs) {
 	regs->leds = 3;
 	regs->usb_wr_data = 0;
@@ -336,6 +339,18 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	_return_if_error_(
 		init_scugic(r24bb->scugic, 
 			XPAR_SCUGIC_0_DEVICE_ID
+	));
+
+
+	_return_if_error_(
+		init_dmaps(
+			r24bb->dmaps,
+			r24bb->scugic,
+			XPAR_XDMAPS_1_DEVICE_ID,
+			XPAR_XDMAPS_0_FAULT_INTR,
+			XPAR_XDMAPS_0_DONE_INTR_0,
+			playback_dma_done_handler,
+			r24bb->pbka
 	));
 
 	_return_if_error_(
