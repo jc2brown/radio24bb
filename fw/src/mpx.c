@@ -113,6 +113,30 @@ void handle_mpx_stat_cmd(void *arg, struct command *cmd) {
 
 
 
+
+
+void handle_mpx_src_cmd(void *arg, struct command *cmd) {
+	struct mpx_channel *channel = (struct mpx_channel *)arg;
+	static char *mpx_srcs[] = { "aud", "pbka" };
+	char *src = cmd->tokens[cmd->index++];
+	if (!strcmp(src, "help")) {
+		for (int i = 0; i < sizeof(mpx_srcs)/sizeof(*mpx_srcs); ++i) {
+			xil_printf("%d:%s  ", i, mpx_srcs[i]);
+		}
+		xil_printf("\n");
+		return;
+	}
+	for (int i = 0; i < sizeof(mpx_srcs)/sizeof(*mpx_srcs); ++i) {
+		if (!strcmp(src, mpx_srcs[i])) {
+			channel->regs->mux = i;
+		}
+	}
+}
+
+
+
+
+
 void handle_mpx_freq_cmd(void *arg, struct command *cmd) {
 	struct mpx_channel *channel = (struct mpx_channel *)arg;
 	channel->regs->step = calc_mpx_step_size(atof(cmd->tokens[cmd->index++]));
@@ -159,6 +183,7 @@ void init_mpx_channel_context(char *name, void* arg, struct cmd_context *parent_
 	add_subcontext(parent_ctx, mpx_channel_ctx);
 	add_command(mpx_channel_ctx, "pilot", handle_mpx_pilot_gain_cmd);
 	add_command(mpx_channel_ctx, "stat", handle_mpx_stat_cmd);
+	add_command(mpx_channel_ctx, "src", handle_mpx_src_cmd);
 	add_command(mpx_channel_ctx, "freq", handle_mpx_freq_cmd);
 	add_command(mpx_channel_ctx, "filt", handle_mpx_filt_cmd);
 

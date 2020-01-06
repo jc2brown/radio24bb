@@ -320,24 +320,31 @@
 	],
 	"file_history":
 	[
+		"/D/Projects/Baseband/radio24bb/fw/src/roe.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/playback.h",
+		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/dmaps_v2_3/examples/xdmaps_example_w_intr.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/dmaps.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/dmaps.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/main.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/playback.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/dds.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/dds.c",
+		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/xilffs_v3_9/src/include/ff.h",
+		"/D/Projects/Baseband/radio24bb/fw/src/dac.c",
+		"/D/Projects/Baseband/radio24bb/fw/src/mpx.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/fatfs.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/ioexp.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/ioexp.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/scugic.h",
-		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/command.c",
-		"/D/Projects/Baseband/radio24bb/fw/src/mpx.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/adc.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/dac.h",
-		"/D/Projects/Baseband/radio24bb/fw/src/dds.h",
-		"/D/Projects/Baseband/radio24bb/fw/src/radio24bb.h",
-		"/D/Projects/Baseband/radio24bb/fw/src/playback.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/command.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/fatfs.c",
-		"/D/Projects/Baseband/radio24bb/fw/src/main.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/wav.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/wav.h",
-		"/D/Projects/Baseband/radio24bb/fw/src/playback.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/lscript.ld",
 		"/C/Users/Chris/Downloads/playback.c",
 		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/include/ff.h",
@@ -367,7 +374,6 @@
 		"/C/Users/Chris/Desktop/parts to buy.txt",
 		"/D/Projects/Baseband/radio24bb/fw/src/adc.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/fw_sources.lst",
-		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/dmaps_v2_3/examples/xdmaps_example_w_intr.c",
 		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_class_storage.h",
 		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/usbps_v2_4/examples/xusbps_intr_example.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/mpx.c",
@@ -379,7 +385,6 @@
 		"/D/Projects/Baseband/radio24bb/fw/Makefile",
 		"/D/Projects/Baseband/radio24bb/fw/tools/gen_hw_bsp.tcl",
 		"/D/Projects/Baseband/radio24bb/fw/tools/build_project.tcl",
-		"/D/Projects/Baseband/radio24bb/fw/src/dac.c",
 		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/standalone_v6_7/src/xil_printf.h",
 		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/standalone_v6_7/src/xil_printf.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/aic3204.c",
@@ -389,9 +394,7 @@
 		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/include/xiicps.h",
 		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/standalone_v6_7/src/outbyte.c",
 		"/D/Projects/Baseband/radio24bb/fw/src/spips.h",
-		"/D/Projects/Baseband/radio24bb/fw/workspace/r24bb_top_bsp/ps7_cortexa9_0/libsrc/xilffs_v3_9/src/include/ff.h",
 		"/D/Projects/Baseband/radio24bb/fw/src/spips.c",
-		"/D/Projects/Baseband/radio24bb/fw/src/dds.c",
 		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/src/xscugic.c",
 		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/scugic_v3_9/src/xscugic_intr.c",
 		"/C/Xilinx/SDK/2018.2/data/embeddedsw/XilinxProcessorIPLib/drivers/gpiops_v3_3/src/xgpiops_intr.c",
@@ -444,10 +447,7 @@
 		"/D/Projects/Baseband/radio24bb/rtl/hdl/dac_channel_regs.sv",
 		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds.sv",
 		"/D/Projects/Baseband/radio24bb/rtl/hdl/dac_channel.sv",
-		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds_regs.sv",
-		"/D/Projects/Baseband/radio24bb/rtl/hdl/r24bb_top.sv",
-		"/D/Projects/Baseband/radio24bb/rtl/hdl/stereo_mpx.sv",
-		"/D/Projects/Baseband/radio24bb/rtl/hdl/mpx_regs.sv"
+		"/D/Projects/Baseband/radio24bb/rtl/hdl/dds_regs.sv"
 	],
 	"find":
 	{
@@ -466,6 +466,14 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"playback_dma_done",
+			"353",
+			"intr_id",
+			"XDmaPs_DoneISR_0",
+			"DMA_DONE_INTR_0",
+			"DMA_FAULT_INTR",
+			"Gpio",
+			"gpio",
 			"handle_play_cmd",
 			"Xil_ExceptionEnable",
 			"rate",
@@ -585,15 +593,7 @@
 			"01 A0 01",
 			"30 01 A0 ",
 			"axi",
-			"zregs",
-			"clk_rstn",
-			"clk_mems",
-			"FIREHAW",
-			"emph",
-			"update_tx(",
-			"onrelease",
-			"bold",
-			"red"
+			"zregs"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -601,6 +601,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"not_full_intr_id",
+			"Dma",
+			"dma",
 			"uart->xuartps",
 			"struct uartps",
 			"uart",
@@ -733,7 +736,7 @@
 	"project": "project.sublime-project",
 	"replace":
 	{
-		"height": 52.0
+		"height": 73.0
 	},
 	"save_all_on_build": true,
 	"select_file":
