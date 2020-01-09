@@ -165,15 +165,17 @@ always @(posedge mclk) begin
         mix <= 0;
     end
     else begin    
+        mpx_valid <= sig_valid || sig_valid_180;
         if (sig_valid || sig_valid_180) begin
-            mix <= (mpx_sel ? sig_l_filtered : sig_r_filtered);
+//            mix <= (mpx_sel ? sig_l_filtered : sig_r_filtered);
+            mix <= (mpx_sel ? sig_l : sig_r);
         end
     end
 end
    
  
  
-
+/*
 always @(posedge mclk) begin
     if (mreset) begin
         mpx_out <= 0;
@@ -183,6 +185,11 @@ always @(posedge mclk) begin
         mpx_valid <= sig_valid || sig_valid_180;
         mpx_out <= scaled_pilot + mix;
     end
+end
+*/
+
+always @(*) begin
+    mpx_out <= scaled_pilot + mix;
 end
 
 
