@@ -282,9 +282,9 @@ void playback_dma_transfer(struct playback *pbk) {
 void playback_dma_done_handler(unsigned int channel, XDmaPs_Cmd *dma_cmd, void *arg) {
 	struct playback *pbk = (struct playback *)arg;
 
-	CS_START();
+	//CS_START();
 	XScuGic_Enable(pbk->scugic, pbk->not_full_intr_id);
-	CS_END();
+	//CS_END();
 
 }
 
@@ -293,9 +293,9 @@ void playback_dma_done_handler(unsigned int channel, XDmaPs_Cmd *dma_cmd, void *
 void playback_buffer_not_full_handler(void *arg) {
 	struct playback *pbk = (struct playback *)arg;
 
-	CS_START();
+	//CS_START();
 	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
-	CS_END();
+	//CS_END();
 
 	if (pbk->state == PBK_PLAYING) {
 		playback_dma_transfer(pbk);
@@ -313,9 +313,9 @@ void playback_play(struct playback *pbk) {
 
 	pbk->state = PBK_PLAYING;
 
-	CS_START();
+	//CS_START();
 	XScuGic_Enable(pbk->scugic, pbk->not_full_intr_id);
-	CS_END();
+	//CS_END();
 
 
 
@@ -360,9 +360,9 @@ void playback_pause(struct playback *pbk) {
 	}
 
 
-	CS_START();
+	//CS_START();
 	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
-	CS_END();
+	//CS_END();
 
 	pbk->state = PBK_PAUSED;
 
@@ -378,7 +378,7 @@ void playback_stop(struct playback *pbk) {
 		return;
 	}
 
-	CS_START();
+	//CS_START();
 	XScuGic_Disable(pbk->scugic, pbk->not_full_intr_id);
 
 	pbk->buf_ptr = pbk->buf;
@@ -387,9 +387,9 @@ void playback_stop(struct playback *pbk) {
 	pbk->bytes_played = 0;
 	f_lseek(&(pbk->fil), 0);
 
-	CS_END();
-
 	pbk->state = PBK_STOPPED;
+	//CS_END();
+
 
 }
 

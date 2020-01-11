@@ -90,6 +90,9 @@ wire signed [15:0] sig_l_filtered;
 wire signed [15:0] sig_r_filtered;
 
 
+wire sig_r_filtered_valid;
+wire sig_l_filtered_valid;
+
 fast_fir_filter 
 #( 
     .LEN(21),
@@ -112,7 +115,7 @@ preemph_l_inst (
     .valid_in(sig_valid),
     
     .out(sig_l_filtered),
-    .valid_out()
+    .valid_out(sig_l_filtered_valid)
 
 );
 
@@ -141,7 +144,7 @@ preemph_r_inst (
     .valid_in(sig_valid),
     
     .out(sig_r_filtered),
-    .valid_out()
+    .valid_out(sig_r_filtered_valid)
 
 );
 
@@ -159,7 +162,7 @@ preemph_r_inst (
  
 reg signed [15:0] mix;
 
-
+/*
 always @(posedge mclk) begin
     if (mreset) begin
         mix <= 0;
@@ -172,6 +175,22 @@ always @(posedge mclk) begin
         end
     end
 end
+   */
+   
+   
+always @(posedge mclk) begin
+    if (mreset) begin
+        mix <= 0;
+    end
+    else begin    
+        mpx_valid <= sig_l_filtered_valid && sig_r_filtered_valid;
+        if (sig_l_filtered_valid && sig_r_filtered_valid) begin
+            mix <= (mpx_sel ? sig_l_filtered : sig_r_filtered);
+        end
+    end
+end
+   
+   
    
  
  
