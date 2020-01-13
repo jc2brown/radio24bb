@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2020-01-13T04:34:00.875Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="hL55bWswcoKiGtVezZ-b" version="12.5.1" type="github" pages="3">
+<mxfile host="www.draw.io" modified="2020-01-13T04:34:07.425Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="QXZJgGi_I0JGrwYFdnOl" version="12.5.1" type="github" pages="3">
   <diagram id="ARlySnIh4Fg0utdHiu1E" name="dds_block">
     <mxGraphModel dx="2446" dy="1833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
       <root>
@@ -2131,10 +2131,10 @@
           <mxGeometry x="1380" y="1060" width="90" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-659" value="mclk" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0;dx=10;notch=0;flipH=0;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
-          <mxGeometry x="3380" y="2100" width="79.59" height="20" as="geometry"/>
+          <mxGeometry x="3270" y="2100" width="79.59" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-660" value="mreset" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.arrow;dy=0;dx=10;notch=0;flipH=0;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
-          <mxGeometry x="3380" y="2190.39" width="79.59" height="20" as="geometry"/>
+          <mxGeometry x="3270" y="2190.39" width="79.59" height="20" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
