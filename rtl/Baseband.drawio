@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2020-01-13T04:34:07.425Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="QXZJgGi_I0JGrwYFdnOl" version="12.5.1" type="github" pages="3">
+<mxfile host="www.draw.io" modified="2020-01-13T04:34:15.931Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="EqTMcg0SmVqnzXqDjw_K" version="12.5.1" type="github" pages="3">
   <diagram id="ARlySnIh4Fg0utdHiu1E" name="dds_block">
     <mxGraphModel dx="2446" dy="1833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
       <root>
@@ -1219,12 +1219,12 @@
     </mxGraphModel>
   </diagram>
   <diagram id="5N9RkUcgmHoA70ticDAb" name="clocks">
-    <mxGraphModel dx="2878" dy="2156" grid="1" gridSize="10" guides="0" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
+    <mxGraphModel dx="3494" dy="2619" grid="1" gridSize="10" guides="0" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
       <root>
         <mxCell id="G1-aTSbVHpV_DlhNhPsy-0"/>
         <mxCell id="G1-aTSbVHpV_DlhNhPsy-1" parent="G1-aTSbVHpV_DlhNhPsy-0"/>
         <mxCell id="p5q94055kXS16TBpksCb-181" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;gradientColor=none;gradientDirection=east;strokeWidth=2;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
-          <mxGeometry x="1290" y="630" width="2040" height="1900" as="geometry"/>
+          <mxGeometry x="1400" y="630" width="1930" height="1900" as="geometry"/>
         </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-294" value="clock_reset_network" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="1560" y="800" width="1360" height="1540" as="geometry"/>
