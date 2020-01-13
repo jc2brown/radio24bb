@@ -69,9 +69,25 @@ struct adc_channel *make_adc_channel() {
 
 
 
+// #define WriteShadowedReg(phys_struct, shadow_struct, field_name, value) \
+// 		(shadow_struct)->field_name = value; \
+// 		(phys_struct)->field_name = value
+
+
+// #define ReadShadowedReg(phys_struct, shadow_struct, field_name, value) \
+// 		(shadow_struct)->field_name | (phys_struct)->field_name
+
+
+
 
 
 int init_adc_channel_regs(struct adc_channel_regs *regs) {
+
+	// WriteShadowedReg(regs, shadow_regs, gain, 256);
+
+
+	//ReadReg(regs, gain);
+
 
 	regs->gain = 256;
 	regs->offset = 0;

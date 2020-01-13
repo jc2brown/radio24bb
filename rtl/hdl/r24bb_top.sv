@@ -139,6 +139,7 @@ wire [1:0] usb_wr_mux;
 wire [7:0] dac_cfg;
 wire dac_cfg_wr_en;
 
+wire clk_sel;
 
 
 /////////////////////////////////////////////////////////////
@@ -240,40 +241,106 @@ wire pbka_mix_valid;
 //wire clkout1;
 //wire clkout2;
 
-wire adc_dclk = pl_clk0;
-wire dac_dclk = pl_clk0;
+//wire adc_dclk = pl_clk0;
+//wire dac_dclk = pl_clk0;
 wire mclk;
 
-wire clkfb;
-wire locked;
 
-wire clk = pl_clk0;
-wire reset = !pl_reset_n;
+
+wire clk_mmcm_locked;
+wire clk_mmcm_clkfb;
+wire clk_mmcm_clkout;
+
+
+
+wire clk;// = pl_clk0;
+reg reset;// = (clk_sel == 0) ? (!pl_reset_n) : (clk_mmcm_locked);
+
+wire clk_mmcm_clk_bufg;
+/*
+assign clk = clk_mmcm_clkout;
+assign reset = !clk_mmcm_locked;
+*/
 
 /*
-MMCME2_BASE #(
-    //.CLKIN1_PERIOD(52.083), // 19.2MHz 
-    .CLKIN1_PERIOD(10.000), // 100MHz 
-    .BANDWIDTH("LOW"),   // Jitter programming (OPTIMIZED, HIGH, LOW)
-    .CLKFBOUT_MULT_F(10.0), // 100MHz in -> 1000MHz VCO  
-    .CLKOUT0_DIVIDE_F(12.5),    // 1000MHz VCO -> 80MHz DAC clk 
-    .CLKOUT1_DIVIDE(10),     // 1000MHz VCO -> 100MHz ADC clk
-    .CLKOUT2_DIVIDE(20)     // 1000MHz VCO -> 50MHz MCLK clk
-)
-MMCME2_BASE_inst (
-//    .CLKIN1(TCXO_19M2), 
-    .CLKIN1(clk), 
-    .CLKFBOUT(clkfb),  
-    .CLKFBIN(clkfb),    
-    .CLKOUT0(clkout0),   
-    .CLKOUT1(clkout1),   
-    .CLKOUT2(clkout2),   
-    .LOCKED(locked), 
-    .PWRDWN(1'b0),     
-    .RST(1'b0)      
+BUFGMUX clk_bufgmux (
+    .I0(pl_clk0),
+    .I1(clk_mmcm_clkout),
+    .O(clk),
+    .S(clk_sel)
 );
 */
 
+/*
+MMCME2_BASE #(
+    .CLKIN1_PERIOD(10.000), // 100MHz 
+    .BANDWIDTH("HIGH"),   // Jitter programming (OPTIMIZED, HIGH, LOW)
+    .CLKFBOUT_MULT_F(11.875), // 100MHz in -> 1187.5MHz VCO  
+    .CLKOUT0_DIVIDE_F(11.875)    // 1187.5MHz VCO -> 100MHz clk
+)
+clk_mmcm (
+//    .CLKIN1(TCXO_19M2), 
+    .CLKIN1(pl_clk0), 
+    .CLKFBOUT(clk_mmcm_clkfb),  
+    .CLKFBIN(clk),    
+    .CLKOUT0(clk_mmcm_clkout),   
+    .LOCKED(clk_mmcm_locked), 
+    .PWRDWN(1'b0),     
+    .RST(!pl_reset_n)      
+);
+
+BUFG clk_mmcm_bufg (
+    .I(clk_mmcm_clkout),
+    .O(clk_mmcm_clk_bufg)
+);
+*/
+assign clk = pl_clk0;
+assign reset = !pl_reset_n;
+
+
+
+/*
+//BUFGMUX clk_bufgmux (
+//    .I0(pl_clk0),
+//    .I1(clk_mmcm_clkout),
+//    .O(clk),
+//    .S(clk_sel)
+//);
+
+
+
+MMCME2_BASE #(
+    .CLKIN1_PERIOD(10.000), // 100MHz 
+    .BANDWIDTH("HIGH"),   // Jitter programming (OPTIMIZED, HIGH, LOW)
+    .CLKFBOUT_MULT_F(11.875), // 100MHz in -> 1187.5MHz VCO  
+    .CLKOUT0_DIVIDE_F(11.875)    // 1187.5MHz VCO -> 100MHz clk
+)
+clk_mmcm (
+//    .CLKIN1(TCXO_19M2), 
+    .CLKIN1(pl_clk0), 
+    .CLKFBOUT(clk_mmcm_clkfb),  
+    .CLKFBIN(clk_mmcm_clk_bufg),    
+    .CLKOUT0(clk_mmcm_clkout),   
+    .LOCKED(clk_mmcm_locked), 
+    .PWRDWN(1'b0),     
+    .RST(!pl_reset_n)      
+);
+
+BUFG clk_mmcm_bufg (
+    .I(clk_mmcm_clkout),
+    .O(clk_mmcm_clk_bufg)
+);
+
+
+*/
+
+
+
+wire mclk_mmcm_clkfb;
+wire mclk_mmcm_locked;
+
+wire mclk_mmcm_clkout;
+wire mclk_mmcm_clk_bufg;
 
 MMCME2_BASE #(
     .REF_JITTER1(0.01), // 0.01UI = 100ps
@@ -283,16 +350,26 @@ MMCME2_BASE #(
     .CLKFBOUT_MULT_F(51.875), // 100MHz in -> 864.583MHz VCO
     .CLKOUT0_DIVIDE_F(88.875)    // 864.583MHz VCO -> 9.728MHz MCLK 
 )
-MMCME2_BASE_inst (
+mclk_mmcm (
 //    .CLKIN1(TCXO_19M2), 
     .CLKIN1(clk), 
-    .CLKFBOUT(clkfb),  
-    .CLKFBIN(clkfb),    
-    .CLKOUT0(mclk),     
-    .LOCKED(locked), 
+    .CLKFBOUT(mclk_mmcm_clkfb),  
+    .CLKFBIN(mclk_mmcm_clk_bufg),    
+    .CLKOUT0(mclk_mmcm_clkout),     
+    .LOCKED(mclk_mmcm_locked), 
     .PWRDWN(1'b0),     
     .RST(1'b0)      
 );
+
+
+
+
+BUFG mclk_mmcm_bufg (
+    .I(mclk_mmcm_clkout),
+    .O(mclk_mmcm_clk_bufg)
+);
+
+assign mclk = mclk_mmcm_clk_bufg;
 
 
 /*
@@ -445,7 +522,7 @@ max19506_if max19506_if_inst (
     .clk(clk),
     .reset(reset),
     
-    .adc_dclk(adc_dclk),
+    .adc_dclk(clk),
     
     .adc_a_data(adc_a_data),
     .adc_a_dor(adc_a_dor),
@@ -701,7 +778,7 @@ max5851_if max5851_if_inst (
     .clk(clk),
     .reset(reset),
     
-    .dclk(dac_dclk),
+    .dclk(clk),
     
     .dac_a_data(outa_data_out),
     
@@ -1522,10 +1599,147 @@ assign GPIO_0_0_tri_i[2] = GPIO_0_0_tri_o[3];
 assign GPIO_0_0_tri_i[4] = pbka_full;
 
 
+
+/*
+
+pl_reset0: global PL reset, only active prior to main() entry 
+sys_reset: global PL reset, controlled by software 
+mod_reset: PL module reset - does not affect clock network / MMCMs - controlled by software
+
+
+
+clk_mmcm_reset:
+
+
+
+*/
+
+
+
+
+wire sys_reset;
+wire mod_reset;
+wire clk_mmcm_reset;
+wire mclk_mmcm_reset;
+
+reg reset_sync;
+wire reset_async;
+
+
+
+
+// All reset sources which may be asserted and/or deasserted asynchronously
+assign reset_async = 
+    (!clk_mmcm_locked) || 
+    (!mclk_mmcm_locked);
+
+
+xpm_cdc_async_rst #(
+  .DEST_SYNC_FF(2),    
+  .INIT_SYNC_FF(0),    
+  .RST_ACTIVE_HIGH(1)  
+)
+reset_sync_cdc (
+  .src_arst(reset_async),
+  .dest_clk(clk),   
+  .dest_arst(reset_sync)
+);
+
+
+
+wire [63:0] gpiops_i;
+wire [63:0] gpiops_o;
+
+
+xpm_cdc_single #(
+    .DEST_SYNC_FF(4), 
+    .SRC_INPUT_REG(1)   
+)
+gpiops_o_cdc [63:0] (
+    .src_clk(pl_clk0),  
+    .src_in(GPIO_0_0_tri_o),   
+    .dest_clk(clk),  
+    .dest_out(gpiops_o)
+);
+
+
+xpm_cdc_single #(
+    .DEST_SYNC_FF(4), 
+    .SRC_INPUT_REG(1)   
+)
+gpiops_i_cdc [63:0] (
+    .src_clk(clk),  
+    .src_in(gpiops_i),   
+    .dest_clk(pl_clk0),  
+    .dest_out(GPIO_0_0_tri_i)
+);
+   
+   
+
+
+
+assign sys_reset = GPIO_0_0_tri_o[0];
+assign mod_reset = GPIO_0_0_tri_o[1];
+assign clk_mmcm_reset = GPIO_0_0_tri_o[2] || sys_reset;
+assign mclk_mmcm_reset = GPIO_0_0_tri_o[3] || sys_reset;
+
+assign GPIO_0_0_tri_i[4] = clk_mmcm_locked;
+assign GPIO_0_0_tri_i[5] = mclk_mmcm_locked;
+
+
+
+assign reset_sync = (!pl_reset_n) || sys_reset || mod_reset;
+
+// reset is asserted asynchronously, deasserted synchronous to clk
+always @(posedge clk, posedge reset_async) begin
+    if (reset_async) begin
+        reset <= 1'b1;
+    end
+    else begin
+        reset <= reset_sync;
+    end
+end
+
+
+
+
+
+
+wire TCXO_96M;
+
+
+
+PLLE2_BASE #(
+    .BANDWIDTH("HIGH"),  
+    .CLKIN1_PERIOD(52.083), 
+    .CLKFBOUT_MULT(60),       
+    .CLKOUT0_DIVIDE(12)
+)
+PLLE2_BASE_inst (
+    .CLKIN(TCXO_19M2),
+    .CLKOUT0(TCXO_96M),        
+    .CLKFBIN(TCXO_96M),
+    .RST(!pl_reset_n),
+    .PWRDWN(1'b0),
+    .LOCKED()
+);
+
+
+
+
+   
+   
+   
+   
+
+
 r24bb_bd r24bb_bd_inst (
 
-    .pl_clk0(clk),
+    .pl_clk0(pl_clk0),
     .pl_reset_n(pl_reset_n),
+    
+    .pclk(clk),
+    .presetn(!reset),
     
     .VIN_v_n(VN),
     .VIN_v_p(VP),
@@ -1585,7 +1799,7 @@ led1_ddac (
 
 regs regs_inst (
 
-    .clk(pl_clk0),
+    .clk(clk),
     .reset(reset), 
         
     .penable(penable),
@@ -1631,7 +1845,9 @@ regs regs_inst (
     .pbka_wr_en(pbka_wr_en),
     .pbka_full(pbka_full),
     
-    .audout_mux(audout_mux)
+    .audout_mux(audout_mux),
+    
+    .clk_sel(clk_sel)
                 
 );    
     

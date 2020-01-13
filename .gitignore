@@ -1,2 +1,4 @@
 
 *.sublime-workspace
+
+sw/scope/__pycache__/

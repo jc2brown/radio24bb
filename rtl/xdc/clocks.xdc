@@ -6,24 +6,25 @@ create_clock -name ADC_DCLKB -period 10.000 [get_ports ADC_DCLKB];
 create_clock -name USB_CLK -period 10.000 [get_ports USB_CLK];
 
 
-#create_clock -name pl_clk0 -period 10.000 [get_pins r24bb_bd_inst/processing_system7_0/inst/buffer_fclk_clk_0.FCLK_CLK_0_BUFG/O]
+set mclk  [get_clocks -of_objects [get_pins mclk_mmcm/CLKOUT0] -filter {IS_GENERATED && MASTER_CLOCK == clk_mmcm_clkout}]
 
 
-# Create an alias to FCLK_CLK_0 as pl_clk0
-#create_generated_clock   -name pl_clk0   [get_pins r24bb_bd_inst/pl_clk0]
-
-# Create an alias to FCLK_CLK_0 as mclk
-create_generated_clock   -name mclk   [get_pins MMCME2_BASE_inst/CLKOUT0]
-
-
-
-
-
- 
 set_clock_groups -asynchronous \
-    -group {mclk} \
-    -group {clk_fpga_0} \
+    -group {clk_fpga_0 clk_mmcm_clkout} \
+    -group {mclk_mmcm_clkout} \
     -group {TCXO_19M2} \
     -group {ADC_DCLKA} \
     -group {ADC_DCLKB} \
-    -group {USB_CLK} \
+    -group {USB_CLK}
+
+
+#set_false_path -from [get_clocks clk_fpga_0] -to [get_clocks -of_objects [get_pins mclk_mmcm/CLKOUT0] -filter {IS_GENERATED && MASTER_CLOCK == clk_fpga_0}]
+
+
+set_clock_groups -asynchronous \
+    -group {clk_fpga_0 clk_mmcm_clkout} \
+    -group [list $mclk mclk_mmcm_clkout] \
+    -group {TCXO_19M2} \
+    -group {ADC_DCLKA} \
+    -group {ADC_DCLKB} \
+    -group {USB_CLK}

@@ -88,7 +88,9 @@ module regs (
     output reg pbka_wr_en,
     input pbka_full,
     
-    output reg audout_mux
+    output reg audout_mux,
+    
+    output reg clk_sel
         
     
     
@@ -202,6 +204,8 @@ localparam REG_PBKA_FULL = 12'h044;
 
 localparam REG_AUDOUT_MUX = 12'h048;
 
+localparam REG_CLK_SEL = 12'h04C;
+
         
     
     
@@ -292,6 +296,8 @@ begin
         pbka_wr_en <= 0;
         
         audout_mux <= 0;
+        
+        clk_sel <= 0;
             
         
 //        outa_raw <= 'h0;       
@@ -405,6 +411,8 @@ begin
                 end
                                    
                 REG_AUDOUT_MUX: audout_mux <= pwdata[0];
+                
+                REG_CLK_SEL: clk_sel <= pwdata;
                         
 //                REG_OUTA_RAW: outa_raw <= pwdata;   
                
@@ -489,6 +497,36 @@ begin
 //        REG_OUTB_WR_COUNT: prdata = dac_b_wr_count;
         
                                 
+                                
+                                
+           
+       REG_USB_WR_MUX: prdata <= usb_wr_mux;   
+                              
+       REG_DAC_DCE: prdata <= dac_dce;
+       
+       REG_AUD_RATE: prdata <= aud_rate;
+       
+       REG_USB_WR_PUSH: prdata <= usb_wr_push;
+       
+       REG_USB_LED_R: prdata <= usb_led_r;
+       
+       REG_PWR_LED_R: prdata <= pwr_led_r;
+       
+       REG_LED0_BRIGHTNESS: prdata <= led0_brightness;
+       REG_LED1_BRIGHTNESS: prdata <= led1_brightness;
+       
+       REG_I2C_SEL: prdata <= i2c_sel;
+       
+                          
+       REG_AUDOUT_MUX: prdata <= audout_mux;
+       
+       
+       
+       
+       
+       
+       
+       
         
         default: prdata = 32'h0;
     endcase
