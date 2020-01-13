@@ -1,4 +1,4 @@
-<mxfile host="www.draw.io" modified="2020-01-13T04:36:28.558Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="HivjJk2leVQ34QoHPyT5" version="12.5.1" type="github" pages="3">
+<mxfile host="www.draw.io" modified="2020-01-13T04:50:51.085Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0" etag="x4OqiPYARWPerI0sMjqz" version="12.5.1" type="github" pages="3">
   <diagram id="ARlySnIh4Fg0utdHiu1E" name="dds_block">
     <mxGraphModel dx="2446" dy="1833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
       <root>
@@ -1219,14 +1219,14 @@
     </mxGraphModel>
   </diagram>
   <diagram id="5N9RkUcgmHoA70ticDAb" name="clocks">
-    <mxGraphModel dx="3494" dy="2619" grid="1" gridSize="10" guides="0" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
+    <mxGraphModel dx="4077" dy="3055" grid="1" gridSize="10" guides="0" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" math="0" shadow="0">
       <root>
         <mxCell id="G1-aTSbVHpV_DlhNhPsy-0"/>
         <mxCell id="G1-aTSbVHpV_DlhNhPsy-1" parent="G1-aTSbVHpV_DlhNhPsy-0"/>
         <mxCell id="p5q94055kXS16TBpksCb-181" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;gradientColor=none;gradientDirection=east;strokeWidth=2;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="1400" y="630" width="1930" height="1900" as="geometry"/>
         </mxCell>
-        <mxCell id="p5q94055kXS16TBpksCb-294" value="clock_reset_network" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
+        <mxCell id="p5q94055kXS16TBpksCb-294" value="clock_reset" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fontStyle=1" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="1560" y="800" width="1360" height="1540" as="geometry"/>
         </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-182" value="clk_clkwiz" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
@@ -1819,9 +1819,6 @@
         <mxCell id="p5q94055kXS16TBpksCb-450" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;gradientColor=none;align=center;strokeColor=#B3B3B3;fontStyle=0" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="1830" y="1490" width="120" height="19.74" as="geometry"/>
         </mxCell>
-        <mxCell id="p5q94055kXS16TBpksCb-457" value="mod_reset" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;gradientColor=none;align=center;strokeColor=#B3B3B3;fontStyle=0" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
-          <mxGeometry x="1710" y="1470" width="120" height="19.74" as="geometry"/>
-        </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-458" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;gradientColor=none;align=center;strokeColor=#B3B3B3;fontStyle=0" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="1830" y="1470" width="120" height="19.74" as="geometry"/>
         </mxCell>
@@ -2025,7 +2022,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="p5q94055kXS16TBpksCb-596" value="mod_reset" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#080808;strokeWidth=1;gradientColor=none;align=center;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
+        <mxCell id="p5q94055kXS16TBpksCb-596" value="sys_reset" style="shape=step;perimeter=stepPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#080808;strokeWidth=1;gradientColor=none;align=center;" vertex="1" parent="G1-aTSbVHpV_DlhNhPsy-1">
           <mxGeometry x="2040" y="1470" width="140" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="p5q94055kXS16TBpksCb-598" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" edge="1" parent="G1-aTSbVHpV_DlhNhPsy-1" source="p5q94055kXS16TBpksCb-597" target="p5q94055kXS16TBpksCb-582">
