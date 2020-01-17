@@ -15,9 +15,17 @@ set tb_path [lindex $::argv 5]
 
 create_project -f -part $FPGA_PART $PROJECT_NAME
 
-set hdl_file_list 	[ add_prefix $hdl_path/ [exec ls $hdl_path/*.sv] ]
-set xdc_file_list 	[ add_prefix $xdc_path/ [exec ls $xdc_path/*.xdc] ]
-set tb_file_list  	[ add_prefix $tb_path/  [exec ls $tb_path/*.sv] ]
+
+# Why doesn't this work on Ubuntu anymore?  ls: cannot access '../hdl/*.sv': No such file or directory
+# set hdl_file_list 	[ add_prefix $hdl_path/ [exec ls "$hdl_path/*.sv"] ]
+# set xdc_file_list 	[ add_prefix $xdc_path/ [exec ls $xdc_path/*.xdc] ]
+# set tb_file_list  	[ add_prefix $tb_path/  [exec ls $tb_path/*.sv] ]
+
+set hdl_file_list 	[ add_prefix $hdl_path/ [exec sh -c "ls $hdl_path/*.sv"] ]
+set xdc_file_list 	[ add_prefix $xdc_path/ [exec sh -c "ls $xdc_path/*.xdc"] ]
+set tb_file_list 	[ add_prefix $tb_path/ [exec sh -c "ls $tb_path/*.sv"] ]
+
+
 
 puts_list $hdl_file_list
 puts_list $xdc_file_list

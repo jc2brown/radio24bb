@@ -63,11 +63,14 @@ assign result[0] = 'h0;
 reg signed [47:0] final_sum;
 
 wire signed [27:0] output_sum = signed'(final_sum[47:19]); 
+//wire signed [27:0] output_sum = signed'(final_sum[27:0]); 
        
 assign out = 
     output_sum <= LOWER ? LOWER :
     output_sum >= UPPER ? UPPER :
     signed'(output_sum[16:0]);
+    
+    
     
 
 
@@ -133,18 +136,25 @@ reg signed [47:0] sum4 [1:2];
 
 
 generate
+
+always @(posedge clk) sum1_valid <= valid_out_del[LEN];
+always @(posedge clk) sum2_valid <= sum1_valid;
+always @(posedge clk) sum3_valid <= sum2_valid;
+always @(posedge clk) sum4_valid <= sum3_valid;
+always @(posedge clk) valid_out <= sum4_valid;
+    
+    
 for (i=1; i<=16; i=i+1) begin    
     always @(posedge clk) begin
-        sum1_valid <= valid_out_del[LEN];
         if (valid_out_del[LEN]) begin
             sum1[i] <= result[2*i-1] + result[2*i];
         end
     end 
 end
 
+    
 for (i=1; i<=8; i=i+1) begin    
     always @(posedge clk) begin
-        sum2_valid <= sum1_valid;
         if (sum1_valid) begin
             sum2[i] <= sum1[2*i-1] + sum1[2*i];
         end
@@ -153,7 +163,6 @@ end
     
 for (i=1; i<=4; i=i+1) begin    
     always @(posedge clk) begin
-        sum3_valid <= sum2_valid;
         if (sum2_valid) begin
             sum3[i] <= sum2[2*i-1] + sum2[2*i];
         end
@@ -162,7 +171,6 @@ end
         
 for (i=1; i<=2; i=i+1) begin    
     always @(posedge clk) begin
-        sum4_valid <= sum3_valid;
         if (sum3_valid) begin
             sum4[i] <= sum3[2*i-1] + sum3[2*i];
         end
@@ -172,7 +180,6 @@ endgenerate
     
     
 always @(posedge clk) begin
-    valid_out <= sum4_valid;
     if (sum4_valid) begin
         final_sum <= sum4[1] + sum4[2];
     end

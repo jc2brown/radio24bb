@@ -150,10 +150,10 @@ struct uartps *make_uartps() {
 	uart->xuartps = (XUartPs *)malloc(sizeof(XUartPs));
 	if (uart->xuartps == NULL) return NULL;
 
-	uart->rx_queue = make_queue(65536, 65536/*1024*1024*/);
+	uart->rx_queue = make_queue(256, 1024*1024);
 	if (uart->rx_queue == NULL) return NULL;
 
-	uart->tx_queue = make_queue(65536, 65536/*1024*1024*/);	
+	uart->tx_queue = make_queue(256, 1024*1024);	
 	if (uart->tx_queue == NULL) return NULL;
 
 	return uart;

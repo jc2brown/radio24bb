@@ -42,42 +42,6 @@
 
 
 
-#define DumpReg(strct, field) xil_printf("%-16s  0x%08X\n", #field, (strct)->field)
-
-
-void radio24bb_dump(struct radio24bb *r24bb) {
-
-	DumpReg(r24bb->regs, leds);
-	DumpReg(r24bb->regs, usb_wr_full);
-	DumpReg(r24bb->regs, usb_rd_empty);
-
-	xil_printf("leds: 0x%02X\n", r24bb->regs->leds);
-	xil_printf("usb_wr_full: 0x%02X\n", r24bb->regs->usb_wr_full);
-	xil_printf("usb_rd_empty: 0x%02X\n", r24bb->regs->usb_rd_empty);
-	xil_printf("usb_wr_mux: 0x%02X\n", r24bb->regs->usb_wr_mux);
-	xil_printf("aud_rate: 0x%02X\n", r24bb->regs->aud_rate);
-	xil_printf("usb_led_r: 0x%02X\n", r24bb->regs->usb_led_r);
-	xil_printf("pwr_led_r: 0x%02X\n", r24bb->regs->pwr_led_r);
-	xil_printf("led0_brightness: 0x%04X\n", r24bb->regs->led0_brightness);
-	xil_printf("led1_brightness: 0x%04X\n", r24bb->regs->led1_brightness);
-	xil_printf("i2c_sel: 0x%02X\n", r24bb->regs->i2c_sel);
-	xil_printf("pbka_full: 0x%02X\n", r24bb->regs->pbka_full);
-	xil_printf("audout_mux: 0x%02X\n", r24bb->regs->audout_mux);
-	xil_printf("clk_sel: 0x%02X\n", r24bb->regs->clk_sel);
-
-
-
-
-	// adc_channel_dump(r24bb->ina);
-	// adc_channel_dump(r24bb->inb);
-
-	// dac_channel_dump(r24bb->outa);
-	// dac_channel_dump(r24bb->outb);
-
-
-
-
-}
 
 
 
@@ -93,7 +57,6 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 	regs->pwr_led_r = 1;
 	regs->led0_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
 	regs->led1_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));	
-	regs->clk_sel = 0;
 }
 
 
