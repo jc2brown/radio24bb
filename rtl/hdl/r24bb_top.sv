@@ -102,9 +102,37 @@ module r24bb_top(
 );
 
 
-wire pl_clk0;
-wire pl_reset_n;
 
+/////////////////////////////////////////////////////////////
+//
+// Registers
+//
+/////////////////////////////////////////////////////////////
+
+wire clk;
+wire reset;
+
+wire mclk;
+wire mreset;
+
+wire adc_dclk = clk;
+wire dac_dclk = clk;
+
+
+
+
+/////////////////////////////////////////////////////////////
+//
+// APB
+//
+/////////////////////////////////////////////////////////////
+
+wire penable;
+wire psel;
+wire [31:0] paddr;
+wire pwrite;
+wire [31:0] pwdata;
+wire [31:0] prdata;
 
 wire [31:0] ina_prdata;
 wire [31:0] inb_prdata;
@@ -115,24 +143,12 @@ wire [31:0] mpx_prdata;
 
 
 
-wire [63:0] GPIO_0_0_tri_i;
-wire [63:0] GPIO_0_0_tri_o;
-wire [63:0] GPIO_0_0_tri_t;
-
-
 /////////////////////////////////////////////////////////////
 //
 // Registers
 //
 /////////////////////////////////////////////////////////////
       
-wire penable;
-wire psel;
-wire [31:0] paddr;
-wire pwrite;
-wire [31:0] pwdata;
-wire [31:0] prdata;
-
 
 wire [1:0] usb_wr_mux;    
     
@@ -240,16 +256,15 @@ wire pbka_mix_valid;
 //wire clkout1;
 //wire clkout2;
 
-wire adc_dclk = pl_clk0;
-wire dac_dclk = pl_clk0;
-wire mclk;
 
+
+/*
 wire clkfb;
 wire locked;
 
 wire clk = pl_clk0;
 wire reset = !pl_reset_n;
-
+*/
 /*
 MMCME2_BASE #(
     //.CLKIN1_PERIOD(52.083), // 19.2MHz 
@@ -274,7 +289,7 @@ MMCME2_BASE_inst (
 );
 */
 
-
+/*
 MMCME2_BASE #(
     .REF_JITTER1(0.01), // 0.01UI = 100ps
     .CLKIN1_PERIOD(10.000), // 100MHz 
@@ -293,7 +308,7 @@ MMCME2_BASE_inst (
     .PWRDWN(1'b0),     
     .RST(1'b0)      
 );
-
+*/
 
 /*
 assign clk <= clkout0;
@@ -1073,9 +1088,7 @@ codec_i2c_ioexp (
 */
 
 
-wire mreset;
-
-
+/*
 xpm_cdc_sync_rst #(
     .DEST_SYNC_FF(4),   // DECIMAL; range: 2-10
     .INIT(1),           // DECIMAL; 0=initialize synchronization registers to 0, 1=initialize synchronization
@@ -1090,7 +1103,7 @@ xpm_cdc_sync_rst_inst (
   .dest_clk(mclk), // 1-bit input: Destination clock.
   .src_rst(reset)    // 1-bit input: Source reset signal.
 );
-
+*/
 
 
 
@@ -1515,17 +1528,25 @@ wire [2:0] IRQ_F2P_0 = {
 
 
 
-
+/*
 assign GPIO_0_0_tri_i[0] = !USB_IO_INT_N;
 assign GPIO_0_0_tri_i[1] = !CODEC_IO_INT_N;
 assign GPIO_0_0_tri_i[2] = GPIO_0_0_tri_o[3];
 assign GPIO_0_0_tri_i[4] = pbka_full;
-
+*/
 
 r24bb_bd r24bb_bd_inst (
 
-    .pl_clk0(clk),
-    .pl_reset_n(pl_reset_n),
+    .pclk(clk),
+    .presetn(!reset),
+    
+    .clk(clk),
+    .reset(reset),
+    
+    .mclk(mclk),
+    .mreset(mreset),
+    
+    .TCXO_19M2(TCXO_19M2),
     
     .VIN_v_n(VN),
     .VIN_v_p(VP),
@@ -1536,9 +1557,9 @@ r24bb_bd r24bb_bd_inst (
     .ADC_tid(),
     
     
-    .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
-    .GPIO_0_0_tri_o(GPIO_0_0_tri_o),
-    .GPIO_0_0_tri_t(GPIO_0_0_tri_t),
+//    .GPIO_0_0_tri_i(GPIO_0_0_tri_i),
+//    .GPIO_0_0_tri_o(GPIO_0_0_tri_o),
+//    .GPIO_0_0_tri_t(GPIO_0_0_tri_t),
     
     .I2C_scl_i(I2C_scl_i),
     .I2C_scl_o(I2C_scl_o),
@@ -1585,7 +1606,7 @@ led1_ddac (
 
 regs regs_inst (
 
-    .clk(pl_clk0),
+    .clk(clk),
     .reset(reset), 
         
     .penable(penable),
@@ -1622,8 +1643,6 @@ regs regs_inst (
     
     .led0_brightness(led0_brightness),
     .led1_brightness(led1_brightness),
-    
-    .serial(serial),
     
     .i2c_sel(i2c_sel),
     

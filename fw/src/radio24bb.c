@@ -23,6 +23,8 @@
 #include "sleep.h"
 #include "command.h"
 
+#include "clock_reset.h"
+
 #include "aic3204.h"
 #include "adc.h"
 #include "dac.h"
@@ -115,6 +117,9 @@ struct radio24bb *make_radio24bb() {
 
 	r24bb->shell = make_cmd_shell(x, r24bb);
 	if (r24bb->shell == NULL) return NULL;
+
+	r24bb->clkrst = make_clock_reset();
+	if (r24bb->clkrst == NULL) return NULL;
 
 	r24bb->scugic = make_scugic();
 	if (r24bb->scugic == NULL) return NULL;
@@ -326,9 +331,39 @@ int update_usb_ioexp_0(struct radio24bb *r24bb) {
 
 
 
+
+
+
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	trace("init_radio24bb\n");
+
+
+
+	_return_if_error_(
+		init_scugic(
+			r24bb->scugic, 
+			XPAR_SCUGIC_0_DEVICE_ID
+	));
+
+
+
+	_return_if_error_(
+		init_gpiops(
+			r24bb->gpiops, 
+			XPAR_PS7_GPIO_0_DEVICE_ID,
+			r24bb->scugic,
+			XPAR_XGPIOPS_0_INTR
+	));
+
+
+
+	_return_if_error_(
+		init_clock_reset(
+			r24bb->clkrst, 
+			r24bb->gpiops
+	));
+
 
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
@@ -339,11 +374,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 //		init_cmd_shell(r24bb->shell,
 //			"XxX", r24bb
 //	));
-
-	_return_if_error_(
-		init_scugic(r24bb->scugic, 
-			XPAR_SCUGIC_0_DEVICE_ID
-	));
 
 
 	_return_if_error_(
@@ -358,12 +388,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-
-
-
-
-
-
 	_return_if_error_(
 		init_uartps(r24bb->uart, 
 			r24bb->scugic, 
@@ -371,13 +395,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			XPAR_PS7_UART_1_INTR
 	));
 
-
-	_return_if_error_(
-		init_gpiops(r24bb->gpiops, 
-			XPAR_PS7_GPIO_0_DEVICE_ID,
-			r24bb->scugic,
-			XPAR_XGPIOPS_0_INTR
-	));
 
 	_return_if_error_(
 		init_spips(r24bb->spips1, 
@@ -530,7 +547,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
 
 */
-
+/*
 	XGpioPs_Write(r24bb->gpiops, 1, 0x0);
 	XGpioPs_Write(r24bb->gpiops, 2, 0x00);
 	XGpioPs_Write(r24bb->gpiops, 3, 0x00);
@@ -547,7 +564,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 	XGpioPs_WritePin(r24bb->gpiops, 90, 1);	// USB_RESET_N
-
+*/
 
 	// ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
 	// ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);

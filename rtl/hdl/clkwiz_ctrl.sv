@@ -16,7 +16,7 @@ module clkwiz_ctrl (
     // From Zynq AP
     input pl_clk0,
     input pl_reset_n,    // pl_clk0 domain    -   resets entire PL
-    input clk_reset,     // pl_clk0 domain    -   resets ClkWiz IP only
+//    input clk_reset,     // pl_clk0 domain    -   resets ClkWiz IP only
     input sys_reset,     // pl_clk0 domain    -   resets clk domain logic
     
     // Inputs to BUFGMUX
@@ -25,8 +25,12 @@ module clkwiz_ctrl (
     input clkin_src_sel, // pl_clk0 domain    
 
     // MMCM/clkwiz interface
-    output clkwiz_clkin,
-    output clkwiz_reset,    
+    /*
+    output clkwiz_clkin1,
+    output clkwiz_clkin2,
+    output clkwiz_clk_sel,
+    output clkwiz_reset,   
+    */ 
     input clkwiz_clkout0,
     input clkwiz_clkout1,
     input clkwiz_locked,
@@ -44,19 +48,13 @@ module clkwiz_ctrl (
     
 );
     
-    
-    
-    
-BUFGMUX clkwiz_clkin_bufgmux (
-    .I0(clk0),
-    .I1(clk1),
-    .O(clkwiz_clkin),
-    .S(clkin_src_sel) 
-);
+    /*
+assign clkwiz_clkin1 = clk0;
+assign clkwiz_clkin2 = clk1;
+assign clkwiz_clk_sel = clkin_src_sel;
+*/
 
-
-
-
+/*
 xpm_cdc_sync_rst #(
     .DEST_SYNC_FF(2),  
     .INIT(1),           
@@ -68,7 +66,7 @@ clkwiz_reset_cdc (
     .dest_clk(clkwiz_clkin),
     .dest_rst(clkwiz_reset)
 );
-
+*/
 
 
 

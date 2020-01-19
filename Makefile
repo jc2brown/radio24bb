@@ -9,6 +9,9 @@ include $(FW_ROOT)/Makefile
 .PHONY: all
 all: boot 
 
+.PHONY: proj
+proj: $(RTL_ROOT)/proj
+
 .PHONY: bit
 bit: $(RTL_ROOT)/bit
 

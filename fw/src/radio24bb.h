@@ -11,6 +11,8 @@
 #include "xspips.h"
 #include "ff.h"
 
+#include "clock_reset.h"
+
 #include "queue.h"
 #include "command.h"
 #include "ioexp.h"
@@ -25,6 +27,7 @@ struct radio24bb {
 	int serial;
 
 	// System
+	struct clock_reset *clkrst;
 	struct cmd_shell *shell;
 	struct radio24bb_regs *regs;
 

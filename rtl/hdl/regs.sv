@@ -80,7 +80,7 @@ module regs (
     output reg [15:0] led0_brightness,
     output reg [15:0] led1_brightness,
     
-    input [2:0] serial,
+    input [2:0] serial, // not used - REMOVE
     
     output reg i2c_sel,
     

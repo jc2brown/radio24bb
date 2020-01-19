@@ -52,8 +52,7 @@ wire enable_test_count;
 
  
 xpm_cdc_single #(
-    .DEST_SYNC_FF(2),  
-    .INIT(1),           
+    .DEST_SYNC_FF(2),    
     .INIT_SYNC_FF(0),  
     .SIM_ASSERT_CHK(0) 
 )

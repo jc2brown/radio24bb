@@ -1,26 +1,39 @@
 
+#include <stdlib.h>
 
-
+#include "roe.h"
 #include "clock_reset.h"
 #include "sleep.h"
 #include "xgpiops.h"
+#include "gpiops.h"
+#include "clkwiz.h"
+
+
+#define GPIOPS_BASE_PIN 54
+
+#define SYS_RESET_PIN (GPIOPS_BASE_PIN+0)
+
+#define TCXO_96M_RESET_PIN (GPIOPS_BASE_PIN+2)
+#define TCXO_96M_LOCKED_PIN (GPIOPS_BASE_PIN+3)
+
+#define CLK_CLKWIZ_GPIOPS_BASE_PIN (GPIOPS_BASE_PIN+4)
+#define CLK_CLKIN_SEL_PIN (GPIOPS_BASE_PIN+5)
+
+
+#define MCLK_CLKWIZ_GPIOPS_BASE_PIN (GPIOPS_BASE_PIN+34)
+#define MCLK_CLKIN_SEL_PIN (GPIOPS_BASE_PIN+35)
 
 
 
-#define GPIO_PIN_DIR_OUT 1
-#define GPIO_PIN_DIR_OUT_EN 1
 
-#define SYS_RESET_PIN ??
+#define CLK_CLKIN_PL_CLK0 0
+#define CLK_CLKIN_TCXO_96M 1
 
-#define TCXO_96M_RESET_PIN ??
-#define TCXO_96M_LOCKED_PIN ??
+#define MCLK_CLKIN_PL_CLK0 0
+#define MCLK_CLKIN_TCXO_96M 1
 
-#define CLK_RESET_PIN ??
-#define CLK_LOCKED_PIN ??
-
-#define MCLK_RESET_PIN ??
-#define MCLK_LOCKED_PIN ??
-
+#define PL_CLK0_FREQ_HZ ((uint64_t)(100000000ULL))
+#define TCXO_96M_FREQ_HZ ((uint64_t)(96000000ULL))
 
 
 
@@ -45,60 +58,27 @@ typedef void (*FMeasCount_fcn)(XGpioPs *, int msb_pin);
 
 
 
-// Set the specified pin as an output and write the given value
-void gpiops_write_output_pin(XGpioPs *gpiops, int pin, int value) {
-    XGpioPs_SetDirectionPin(gpiops, pin, GPIO_PIN_DIR_OUT);
-    XGpioPs_SetOutputEnablePin(gpiops, pin, GPIO_PIN_DIR_OUT_EN);
-	XGpioPs_WritePin(gpiops, pin, value);
+
+
+void set_sys_reset(struct clock_reset *clkrst, int reset) {
+	gpiops_write_output_pin(clkrst->gpiops, SYS_RESET_PIN, reset);
 }
 
 
 
-int gpiops_read_input_pin(XGpioPs *gpiops, int pin) {
-    XGpioPs_SetDirectionPin(gpiops, pin, GPIO_PIN_DIR_IN);
-    XGpioPs_SetOutputEnablePin(gpiops, pin, !GPIO_PIN_DIR_OUT_EN);
-	return XGpioPs_ReadPin(gpiops, pin);
+void set_tcxo_96m_reset(struct clock_reset *clkrst, int reset) {
+	gpiops_write_output_pin(clkrst->gpiops, TCXO_96M_RESET_PIN, reset);
+}
+
+int is_tcxo_96m_locked(struct clock_reset *clkrst) {
+	return gpiops_read_input_pin(clkrst->gpiops, TCXO_96M_RESET_PIN);
 }
 
 
 
 
-void set_sys_reset(XGpioPs *gpiops, int reset) {
-	gpiops_write_output_pin(gpiops, SYS_RESET_PIN, reset);
-}
 
-
-
-void set_tcxo_96m_reset(XGpioPs *gpiops, int reset) {
-	gpiops_write_output_pin(gpiops, TCXO_96M_RESET_PIN, reset);
-}
-
-int is_tcxo_96m_locked(XGpioPs *gpiops) {
-	return gpiops_read_input_pin(gpiops, TCXO_96M_RESET_PIN, reset);
-}
-
-
-
-void set_clk_reset(XGpioPs *gpiops, int reset) {
-	gpiops_write_output_pin(gpiops, CLK_RESET_PIN, reset);
-}
-
-int is_clk_locked(XGpioPs *gpiops) {
-	return gpiops_read_input_pin(gpiops, CLK_LOCKED_PIN);
-}
-
-
-
-void set_mclk_reset(XGpioPs *gpiops, int reset) {
-	gpiops_write_output_pin(gpiops, MCLK_RESET_PIN, reset);
-}
-
-int is_mclk_locked(XGpioPs *gpiops) {
-	return gpiops_read_input_pin(gpiops, MCLK_LOCKED_PIN);
-}
-
-
-
+/*
 double measure_frequency(XGpioPs *gpiops, FMeasEnable_fcn, FMeasCount_fcn) {
 
 	// Deassert fmeas_enable pin
@@ -118,38 +98,44 @@ double measure_frequency(XGpioPs *gpiops, FMeasEnable_fcn, FMeasCount_fcn) {
 
 }
 
-
+*/
 
 
 
 
 // This routine implements a procedure which activates a clock generator (i.e. MMCM/PLL/ClkWiz) in a controlled fashion.
 // Callers must supply:
-//		a function `set_reset` which drives a GpioPs pin connected to the reset pin of the clock generator 
-//		a function `is_locked` which reads a GpioPs pin connected to the locked pin of the clock generator 
+//		a function `set_clkin_sel` which drives an XGpioPs pin connected to the clkin_sel pin of the clock generator 
+//		a function `is_locked` which reads an XGpioPs pin connected to the locked pin of the clock generator 
 // This function waits up to 100 milliseconds for the clock generator to lock.
 //   - If lock is achieved at any point within the waiting period, the function exits the wait loop immediately.
 //   - Otherwise, a fatal error message is printed at the end of the waiting period and the function will hang forever.
 // If the clock becomes locked, this function will measure and print its frequency unless the FMeas functions are NULL.
-void bring_up_clock(
+
+
+
+void enable_tcxo_96m(
+	struct clock_reset *clkrst
+	/*
 	XGpioPs *gpiops, 
-	char *clk_name, 
-	SetReset_fcn set_reset, 
+	char *clk_name
+	SetClkinSel_fcn set_clkin_sel, 
 	IsLocked_fcn is_locked, 
 	FMeasEnable_fcn fmeas_enable, 
 	FMeasCount_fcn fmeas_count
+	*/
 ) {
 
 	// Entry message
-	xil_printf("Bringing up clock: %s...\n", clk_name);
+	xil_printf("Bringing up TCXO_96M\n");
 
 	// Deassert PLL/MMCM/ClkWiz reset
-	set_reset(gpiops, 0);
+	gpiops_write_output_pin(clkrst->gpiops, TCXO_96M_RESET_PIN, 0);
 
 	// Poll locked pin once per millisecond for 100 milliseconds or until the locked pin goes high
 	int locked = 0;
-	for (int i = 0; i < 100; ++i) {
-		if (is_locked(gpiops)) {
+	for (int i = 0; i < 1000; ++i) {
+		if (gpiops_read_input_pin(clkrst->gpiops, TCXO_96M_LOCKED_PIN)) {
 			locked = 1;
 			break;
 		} else {
@@ -159,17 +145,31 @@ void bring_up_clock(
 
 	// If the locked pin stayed low, print an error message and hang here forever 
 	if (!locked) {
-		xil_printf("FATAL: TCXO_96M failed to lock after 100ms\n");
+		xil_printf("FATAL: TCXO_96M failed to lock after 1000ms\n");
 		while(1);
-	}
+	}	
 
-	// Successful exit message
-	xil_printf("SUCCESS: %s is locked\n", clk_name);
-
-	if (fmeas_enable != NULL && fmeas_count != NULL) {
-		double measure_frequency(gpiops, fmeas_enable, fmeas_count);
+	else {
+		// Successful exit message
+		xil_printf("SUCCESS: TCXO_96M is locked\n");
 	}
-	// TODO: measure frequency here? Probably not... n.b. TCXO_96M has no freq_meas block
+}
+
+
+
+
+
+struct clock_reset *make_clock_reset() {
+	struct clock_reset *clkrst = (struct clock_reset *)malloc(sizeof(struct clock_reset));
+	if (clkrst == NULL) return NULL;
+
+	clkrst->clk_clkwiz = make_clkwiz();
+	if (clkrst->clk_clkwiz == NULL) return NULL;
+
+	clkrst->mclk_clkwiz = make_clkwiz();
+	if (clkrst->mclk_clkwiz == NULL) return NULL;
+
+	return clkrst;
 }
 
 
@@ -179,53 +179,85 @@ void bring_up_clock(
 
 
 
-
-void init_clock_reset() {
-
-	XGpioPs gpiops_inst;
-	XGpioPs *gpiops = &gpiops_inst;
-
-	XGpioPs_Config *gpiops_cfg = XGpioPs_LookupConfig();
-
+/*
+void clkrst_down(struct clock_reset *clkrst) {
 
     //
     // Reset network
     //
-	set_tcxo_96m_reset(gpiops, 1);
-	set_clk_reset(gpiops, 1);
-	set_mclk_reset(gpiops, 1);
-	set_sys_reset(gpiops, 1);
+	set_tcxo_96m_reset(clkrst->gpiops, 1);
+	set_clk_reset(clkrst->gpiops, 1);
+	set_mclk_reset(clkrst->gpiops, 1);
+	set_sys_reset(clkrst->gpiops, 1);
+}
 
-    
+
+*/
+
+
+
+void set_clk_frequency(struct clock_reset *clkrst, int clkin_sel, uint64_t target_clkout_hz) { 
+	clkwiz_set_frequency(clkrst->clk_clkwiz, clkin_sel, target_clkout_hz);
+}
+
+
+void set_mclk_frequency(struct clock_reset *clkrst, int clkin_sel, uint64_t target_clkout_hz) { 
+	clkwiz_set_frequency(clkrst->mclk_clkwiz, clkin_sel, target_clkout_hz);
+}
+
+
+
+
+int init_clock_reset(struct clock_reset *clkrst, XGpioPs *gpiops) {
+
+	clkrst_trace("Enter %s\n", __func__);
+
+	clkrst->gpiops = gpiops;
+
+
+	_return_if_error_(
+		init_clkwiz(
+			clkrst->clk_clkwiz, 
+			clkrst->gpiops, 
+			XPAR_CLK_CLKWIZ_DEVICE_ID, 
+			PL_CLK0_FREQ_HZ, 
+			TCXO_96M_FREQ_HZ,
+			CLK_CLKIN_SEL_PIN
+	));
+
+
+
+	_return_if_error_(
+		init_clkwiz(
+			clkrst->mclk_clkwiz, 
+			clkrst->gpiops, 
+			XPAR_MCLK_CLKWIZ_DEVICE_ID, 
+			PL_CLK0_FREQ_HZ, 
+			TCXO_96M_FREQ_HZ,
+			MCLK_CLKIN_SEL_PIN
+	));
+
+
     //
     // Bring up 19.2MHz -> 96MHz PLL
     //
-	bring_up_clock(gpiops, "TCXO_96M", set_tcxo_96m_reset, is_tcxo_96m_locked, NULL, NULL);
-
-
+	enable_tcxo_96m(clkrst);
     //
     // Bring up clk ClkWiz
     //
-	bring_up_clock(gpiops, "clk", set_clk_reset, is_clk_locked, clk_fmeas_enable, clk_fmeas_count);
-	double clk_freq = measure_frequency(gpiops);
-	xil_printf("");
-
-	// Measure frequency here
-
+	set_clk_frequency(clkrst, CLK_CLKIN_PL_CLK0, 100e6);
     //
     // Bring up mclk ClkWiz
     //
-	bring_up_clock(gpiops, "mclk", set_mclk_reset, is_mclk_locked);
-	// Measure frequency here
-
-
-
-
+	set_mclk_frequency(clkrst, MCLK_CLKIN_TCXO_96M, 9.728e6);	
     //
     // Enable system
     //
-	set_sys_reset(0);
+	set_sys_reset(clkrst, 0);
 
 
 
+	clkrst_trace("Exit %s\n", __func__);
+	return XST_SUCCESS;
 }
+

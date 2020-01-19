@@ -554,6 +554,13 @@ void outbyte(char c) {
 
 
 
+
+
+
+
+
+
+
 int main()
 {
 
@@ -566,8 +573,8 @@ int main()
 	//_return_if_error_(ina219_config());
 
 
-
 	xil_printf("Starting Baseband... \n");
+
 
 	xil_printf("Allocating devices... \n");
 	struct radio24bb *r24bb = make_radio24bb();
