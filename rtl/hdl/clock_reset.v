@@ -43,8 +43,15 @@ module clock_reset(
 
 );
     
+wire TCXO_96M;
     
-    
+assign clk_clkwiz_clkin1 = pl_clk0;
+assign clk_clkwiz_clkin2 = TCXO_96M;
+
+assign mclk_clkwiz_clkin1 = pl_clk0;
+assign mclk_clkwiz_clkin2 = TCXO_96M;
+
+
 wire sys_reset = gpiops_o[0];
 wire tcxo_96m_reset = gpiops_o[2];
 wire tcxo_96m_locked;
@@ -94,7 +101,6 @@ wire tcxo_96m_pll_reset;
 wire tcxo_96m_pll_clkout0;
 wire tcxo_96m_pll_clkfb;
 wire tcxo_96m_pll_locked;
-wire TCXO_96M;
 
 
     
