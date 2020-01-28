@@ -5,11 +5,6 @@ module ft601_mcfifo_rd_buf
     parameter CAPACITY = 8192 // bytes 
 )
 (    
-
-    // Depends on number of channels in use: 1:4096, 2:2048, 4:1024
-    // Must not be changed while USB tranfers are active
-    // Determines behaviour of control signals (readable/writeable) 
-    input [31:0] max_packet_size, 
     
     input wr_reset,
     input wr_clk,
@@ -27,7 +22,9 @@ module ft601_mcfifo_rd_buf
     output [31:0] rd_data,
     output [3:0] rd_be,
     output rd_valid,
-    input rd_en
+    input rd_en,
+    output rd_empty,
+    output rd_almost_empty
 );
    
    
@@ -64,12 +61,16 @@ rd_fifo (
     .wr_clk(!wr_clk),
     .din({wr_be, wr_data}),      
     .wr_en(wr_en),  
+    .full(wr_full),
+    .almost_full(wr_almost_full),
     .prog_full(prog_full),
     
     .rd_clk(rd_clk), 
     .dout({rd_be, rd_data}),  
     .data_valid(rd_valid),
-    .rd_en(rd_en)
+    .rd_en(rd_en),
+    .empty(rd_empty),
+    .almost_empty(rd_almost_empty)
     
 );
 

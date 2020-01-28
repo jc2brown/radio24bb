@@ -139,9 +139,10 @@ wire rd_xfer_req;
 wire rd_xfer_done;
 
 
-ft601_mcfifo_wr_buf #( .CAPACITY(128) )
-dut
-(        
+ft601_mcfifo_wr_buf #( 
+    .CAPACITY(128),
+    .MAX_PACKET_SIZE(1024)
+) dut (        
     // Depends on number of channels in use: 1:4096, 2:2048, 4:1024
     // Must not be changed while USB tranfers are active
     // Determines behaviour of control signals (readable/writeable) 

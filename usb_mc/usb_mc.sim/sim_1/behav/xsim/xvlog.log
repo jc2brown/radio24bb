@@ -1,4 +1,0 @@
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/Projects/Baseband/radio24bb/usb_mc/hdl/ft601_mcfifo_wr_buf.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module ft601_mcfifo_wr_buf
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/Projects/Baseband/radio24bb/usb_mc/tb/tb_mcfifo_wr_buf.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module tb_mcfifo_wr_buf

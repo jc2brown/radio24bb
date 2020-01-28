@@ -31,7 +31,8 @@ Master Write      0001            8'h3=Channel 3
 
 module ft601_mcfifo_if 
 #(
-    parameter NUM_CHANNELS = 4 // 1, 2, or 4
+    parameter NUM_CHANNELS = 4, // 1, 2, or 4
+    parameter MAX_PACKET_SIZE = 1024
 )
 (
 
@@ -105,8 +106,6 @@ wire clk0_mmcm;
 wire clkfb;
 wire locked_mmcm;
 
-
-wire [15:0] max_packet_size; // bytes
     
 wire [31:0] data_in;
 
@@ -114,7 +113,7 @@ reg [3:0] be_out;
 wire [3:0] be_in;
 
 reg [31:0] data_oe_n;
-reg [31:0] be_oe_n;
+reg [3:0] be_oe_n;
 
 
 
@@ -164,14 +163,6 @@ assign data_out =   (channel == 1) ? wr_ch_rd_data[1] :
                     (channel == 4) ? wr_ch_rd_data[4] : 
                     0;
 
-
-
-assign max_packet_size = 
-    (NUM_CHANNELS == 1) ? 4096 : 
-    (NUM_CHANNELS == 2) ? 2048 : 
-    (NUM_CHANNELS == 3) ? 1024 : 
-    (NUM_CHANNELS == 4) ? 1024 :
-    0;
 
 
 assign wr_ch_rd_en[1] = (channel == 1) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_WRITE_DATA);
@@ -274,12 +265,11 @@ MMCME2_BASE_inst
 
 ft601_mcfifo_wr_buf 
 #(
-    .CAPACITY(8192) // bytes 
+    .CAPACITY(8192), // bytes 
+    .MAX_PACKET_SIZE(MAX_PACKET_SIZE)
 )
 wr_buf [3:0] 
 (
-    
-    .max_packet_size(max_packet_size), 
     
     .wr_reset(reset),
     .wr_clk(clk),
@@ -291,7 +281,7 @@ wr_buf [3:0]
     
     .wr_full(wr_ch_wr_full),
     .wr_almost_full(wr_ch_wr_almost_full),
-    .ch_has_wr_packet_space(wr_ch_has_wr_packet_space), // Asserted when a device can write at least an entire packet's worth of data without the buffer becoming full
+    .wr_has_packet_space(wr_ch_has_wr_packet_space), // Asserted when a device can write at least an entire packet's worth of data without the buffer becoming full
             
     .rd_reset(!locked_mmcm),
     .rd_clk(clk0_mmcm),
@@ -321,9 +311,7 @@ ft601_mcfifo_rd_buf
 )
 rd_buf [3:0] 
 (
-       
-    .max_packet_size(max_packet_size), 
-    
+           
     .wr_reset(!locked_mmcm),
     .wr_clk(clk0_mmcm), // posedge to sample data in middle of stable region
     .wr_data(data_in),
@@ -339,7 +327,9 @@ rd_buf [3:0]
     .rd_data(rd_ch_rd_data),
     .rd_be(rd_ch_rd_be),
     .rd_valid(rd_ch_rd_valid),
-    .rd_en(rd_ch_rd_en)
+    .rd_en(rd_ch_rd_en),
+    .rd_empty(rd_ch_rd_empty),
+    .rd_almost_empty(rd_ch_rd_almost_empty)
     
 );
 

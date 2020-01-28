@@ -23,14 +23,14 @@
 
 module ft601_mcfifo_wr_buf 
 #(
-    parameter CAPACITY = 8192 // bytes 
-)
-(    
-
+    parameter CAPACITY = 8192, // bytes 
+        
     // Depends on number of channels in use: 1:4096, 2:2048, 4:1024
     // Must not be changed while USB tranfers are active
     // Determines behaviour of control signals (readable/writeable) 
-    input [31:0] max_packet_size, 
+    parameter MAX_PACKET_SIZE = 1024
+)
+(    
     
     input wr_reset,
     input wr_clk,
@@ -87,8 +87,8 @@ wire rd_xfer_req_int;
 
 
 
-assign wr_has_packet_space = (wr_data_count <= CAPACITY - max_packet_size);
-assign has_full_packet = (wr_data_count >= max_packet_size);
+assign wr_has_packet_space = (wr_data_count <= CAPACITY - MAX_PACKET_SIZE);
+assign has_full_packet = (wr_data_count >= MAX_PACKET_SIZE);
 assign wr_full = (wr_data_count == CAPACITY);
 assign wr_almost_full = (wr_data_count >= CAPACITY-BYTES_PER_WORD);
 
@@ -111,7 +111,7 @@ always @(posedge wr_clk) begin
         end
         else if (state == STATE_REQ) begin
             wr_xfer_active <= 1;
-            wr_xfer_size <= has_full_packet ? max_packet_size : wr_data_count;
+            wr_xfer_size <= has_full_packet ? MAX_PACKET_SIZE : wr_data_count;
             state <= STATE_REQ_ACK;
         end
         else if (state == STATE_REQ_ACK) begin

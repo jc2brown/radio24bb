@@ -1,7 +1,0 @@
-0.6
-2018.2
-Jun 14 2018
-20:41:02
-D:/Projects/Baseband/radio24bb/usb_mc/hdl/ft601_mcfifo_wr_buf.sv,1579923777,systemVerilog,,D:/Projects/Baseband/radio24bb/usb_mc/tb/tb_mcfifo_wr_buf.sv,,ft601_mcfifo_wr_buf,,,,,,,,
-D:/Projects/Baseband/radio24bb/usb_mc/tb/tb_mcfifo_wr_buf.sv,1579924219,systemVerilog,,,,tb_mcfifo_wr_buf,,,,,,,,
-D:/Projects/Baseband/radio24bb/usb_mc/usb_mc.sim/sim_1/behav/xsim/glbl.v,1529022455,verilog,,,,glbl,,,,,,,,

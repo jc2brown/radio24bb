@@ -70,9 +70,9 @@ initial begin
     txe_n <= 1'b0;
     rxf_n <= 1'b1;
 
-    data_out[15:8] <= 8'hEF;
+    data_out[15:8] <= 8'hFF;
     data_oe[15:8] <= 8'hFF;
-
+/*
     data_out[7:0] <= 8'hFF;
     data_oe[7:0] <= 8'h00;
 
@@ -126,9 +126,9 @@ initial begin
     @(negedge clk_out) begin
         txe_n <= 1'b0;
     end
-
+*/
     repeat (100) @(negedge clk_out);
-    $finish();
+  //  $finish();
 
 end
 
