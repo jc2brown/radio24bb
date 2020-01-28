@@ -23,8 +23,6 @@
 #include "sleep.h"
 #include "command.h"
 
-#include "clock_reset.h"
-
 #include "aic3204.h"
 #include "adc.h"
 #include "dac.h"
@@ -117,9 +115,6 @@ struct radio24bb *make_radio24bb() {
 
 	r24bb->shell = make_cmd_shell(x, r24bb);
 	if (r24bb->shell == NULL) return NULL;
-
-	r24bb->clkrst = make_clock_reset();
-	if (r24bb->clkrst == NULL) return NULL;
 
 	r24bb->scugic = make_scugic();
 	if (r24bb->scugic == NULL) return NULL;
@@ -357,23 +352,11 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-/*
-	_return_if_error_(
-		init_clock_reset(
-			r24bb->clkrst, 
-			r24bb->gpiops
-	));
-*/
-
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
 
 
-//	_return_if_error_(
-//		init_cmd_shell(r24bb->shell,
-//			"XxX", r24bb
-//	));
 
 
 	_return_if_error_(

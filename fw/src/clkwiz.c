@@ -1,3 +1,7 @@
+#if 0
+// DO NOT DELETE
+// THIS CODE HAS AN ALGORITHM WORTH KEEPING
+
 
 #include "stdlib.h"
 #include "xclk_wiz.h"
@@ -406,5 +410,5 @@ int init_clkwiz(
 
 
 
-
+#endif
 

@@ -1,4 +1,6 @@
-
+#if 0
+// DO NOT DELETE
+// THIS CODE HAS AN ALGORITHM WORTH KEEPING
 
 #ifndef CLKWIZ_H
 #define CLKWIZ_H
@@ -135,5 +137,7 @@ void clkwiz_set_frequency(struct clkwiz *wiz, int clikin_sel, uint64_t target_cl
 // #define clkwiz_trace(...)
 #define clkwiz_trace xil_printf
 
+
+#endif
 
 #endif
