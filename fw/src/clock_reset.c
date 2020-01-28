@@ -132,7 +132,7 @@ void enable_tcxo_96m(
 	// Deassert PLL/MMCM/ClkWiz reset
 	gpiops_write_output_pin(clkrst->gpiops, TCXO_96M_RESET_PIN, 0);
 
-	// Poll locked pin once per millisecond for 100 milliseconds or until the locked pin goes high
+	// Poll locked pin once per millisecond for 1000 milliseconds or until the locked pin goes high
 	int locked = 0;
 	for (int i = 0; i < 1000; ++i) {
 		if (gpiops_read_input_pin(clkrst->gpiops, TCXO_96M_LOCKED_PIN)) {
@@ -226,7 +226,7 @@ int init_clock_reset(struct clock_reset *clkrst, XGpioPs *gpiops) {
 	));
 
 
-
+/*
 	_return_if_error_(
 		init_clkwiz(
 			clkrst->mclk_clkwiz, 
@@ -236,12 +236,12 @@ int init_clock_reset(struct clock_reset *clkrst, XGpioPs *gpiops) {
 			TCXO_96M_FREQ_HZ,
 			MCLK_CLKIN_SEL_PIN
 	));
-
+*/
 
     //
     // Bring up 19.2MHz -> 96MHz PLL
     //
-	enable_tcxo_96m(clkrst);
+	// enable_tcxo_96m(clkrst);
     //
     // Bring up clk ClkWiz
     //
@@ -249,7 +249,8 @@ int init_clock_reset(struct clock_reset *clkrst, XGpioPs *gpiops) {
     //
     // Bring up mclk ClkWiz
     //
-	set_mclk_frequency(clkrst, MCLK_CLKIN_TCXO_96M, 9.728e6);	
+	// set_mclk_frequency(clkrst, MCLK_CLKIN_TCXO_96M, 9.728e6);	
+	//set_mclk_frequency(clkrst, CLK_CLKIN_PL_CLK0, 9.728e6);	
     //
     // Enable system
     //

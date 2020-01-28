@@ -357,13 +357,13 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	));
 
 
-
+/*
 	_return_if_error_(
 		init_clock_reset(
 			r24bb->clkrst, 
 			r24bb->gpiops
 	));
-
+*/
 
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
@@ -383,8 +383,8 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			XPAR_XDMAPS_1_DEVICE_ID,
 			XPAR_XDMAPS_0_FAULT_INTR,
 			XPAR_XDMAPS_0_DONE_INTR_0,
-			playback_dma_done_handler,
-			r24bb->pbka
+			playback_dma_done_handler, // ch0 handler
+			r24bb->pbka // ch0 callback arg
 	));
 
 

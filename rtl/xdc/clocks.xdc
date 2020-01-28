@@ -30,10 +30,7 @@ set_clock_groups -asynchronous \
         -group {TCXO_19M2} \
         -group {clk_fpga_0} \
         -group {clk0_mmcm} \
-    -group [get_clocks -of_objects [get_pins r24bb_bd_inst/clock_reset_0/clk] -filter {MASTER_CLOCK == tcxo_96m_pll_clkout0}] \
-    -group [get_clocks -of_objects [get_pins r24bb_bd_inst/clock_reset_0/clk] -filter {MASTER_CLOCK == clk_fpga_0}] \
-    -group [get_clocks -of_objects [get_pins r24bb_bd_inst/clock_reset_0/mclk] -filter {MASTER_CLOCK == tcxo_96m_pll_clkout0}] \
-    -group [get_clocks -of_objects [get_pins r24bb_bd_inst/clock_reset_0/mclk] -filter {MASTER_CLOCK == clk_fpga_0}] \
+        -group [get_clocks -of_objects [get_pins MMCME2_BASE_inst/CLKOUT0]] \
     -group {ADC_DCLKA} \
     -group {ADC_DCLKB} \
     -group {USB_CLK}

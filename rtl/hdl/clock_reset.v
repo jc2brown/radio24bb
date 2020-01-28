@@ -10,6 +10,8 @@ module clock_reset(
     
     input TCXO_19M2,
     
+    output TCXO_96M,
+    
     output clk,
     output reset,
     
@@ -43,7 +45,6 @@ module clock_reset(
 
 );
     
-wire TCXO_96M;
     
 assign clk_clkwiz_clkin1 = pl_clk0;
 assign clk_clkwiz_clkin2 = TCXO_96M;
@@ -132,7 +133,7 @@ PLLE2_BASE #(
     .STARTUP_WAIT("FALSE")    // Delay DONE until PLL Locks, ("TRUE"/"FALSE")
 )
 tcxo_96m_pll (
-    .RST(tcxo_96m_pll_reset),          
+    .RST(/*tcxo_96m_pll_reset*/0),          
     .PWRDWN(1'b0),     
     .CLKIN1(TCXO_19M2),       
     .CLKFBOUT(tcxo_96m_pll_clkfb), 

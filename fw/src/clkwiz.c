@@ -368,6 +368,11 @@ void clkwiz_set_frequency(
 	// Update clkwiz registers
 	write_clkwiz_regs(wiz);
 
+    xil_printf("Waiting for lock...\n");
+    while ( !(wiz->regs->status & 0x01) ) {
+        usleep(1000);
+    }
+    xil_printf("Locked.\n");
 
 	clkwiz_trace("Exit %s\n", __func__);
 	//return XST_SUCCESS;

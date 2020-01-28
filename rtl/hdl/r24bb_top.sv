@@ -103,6 +103,11 @@ module r24bb_top(
 
 
 
+
+wire pl_clk0;
+wire pl_reset_n;
+
+
 /////////////////////////////////////////////////////////////
 //
 // Registers
@@ -289,26 +294,34 @@ MMCME2_BASE_inst (
 );
 */
 
-/*
+wire clkfb;
+wire locked;
+wire mclk_9M728;
+wire mclk_12M228;
+assign clk = pl_clk0;
+assign mclk = mclk_9M728;
+assign reset = !locked;
+
 MMCME2_BASE #(
     .REF_JITTER1(0.01), // 0.01UI = 100ps
     .CLKIN1_PERIOD(10.000), // 100MHz 
     .BANDWIDTH("OPTIMIZED"),   // Jitter programming (OPTIMIZED, HIGH, LOW)  
-    .DIVCLK_DIVIDE(6),
-    .CLKFBOUT_MULT_F(51.875), // 100MHz in -> 864.583MHz VCO
-    .CLKOUT0_DIVIDE_F(88.875)    // 864.583MHz VCO -> 9.728MHz MCLK 
+    .DIVCLK_DIVIDE(7),
+    .CLKFBOUT_MULT_F(61.625), // 100MHz in -> 880.357MHz VCO
+    .CLKOUT0_DIVIDE_F(90.5),    // 880.357MHz VCO -> 9.72770MHz MCLK 
+    .CLKOUT1_DIVIDE(72)    // 880.357MHz VCO -> 12.22718MHz MCLK 
 )
 MMCME2_BASE_inst (
-//    .CLKIN1(TCXO_19M2), 
     .CLKIN1(clk), 
     .CLKFBOUT(clkfb),  
     .CLKFBIN(clkfb),    
-    .CLKOUT0(mclk),     
+    .CLKOUT0(mclk_9M728),     
+    .CLKOUT1(mclk_12M228),     
     .LOCKED(locked), 
     .PWRDWN(1'b0),     
-    .RST(1'b0)      
+    .RST(!pl_reset_n)      
 );
-*/
+
 
 /*
 assign clk <= clkout0;
@@ -1526,8 +1539,6 @@ wire [2:0] IRQ_F2P_0 = {
 
 
 
-
-
 /*
 assign GPIO_0_0_tri_i[0] = !USB_IO_INT_N;
 assign GPIO_0_0_tri_i[1] = !CODEC_IO_INT_N;
@@ -1537,16 +1548,8 @@ assign GPIO_0_0_tri_i[4] = pbka_full;
 
 r24bb_bd r24bb_bd_inst (
 
-    .pclk(clk),
-    .presetn(!reset),
-    
-    .clk(clk),
-    .reset(reset),
-    
-    .mclk(mclk),
-    .mreset(mreset),
-    
-    .TCXO_19M2(TCXO_19M2),
+    .pl_clk0(pl_clk0),
+    .pl_reset_n(pl_reset_n),
     
     .VIN_v_n(VN),
     .VIN_v_p(VP),

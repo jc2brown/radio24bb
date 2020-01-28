@@ -37,13 +37,6 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # To test this script, run the following commands from Vivado Tcl console:
 # source r24bb_bd_script.tcl
 
-
-# The design that will be created by this Tcl script contains the following 
-# module references:
-# clock_reset
-
-# Please add the sources of those modules before sourcing this Tcl script.
-
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
 # <./myproj/project_1.xpr> in the current working folder.
@@ -131,7 +124,6 @@ set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_apb_bridge:3.0\
-xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:processing_system7:5.5\
 xilinx.com:ip:xadc_wiz:3.3\
@@ -152,31 +144,6 @@ xilinx.com:ip:xadc_wiz:3.3\
       set bCheckIPsPassed 0
    }
 
-}
-
-##################################################################
-# CHECK Modules
-##################################################################
-set bCheckModules 1
-if { $bCheckModules == 1 } {
-   set list_check_mods "\ 
-clock_reset\
-"
-
-   set list_mods_missing ""
-   common::send_msg_id "BD_TCL-006" "INFO" "Checking if the following modules exist in the project's sources: $list_check_mods ."
-
-   foreach mod_vlnv $list_check_mods {
-      if { [can_resolve_reference $mod_vlnv] == 0 } {
-         lappend list_mods_missing $mod_vlnv
-      }
-   }
-
-   if { $list_mods_missing ne "" } {
-      catch {common::send_msg_id "BD_TCL-115" "ERROR" "The following module(s) are not found in the project: $list_mods_missing" }
-      common::send_msg_id "BD_TCL-008" "INFO" "Please add source files for the missing module(s) above."
-      set bCheckIPsPassed 0
-   }
 }
 
 if { $bCheckIPsPassed != 1 } {
@@ -226,6 +193,7 @@ proc create_root_design { parentCell } {
   set ADC [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 ADC ]
   set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
   set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
+  set GPIO_0_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO_0_0 ]
   set I2C [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 I2C ]
   set VIN [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_analog_io_rtl:1.0 VIN ]
   set apb [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:apb_rtl:1.0 apb ]
@@ -235,20 +203,8 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.PortWidth {3} \
  ] $IRQ_F2P_0
-  set TCXO_19M2 [ create_bd_port -dir I -type clk TCXO_19M2 ]
-  set_property -dict [ list \
-   CONFIG.CLK_DOMAIN {r24bb_bd_TCXO_19M2} \
-   CONFIG.FREQ_HZ {19200000} \
- ] $TCXO_19M2
-  set clk [ create_bd_port -dir O -type clk clk ]
-  set mclk [ create_bd_port -dir O -type clk mclk ]
-  set mreset [ create_bd_port -dir O mreset ]
-  set pclk [ create_bd_port -dir I -type clk pclk ]
-  set_property -dict [ list \
-   CONFIG.FREQ_HZ {100000000} \
- ] $pclk
-  set presetn [ create_bd_port -dir I presetn ]
-  set reset [ create_bd_port -dir O -type rst reset ]
+  set pl_clk0 [ create_bd_port -dir O -type clk pl_clk0 ]
+  set pl_reset_n [ create_bd_port -dir O -from 0 -to 0 -type rst pl_reset_n ]
 
   # Create instance: axi_apb_bridge_0, and set properties
   set axi_apb_bridge_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_apb_bridge:3.0 axi_apb_bridge_0 ]
@@ -260,76 +216,9 @@ proc create_root_design { parentCell } {
   # Create instance: axi_interconnect_0, and set properties
   set axi_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0 ]
   set_property -dict [ list \
-   CONFIG.NUM_MI {4} \
+   CONFIG.NUM_MI {2} \
    CONFIG.NUM_SI {1} \
  ] $axi_interconnect_0
-
-  # Create instance: clk_clkwiz, and set properties
-  set clk_clkwiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_clkwiz ]
-  set_property -dict [ list \
-   CONFIG.CLKIN1_JITTER_PS {100.0} \
-   CONFIG.CLKIN2_JITTER_PS {104.16} \
-   CONFIG.CLKOUT1_JITTER {123.670} \
-   CONFIG.CLKOUT1_PHASE_ERROR {92.672} \
-   CONFIG.CLKOUT2_JITTER {123.670} \
-   CONFIG.CLKOUT2_PHASE_ERROR {92.672} \
-   CONFIG.CLKOUT2_USED {true} \
-   CONFIG.JITTER_SEL {Min_O_Jitter} \
-   CONFIG.MMCM_BANDWIDTH {HIGH} \
-   CONFIG.MMCM_CLKFBOUT_MULT_F {11.000} \
-   CONFIG.MMCM_CLKIN1_PERIOD {10.000} \
-   CONFIG.MMCM_CLKIN2_PERIOD {10.417} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {11.000} \
-   CONFIG.MMCM_CLKOUT1_DIVIDE {11} \
-   CONFIG.MMCM_DIVCLK_DIVIDE {1} \
-   CONFIG.NUM_OUT_CLKS {2} \
-   CONFIG.PRIM_IN_FREQ {100} \
-   CONFIG.PRIM_SOURCE {Global_buffer} \
-   CONFIG.SECONDARY_IN_FREQ {96} \
-   CONFIG.SECONDARY_SOURCE {Global_buffer} \
-   CONFIG.USE_DYN_RECONFIG {true} \
-   CONFIG.USE_INCLK_SWITCHOVER {true} \
- ] $clk_clkwiz
-
-  # Create instance: clock_reset_0, and set properties
-  set block_name clock_reset
-  set block_cell_name clock_reset_0
-  if { [catch {set clock_reset_0 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
-     catch {common::send_msg_id "BD_TCL-105" "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   } elseif { $clock_reset_0 eq "" } {
-     catch {common::send_msg_id "BD_TCL-106" "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
-     return 1
-   }
-  
-  # Create instance: mclk_clkwiz, and set properties
-  set mclk_clkwiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 mclk_clkwiz ]
-  set_property -dict [ list \
-   CONFIG.CLKIN1_JITTER_PS {100.0} \
-   CONFIG.CLKIN2_JITTER_PS {104.16} \
-   CONFIG.CLKOUT1_JITTER {508.423} \
-   CONFIG.CLKOUT1_PHASE_ERROR {488.845} \
-   CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {9.728} \
-   CONFIG.CLKOUT2_JITTER {491.463} \
-   CONFIG.CLKOUT2_PHASE_ERROR {488.845} \
-   CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {12.288} \
-   CONFIG.CLKOUT2_USED {true} \
-   CONFIG.JITTER_SEL {No_Jitter} \
-   CONFIG.MMCM_BANDWIDTH {OPTIMIZED} \
-   CONFIG.MMCM_CLKFBOUT_MULT_F {57.625} \
-   CONFIG.MMCM_CLKIN1_PERIOD {10.000} \
-   CONFIG.MMCM_CLKIN2_PERIOD {10.417} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {84.625} \
-   CONFIG.MMCM_CLKOUT1_DIVIDE {67} \
-   CONFIG.MMCM_DIVCLK_DIVIDE {7} \
-   CONFIG.NUM_OUT_CLKS {2} \
-   CONFIG.PRIM_IN_FREQ {100} \
-   CONFIG.PRIM_SOURCE {Global_buffer} \
-   CONFIG.SECONDARY_IN_FREQ {96} \
-   CONFIG.SECONDARY_SOURCE {Global_buffer} \
-   CONFIG.USE_DYN_RECONFIG {true} \
-   CONFIG.USE_INCLK_SWITCHOVER {true} \
- ] $mclk_clkwiz
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
@@ -441,7 +330,7 @@ proc create_root_design { parentCell } {
    CONFIG.PCW_FCLK_CLK2_BUF {FALSE} \
    CONFIG.PCW_FCLK_CLK3_BUF {FALSE} \
    CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100} \
-   CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {100} \
+   CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {12.228} \
    CONFIG.PCW_FPGA2_PERIPHERAL_FREQMHZ {33.333333} \
    CONFIG.PCW_FPGA3_PERIPHERAL_FREQMHZ {50} \
    CONFIG.PCW_FPGA_FCLK0_ENABLE {1} \
@@ -843,46 +732,22 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_apb_bridge_0_APB_M [get_bd_intf_ports apb] [get_bd_intf_pins axi_apb_bridge_0/APB_M]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_apb_bridge_0/AXI4_LITE] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_interconnect_0/M01_AXI] [get_bd_intf_pins xadc_wiz_0/s_axi_lite]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M02_AXI [get_bd_intf_pins axi_interconnect_0/M02_AXI] [get_bd_intf_pins clk_clkwiz/s_axi_lite]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M03_AXI [get_bd_intf_pins axi_interconnect_0/M03_AXI] [get_bd_intf_pins mclk_clkwiz/s_axi_lite]
   connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
   connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
+  connect_bd_intf_net -intf_net processing_system7_0_GPIO_0 [get_bd_intf_ports GPIO_0_0] [get_bd_intf_pins processing_system7_0/GPIO_0]
   connect_bd_intf_net -intf_net processing_system7_0_IIC_1 [get_bd_intf_ports I2C] [get_bd_intf_pins processing_system7_0/IIC_1]
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins axi_interconnect_0/S00_AXI] [get_bd_intf_pins processing_system7_0/M_AXI_GP0]
   connect_bd_intf_net -intf_net xadc_wiz_0_M_AXIS [get_bd_intf_ports ADC] [get_bd_intf_pins xadc_wiz_0/M_AXIS]
 
   # Create port connections
   connect_bd_net -net IRQ_F2P_0_1 [get_bd_ports IRQ_F2P_0] [get_bd_pins processing_system7_0/IRQ_F2P]
-  connect_bd_net -net TCKO_19M2_1 [get_bd_ports TCXO_19M2] [get_bd_pins clock_reset_0/TCXO_19M2]
-  connect_bd_net -net clk_clkwiz_clk_out1 [get_bd_pins clk_clkwiz/clk_out1] [get_bd_pins clock_reset_0/clk_clkwiz_clkout0]
-  connect_bd_net -net clk_clkwiz_clk_out2 [get_bd_pins clk_clkwiz/clk_out2] [get_bd_pins clock_reset_0/clk_clkwiz_clkout1]
-  connect_bd_net -net clk_clkwiz_locked [get_bd_pins clk_clkwiz/locked] [get_bd_pins clock_reset_0/clk_clkwiz_locked]
-  connect_bd_net -net clock_reset_0_clk [get_bd_ports clk] [get_bd_pins clock_reset_0/clk]
-  connect_bd_net -net clock_reset_0_clk_clkwiz_clk_sel [get_bd_pins clk_clkwiz/clk_in_sel] [get_bd_pins clock_reset_0/clk_clkwiz_clk_sel]
-  connect_bd_net -net clock_reset_0_clk_clkwiz_clkin [get_bd_pins clk_clkwiz/clk_in1] [get_bd_pins clock_reset_0/clk_clkwiz_clkin1]
-  connect_bd_net -net clock_reset_0_clk_clkwiz_clkin2 [get_bd_pins clk_clkwiz/clk_in2] [get_bd_pins clock_reset_0/clk_clkwiz_clkin2]
-  connect_bd_net -net clock_reset_0_gpiops_i [get_bd_pins clock_reset_0/gpiops_i] [get_bd_pins processing_system7_0/GPIO_I]
-  connect_bd_net -net clock_reset_0_mclk [get_bd_ports mclk] [get_bd_pins clock_reset_0/mclk]
-  connect_bd_net -net clock_reset_0_mclk_clkwiz_clk_sel [get_bd_pins clock_reset_0/mclk_clkwiz_clk_sel] [get_bd_pins mclk_clkwiz/clk_in_sel]
-  connect_bd_net -net clock_reset_0_mclk_clkwiz_clkin [get_bd_pins clock_reset_0/mclk_clkwiz_clkin1] [get_bd_pins mclk_clkwiz/clk_in1]
-  connect_bd_net -net clock_reset_0_mclk_clkwiz_clkin2 [get_bd_pins clock_reset_0/mclk_clkwiz_clkin2] [get_bd_pins mclk_clkwiz/clk_in2]
-  connect_bd_net -net clock_reset_0_mreset [get_bd_ports mreset] [get_bd_pins clock_reset_0/mreset]
-  connect_bd_net -net clock_reset_0_reset [get_bd_ports reset] [get_bd_pins clock_reset_0/reset]
-  connect_bd_net -net mclk_clkwiz_clk_out1 [get_bd_pins clock_reset_0/mclk_clkwiz_clkout0] [get_bd_pins mclk_clkwiz/clk_out1]
-  connect_bd_net -net mclk_clkwiz_clk_out2 [get_bd_pins clock_reset_0/mclk_clkwiz_clkout1] [get_bd_pins mclk_clkwiz/clk_out2]
-  connect_bd_net -net mclk_clkwiz_locked [get_bd_pins clock_reset_0/mclk_clkwiz_locked] [get_bd_pins mclk_clkwiz/locked]
-  connect_bd_net -net pclk_1 [get_bd_ports pclk] [get_bd_pins axi_apb_bridge_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/M00_ACLK]
-  connect_bd_net -net presetn_1 [get_bd_ports presetn] [get_bd_pins axi_apb_bridge_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN]
   connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_interconnect_0/M01_ARESETN] [get_bd_pins axi_interconnect_0/M02_ARESETN] [get_bd_pins axi_interconnect_0/M03_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins clk_clkwiz/s_axi_aresetn] [get_bd_pins clock_reset_0/pl_reset_n] [get_bd_pins mclk_clkwiz/s_axi_aresetn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins xadc_wiz_0/s_axi_aresetn]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins axi_interconnect_0/M02_ACLK] [get_bd_pins axi_interconnect_0/M03_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins clk_clkwiz/s_axi_aclk] [get_bd_pins clock_reset_0/pl_clk0] [get_bd_pins mclk_clkwiz/s_axi_aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins xadc_wiz_0/s_axi_aclk] [get_bd_pins xadc_wiz_0/s_axis_aclk]
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_ports pl_reset_n] [get_bd_pins axi_apb_bridge_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_interconnect_0/M01_ARESETN] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins xadc_wiz_0/s_axi_aresetn]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_ports pl_clk0] [get_bd_pins axi_apb_bridge_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/M01_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins xadc_wiz_0/s_axi_aclk] [get_bd_pins xadc_wiz_0/s_axis_aclk]
   connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins proc_sys_reset_0/aux_reset_in] [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins processing_system7_0/FCLK_RESET0_N]
-  connect_bd_net -net processing_system7_0_GPIO_O [get_bd_pins clock_reset_0/gpiops_o] [get_bd_pins processing_system7_0/GPIO_O]
 
   # Create address segments
   create_bd_addr_seg -range 0x00010000 -offset 0x43C00000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs apb/Reg] SEG_apb_Reg1
-  create_bd_addr_seg -range 0x00010000 -offset 0x43C20000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs clk_clkwiz/s_axi_lite/Reg] SEG_clk_clkwiz_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0x43C30000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs mclk_clkwiz/s_axi_lite/Reg] SEG_mclk_clkwiz_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0x43C10000 [get_bd_addr_spaces processing_system7_0/Data] [get_bd_addr_segs xadc_wiz_0/s_axi_lite/Reg] SEG_xadc_wiz_0_Reg
 
 
