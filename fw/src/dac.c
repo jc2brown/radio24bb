@@ -150,7 +150,7 @@ void handle_dac_led_cmd(void *arg, struct command *cmd) {
 
 void handle_dac_src_cmd(void *arg, struct command *cmd) {
 	struct dac_channel *channel = (struct dac_channel *)arg;
-	static char *dac_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "usb", "aud", "mpx", "pbka" };
+	static char *dac_srcs[] = { "raw", "ina", "inb", "ddsa", "ddsb", "usb", "aud", "pbka" };
 	char *src = cmd->tokens[cmd->index++];
 	if (!strcmp(src, "help")) {
 		for (int i = 0; i < sizeof(dac_srcs)/sizeof(*dac_srcs); ++i) {

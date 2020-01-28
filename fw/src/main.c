@@ -34,15 +34,6 @@
 
 
 
-
-void dump_handler(void *arg, struct command *cmd) {	
-	struct radio24bb *r24bb = (struct radio24bb *)arg;
-	radio24bb_dump(r24bb);
-}
-
-
-
-
 void usb_handler(void *arg, struct command *cmd) {
 
 	struct radio24bb *r24bb = (struct radio24bb *)arg;
@@ -563,6 +554,13 @@ void outbyte(char c) {
 
 
 
+
+
+
+
+
+
+
 int main()
 {
 
@@ -575,8 +573,8 @@ int main()
 	//_return_if_error_(ina219_config());
 
 
-
 	xil_printf("Starting Baseband... \n");
+
 
 	xil_printf("Allocating devices... \n");
 	struct radio24bb *r24bb = make_radio24bb();
@@ -592,14 +590,13 @@ int main()
 	xil_printf("Done initializing devices.\n");
 
 	xil_printf("Baseband %d ready \n", get_serial(r24bb));
-	// xil_printf("\n");
+	xil_printf("\n");
 
 
 
 	// add_command(NULL, "xadc", xadc_handler);
 
 	//add_command(NULL, "tonea", tonea_handler);
-	add_command(r24bb->shell->root_ctx, "dump", dump_handler);	
 	add_command(r24bb->shell->root_ctx, "usb", usb_handler);
 	add_command(r24bb->shell->root_ctx, "stereo", stereo_handler);
 	add_command(r24bb->shell->root_ctx, "amtone", amtone_handler);

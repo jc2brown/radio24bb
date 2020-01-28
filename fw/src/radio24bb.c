@@ -42,42 +42,6 @@
 
 
 
-#define DumpReg(strct, field) xil_printf("%-16s  0x%08X\n", #field, (strct)->field)
-
-
-void radio24bb_dump(struct radio24bb *r24bb) {
-
-	DumpReg(r24bb->regs, leds);
-	DumpReg(r24bb->regs, usb_wr_full);
-	DumpReg(r24bb->regs, usb_rd_empty);
-
-	xil_printf("leds: 0x%02X\n", r24bb->regs->leds);
-	xil_printf("usb_wr_full: 0x%02X\n", r24bb->regs->usb_wr_full);
-	xil_printf("usb_rd_empty: 0x%02X\n", r24bb->regs->usb_rd_empty);
-	xil_printf("usb_wr_mux: 0x%02X\n", r24bb->regs->usb_wr_mux);
-	xil_printf("aud_rate: 0x%02X\n", r24bb->regs->aud_rate);
-	xil_printf("usb_led_r: 0x%02X\n", r24bb->regs->usb_led_r);
-	xil_printf("pwr_led_r: 0x%02X\n", r24bb->regs->pwr_led_r);
-	xil_printf("led0_brightness: 0x%04X\n", r24bb->regs->led0_brightness);
-	xil_printf("led1_brightness: 0x%04X\n", r24bb->regs->led1_brightness);
-	xil_printf("i2c_sel: 0x%02X\n", r24bb->regs->i2c_sel);
-	xil_printf("pbka_full: 0x%02X\n", r24bb->regs->pbka_full);
-	xil_printf("audout_mux: 0x%02X\n", r24bb->regs->audout_mux);
-	xil_printf("clk_sel: 0x%02X\n", r24bb->regs->clk_sel);
-
-
-
-
-	// adc_channel_dump(r24bb->ina);
-	// adc_channel_dump(r24bb->inb);
-
-	// dac_channel_dump(r24bb->outa);
-	// dac_channel_dump(r24bb->outb);
-
-
-
-
-}
 
 
 
@@ -93,7 +57,6 @@ void init_radio24bb_regs(struct radio24bb_regs *regs) {
 	regs->pwr_led_r = 1;
 	regs->led0_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));
 	regs->led1_brightness = 40000; //(uint32_t)(0.1 * ((1UL<<16)-1));	
-	regs->clk_sel = 0;
 }
 
 
@@ -363,24 +326,37 @@ int update_usb_ioexp_0(struct radio24bb *r24bb) {
 
 
 
+
+
+
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 	trace("init_radio24bb\n");
+
+
+
+	_return_if_error_(
+		init_scugic(
+			r24bb->scugic, 
+			XPAR_SCUGIC_0_DEVICE_ID
+	));
+
+
+
+	_return_if_error_(
+		init_gpiops(
+			r24bb->gpiops, 
+			XPAR_PS7_GPIO_0_DEVICE_ID,
+			r24bb->scugic,
+			XPAR_XGPIOPS_0_INTR
+	));
+
 
 
 	r24bb->regs = (struct radio24bb_regs *)regs_addr;
 	init_radio24bb_regs(r24bb->regs);
 
 
-//	_return_if_error_(
-//		init_cmd_shell(r24bb->shell,
-//			"XxX", r24bb
-//	));
-
-	_return_if_error_(
-		init_scugic(r24bb->scugic, 
-			XPAR_SCUGIC_0_DEVICE_ID
-	));
 
 
 	_return_if_error_(
@@ -390,15 +366,9 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			XPAR_XDMAPS_1_DEVICE_ID,
 			XPAR_XDMAPS_0_FAULT_INTR,
 			XPAR_XDMAPS_0_DONE_INTR_0,
-			playback_dma_done_handler,
-			r24bb->pbka
+			playback_dma_done_handler, // ch0 handler
+			r24bb->pbka // ch0 callback arg
 	));
-
-
-
-
-
-
 
 
 	_return_if_error_(
@@ -408,13 +378,6 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 			XPAR_PS7_UART_1_INTR
 	));
 
-
-	_return_if_error_(
-		init_gpiops(r24bb->gpiops, 
-			XPAR_PS7_GPIO_0_DEVICE_ID,
-			r24bb->scugic,
-			XPAR_XGPIOPS_0_INTR
-	));
 
 	_return_if_error_(
 		init_spips(r24bb->spips1, 
@@ -567,7 +530,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	XGpioPs_Write(gpiops_ptr, 3, 0xFFFFFFFF);
 
 */
-
+/*
 	XGpioPs_Write(r24bb->gpiops, 1, 0x0);
 	XGpioPs_Write(r24bb->gpiops, 2, 0x00);
 	XGpioPs_Write(r24bb->gpiops, 3, 0x00);
@@ -584,7 +547,7 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 
 
 	XGpioPs_WritePin(r24bb->gpiops, 90, 1);	// USB_RESET_N
-
+*/
 
 	// ioexp_write_port(r24bb->codec_ioexp, 0, 0x00);
 	// ioexp_write_port(r24bb->usb_ioexp_0, 0, 0x00);

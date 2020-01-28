@@ -85,7 +85,6 @@ struct radio24bb_regs {
 	volatile uint32_t pbka_data;
 	volatile uint32_t pbka_full;
 	volatile uint32_t audout_mux;
-	volatile uint32_t clk_sel;
 }; 
 
 
@@ -96,7 +95,7 @@ struct radio24bb *make_radio24bb();
 int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr);
 
 
-void radio24bb_dump(struct radio24bb *r24bb);
+
 
 int get_serial(struct radio24bb *r24bb);
 
