@@ -111,20 +111,27 @@ class ScopeChannel:
 
 		if event.type == pygame.MOUSEMOTION:
 			buttons = [0, 0, 0]
-			if isinstance(event.buttons, tuple):
-				buttons = event.buttons
-			else:
-				if event.buttons & 0x100:
-					buttons[0] = 1
-				if event.buttons & 0x200:
-					buttons[1] = 1
-				if event.buttons & 0x400:
-					buttons[2] = 1
+			if hasattr(event, "buttons"):
 
-			if buttons[1]:
+				if isinstance(event.buttons, tuple):
+					buttons = event.buttons
+				else:
+					if event.buttons & 0x100:
+						buttons[0] = 1
+					if event.buttons & 0x200:
+						buttons[1] = 1
+					if event.buttons & 0x400:
+						buttons[2] = 1
+
+
+			if buttons[1] and self.button_states[2].dragging:
 				button = 2
 				drag_stop = event.pos
-				rel = (drag_stop[0]-self.button_states[button].drag_start_pos[0], drag_stop[1]-self.button_states[button].drag_start_pos[1])
+				rel = (
+					drag_stop[0]-
+					self.button_states[button].drag_start_pos[0], 
+					drag_stop[1]-
+					self.button_states[button].drag_start_pos[1])
 				self.temp_xoffset = rel[0]
 				self.temp_yoffset = rel[1]
 
@@ -158,10 +165,17 @@ class ScopeChannel:
 		dv = v[zero_crossings[pos_zc_index]+1] - v[zero_crossings[pos_zc_index]]
 		interp = v[zero_crossings[pos_zc_index]] / dv
 
-		t =  t + (self.xoffset + self.temp_xoffset  - (zero_crossings[pos_zc_index] - interp) * display_width / trace_data_len)	
-		v = v * (display_height / (2**bit_depth)) + (display_height/2 + self.yoffset + self.temp_yoffset)
+		t0 = self.xoffset + self.temp_xoffset
+		v0 = (display_height/2 + self.yoffset + self.temp_yoffset)
+
+		t =  t + (t0  - (zero_crossings[pos_zc_index] - interp) * display_width / trace_data_len)	
+		v = v * (display_height / (2**bit_depth)) + v0
 
 		data = list(zip(t, v))
+
+		pygame.draw.line(surface, pygame.Color(192, 192, 0), (0, v0), (display_size[0], v0), 1)
+
+		pygame.draw.line(surface, pygame.Color(192, 192, 0), (t0, 0), (t0, display_size[1]), 1)
 
 		pygame.draw.lines(surface, yellow, False, data, 2)
 
@@ -202,6 +216,7 @@ class ScopeAxis:
 
 		self.channels = []
 
+		self.absolute_region = None
 
 
 
@@ -275,7 +290,7 @@ class ScopeAxis:
 			pygame.draw.line(surface, yellow, (x-4, y), (x-6, y), 5)
 			pygame.draw.line(surface, yellow, (x-2, y), (x-4, y), 3)
 			pygame.draw.line(surface, yellow, (x-0, y), (x-2, y), 1)
-			pygame.draw.line(surface, pygame.Color(128, 128, 0), (x, y), (x+frame_size[0]-self.margin.width, y), 1)
+
 			# pygame.draw.circle(surface, yellow, (-self.margin.left, ((-self.margin.top)+(frame_size[1]-self.margin.bottom))//2 + channel.yoffset + channel.temp_yoffset), 7)
 
 
@@ -293,7 +308,10 @@ class ScopeDisplay:
 	def __init__(self, tk_frame):
 		self.tk_frame = tk_frame
 		self.pygame_display = None    
-		self.axes = { "default" : ScopeAxis() }
+		self.axes = { 
+			"default" : ScopeAxis(),
+			"secondary" : ScopeAxis() 
+		}
 		self.channels = []
 
 
@@ -303,12 +321,13 @@ class ScopeDisplay:
 
 	def handle_event(self, event):
 
-		print("ScopeDisplay.handle_event()")
+		# print("ScopeDisplay.handle_event()")
 
 		for axis in self.axes.values():
 			if event.type == pygame.MOUSEBUTTONDOWN:
-				print(event.pos)
-				axis.handle_event(event)
+				if axis.absolute_region.collidepoint(event.pos):
+					print(event.pos)
+					axis.handle_event(event)
 
 			if event.type == pygame.MOUSEBUTTONUP:
 				axis.handle_event(event)
@@ -333,15 +352,25 @@ class ScopeDisplay:
 			pygame.display.init()
 			pygame.display.update()
 
+			self.buffer = pygame.Surface(self.pygame_display.get_size())
+			self.display_size = self.pygame_display.get_size()
+
+			self.axes["default"].absolute_region = pygame.Rect((0, 0), (self.display_size[0], self.display_size[1]//2))
+			self.default_axis_subbuf = self.buffer.subsurface(self.axes["default"].absolute_region)
+			self.default_axis_size = (self.display_size[0], self.display_size[1]//2)
 
 
-		display_size = self.pygame_display.get_size()
-		# buffer = pygame.Surface(display_size, flags=pygame.SRCALPHA) # Set SRCALPHA to prevent clearing previous display - may be useful for persistence
-		buffer = pygame.Surface(display_size)
+			self.axes["secondary"].absolute_region = pygame.Rect((0, self.display_size[1]//2), (self.display_size[0], self.display_size[1]//2))
+			self.secondary_axis_subbuf = self.buffer.subsurface(self.axes["secondary"].absolute_region)
+			self.secondary_axis_size = (self.display_size[0], self.display_size[1]//2)
 
-		[ axis.draw(buffer, frame_size) for axis in self.axes.values() ]
 
-		self.pygame_display.blit(buffer, (0, 0))
+		self.buffer.fill(black)	
+
+		self.axes["default"].draw(self.default_axis_subbuf, self.default_axis_size)
+		self.axes["secondary"].draw(self.secondary_axis_subbuf, self.secondary_axis_size)
+
+		self.pygame_display.blit(self.buffer, (0, 0))
 		pygame.display.flip()
 
 
@@ -351,6 +380,45 @@ class ScopeDisplay:
 
 
 class UI(tk.Tk):
+
+
+
+	def tkinter_event_to_pygame_event(evt):
+		print(evt)
+
+
+
+	def post_tkinter_button_event_as_pygame_event(evt):
+		UI.tkinter_event_to_pygame_event(evt)
+		pygame.event.post(
+			pygame.event.Event(
+				pygame.MOUSEBUTTONDOWN, 
+				pos=(evt.x, evt.y), 
+				button=evt.num
+			)
+		)
+
+
+	def post_tkinter_button_release_event_as_pygame_event(evt):
+		UI.tkinter_event_to_pygame_event(evt)
+		pygame.event.post(
+			pygame.event.Event(
+				pygame.MOUSEBUTTONUP, 
+				pos=(evt.x, evt.y), 
+				button=evt.num
+			)
+		)
+
+
+	def post_tkinter_motion_event_as_pygame_event(evt):
+		pygame.event.post(
+			pygame.event.Event(
+				pygame.MOUSEMOTION, 
+				pos=(evt.x, evt.y), 
+				rel=(0, 0), 
+				button=evt.state
+			)
+		)
 
 
 
@@ -376,10 +444,13 @@ class UI(tk.Tk):
 
 
 	def bind_interrupt_forwarders(self):
+		# This forwarder used to be necessary but it seems that changing the order of something init-related  
+		# to pygame and tkinter has caused pygame to correctly capture mouse events 
+		pass
 		# These must be bound only after pygame.display.init() has been called to avoid exceptions at startup when Tkinter catches mouse events before the pygame display exists
-		self.scope_frame.bind("<Button>", lambda evt: pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, pos=(evt.x, evt.y), button=evt.num)))
-		self.scope_frame.bind("<ButtonRelease>", lambda evt: pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONUP, pos=(evt.x, evt.y), button=evt.num)))
-		self.scope_frame.bind("<Motion>", lambda evt: pygame.event.post(pygame.event.Event(pygame.MOUSEMOTION, pos=(evt.x, evt.y), rel=(0, 0), buttons=evt.state))) # Mouse buttons are encoded in evt.state[10..8]
+		# self.scope_frame.bind("<Button>", UI.post_tkinter_button_event_as_pygame_event)
+		# self.scope_frame.bind("<ButtonRelease>", UI.post_tkinter_button_release_event_as_pygame_event)
+		# self.scope_frame.bind("<Motion>", UI.post_tkinter_motion_event_as_pygame_event) # Mouse buttons are encoded in evt.state[10..8]
 
 
 
@@ -410,6 +481,7 @@ class App:
 		self.scope_display = ScopeDisplay(self.ui.scope_frame)
 
 		self.scope_display.add_channel(ScopeChannel(self.data_source), ["default"])
+		self.scope_display.add_channel(ScopeChannel(self.data_source), ["secondary"])
 
 		# ui = UI(500, 500)
 		self.ui.bind_interrupt_forwarders()
