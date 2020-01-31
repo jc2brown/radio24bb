@@ -154,28 +154,22 @@ class ScopeChannel:
 		pass
 
 
-	def update_display_size(self, display_size, trace_data_len):
 
-		# The following depends only on surface dimensions and trace buffer length, not on trace data
+	# The following depends only on surface dimensions and trace buffer length, not on trace data
+	def generate_time_points(self, display_size, trace_data_len):
 
 		if display_size[0] <= 0 or display_size[1] <= 0: 
 			return
 
-
 		if display_size == self.display_size and trace_data_len == self.trace_data_len:
 			return 
-
 
 		self.display_size = display_size
 		self.trace_data_len = trace_data_len
 
-		# (display_width, display_height) = display_size
-
-		# if display_size[0] <= 0 or display_size[1] <= 0: 
-		# 	return
-
-
-		self.t = np.linspace(0, 1.5*self.display_size[0], self.trace_data_len)
+		self.t = np.linspace(0, 1.5*self.display_size[0], self.trace_data_len, endpoint=False)
+		# self.t = np.linspace(0, self.trace_data_len, self.trace_data_len, endpoint=False)
+		# self.t = np.linspace(0, 1.0, self.trace_data_len, endpoint=False)
 
 
 
@@ -200,7 +194,7 @@ class ScopeChannel:
 			return
 
 
-		self.update_display_size(display_size, trace_data_len)
+		self.generate_time_points(display_size, trace_data_len)
 
 
 
@@ -227,9 +221,10 @@ class ScopeChannel:
 			pos_zc_index = len(zero_crossings)//2 + 1
 
 		dv = v[zero_crossings[pos_zc_index]+1] - v[zero_crossings[pos_zc_index]]
-		interp = v[zero_crossings[pos_zc_index]] / dv - 0.5
-
+		interp = v[zero_crossings[pos_zc_index]] / dv - 0.0
+		#interp = 0
 		x =  self.t + (self.x0  - (zero_crossings[pos_zc_index] - interp) * 1.5 * display_width / trace_data_len)	
+		# x =  (1.5 * display_width) * (self.t / trace_data_len+ ((self.x0  - (zero_crossings[pos_zc_index] - interp) / trace_data_len)))
 		y = v * (.8 * display_height / (2**self.data_source.bit_depth)) + self.y0
 
 		
@@ -394,7 +389,7 @@ class ScopeDisplay:
 		self.channels = []
 
 
-	def add_channel(self, scope_channel, axes_names, color):
+	def add_channel(self, scope_channel, axes_names):
 		[ self.axes[axis_name].add_channel(scope_channel) for axis_name in axes_names ]
 
 
@@ -426,6 +421,7 @@ class ScopeDisplay:
 			if sys.platform == "Windows":
 				os.environ['SDL_VIDEODRIVER'] = 'windib'
 			self.pygame_display = pygame.display.set_mode(frame_size, flags=pygame.DOUBLEBUF)
+			print(pygame.display.Info())
 			self.pygame_display_size = frame_size
 			pygame.init()
 			pygame.display.init()
@@ -452,6 +448,8 @@ class ScopeDisplay:
 
 		self.pygame_display.blit(self.buffer, (0, 0))
 		pygame.display.flip()
+		# pygame.display.update([self.axes["default"].absolute_region, self.axes["secondary"].absolute_region])
+		# pygame.display.update(self.axes["secondary"].absolute_region)
 
 
 
@@ -535,9 +533,9 @@ class UI(tk.Tk):
 
 
 
-def on_resize(event):
-	w, h = event.width, event.height
-	print("tk resize %d x %d" % (event.width, event.height))
+# def on_resize(event):
+# 	w, h = event.width, event.height
+# 	print("tk resize %d x %d" % (event.width, event.height))
 	#draw(scope_ui, screen)
 
 
@@ -566,12 +564,15 @@ class App:
 
 		self.scope_display = ScopeDisplay(self.ui.scope_frame)
 
-		self.scope_display.add_channel(ScopeChannel(self.ch1_data_source, yellow), ["default"], yellow)
-		self.scope_display.add_channel(ScopeChannel(self.ch2_data_source, cyan), ["secondary"], cyan)
+		ch1 = ScopeChannel(self.ch1_data_source, yellow)
+		ch2 = ScopeChannel(self.ch2_data_source, cyan)
+
+		self.scope_display.add_channel(ch1, ["default"])
+		self.scope_display.add_channel(ch2, ["secondary"])
 
 		# ui = UI(500, 500)
 		self.ui.bind_interrupt_forwarders()
-		self.ui.scope_frame.bind("<Configure>", on_resize)
+		# self.ui.scope_frame.bind("<Configure>", on_resize)
 
 		self.ui.protocol("WM_DELETE_WINDOW", App.on_close)
 		self.alive = True
