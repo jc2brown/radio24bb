@@ -19,6 +19,7 @@ from tkinter import ttk
 black = pygame.Color(0,0,0)
 gray = pygame.Color(100,100,100)
 yellow = pygame.Color(255,255,0)
+cyan = pygame.Color(0,255,255)
 
 
 
@@ -39,7 +40,7 @@ class DataSource:
 		if mode == DataSource.IF_TONE_8BIT:
 			self.sample_rate = 100_000_000
 			self.bit_depth = 8
-			self.tone_freq = 1.07e6
+			self.tone_freq = 10.7e6
 		if mode == DataSource.AF_TONE_16BIT:
 			self.sample_rate = 38_000
 			self.bit_depth = 16
@@ -70,7 +71,11 @@ class DataSource:
 
 class ScopeChannel:
 
-	def __init__(self, data_source):
+	def __init__(self, data_source, rgb):
+
+		self.rgb = rgb
+		self.trace_colour = rgb
+		self.dim_trace_colour = tuple([c//2 for c in rgb])
 
 		self.data_source = data_source
 
@@ -85,8 +90,10 @@ class ScopeChannel:
 
 		self.button_states = [None, ButtonState(), ButtonState(), ButtonState()]
 
-
-
+		self.trace_surface = None
+		
+		self.display_size = None
+		self.trace_data_len = None
 
 
 
@@ -138,52 +145,121 @@ class ScopeChannel:
 
 
 
+	def on_trace_length_change(self):
+		pass
+
+
+
+	def on_display_size_change(self):
+		pass
+
+
+	def update_display_size(self, display_size, trace_data_len):
+
+		# The following depends only on surface dimensions and trace buffer length, not on trace data
+
+		if display_size[0] <= 0 or display_size[1] <= 0: 
+			return
+
+
+		if display_size == self.display_size and trace_data_len == self.trace_data_len:
+			return 
+
+
+		self.display_size = display_size
+		self.trace_data_len = trace_data_len
+
+		# (display_width, display_height) = display_size
+
+		# if display_size[0] <= 0 or display_size[1] <= 0: 
+		# 	return
+
+
+		self.t = np.linspace(0, 1.5*self.display_size[0], self.trace_data_len)
+
+
+
+
+
+
+
+
+
+	# trace_size: (width, height) of the area into which traces may be drawn
+	# def precompute_drawing_parameters(self, trace_size):
+
+
+
 	def generate_trace_surface(self, surface, display_size, trace_data, trace_data_len):
 
-		bit_depth = 16
+
 
 		(display_width, display_height) = display_size
 
 		if display_width <= 0 or display_height <= 0: 
 			return
 
-		self.trace_surface = pygame.Surface(display_size, flags=pygame.SRCALPHA) # SRCALPHA required for transparent blitting
-		self.trace_size = display_size
 
-		t = np.linspace(0, display_width, trace_data_len)
+		self.update_display_size(display_size, trace_data_len)
+
+
+
+		self.x0 = self.xoffset + self.temp_xoffset + self.display_size[0]//2
+		self.y0 = (display_size[1]//2 + self.yoffset + self.temp_yoffset)
+
+
+
+
+		# The following depends on trace data in addition to surface dimensions and trace buffer length
+
+
+		# self.data_source.bit_depth = 16
+
 		v = np.ctypeslib.as_array(trace_data, (trace_data_len, ))
 
 		zero_crossings = np.where(np.diff(np.signbit(v)))[0]
 
 		# zero_crossings includes both positive- and negative-going crossings
 		# Here we set pos_zc_index to the first positive-going crossing
-		if v[zero_crossings[0]] >= 0:
-			pos_zc_index = 0
+		if v[zero_crossings[len(zero_crossings)//2]] >= 0:
+			pos_zc_index = len(zero_crossings)//2
 		else:
-			pos_zc_index = 1
+			pos_zc_index = len(zero_crossings)//2 + 1
 
 		dv = v[zero_crossings[pos_zc_index]+1] - v[zero_crossings[pos_zc_index]]
-		interp = v[zero_crossings[pos_zc_index]] / dv
+		interp = v[zero_crossings[pos_zc_index]] / dv - 0.5
 
-		t0 = self.xoffset + self.temp_xoffset
-		v0 = (display_height/2 + self.yoffset + self.temp_yoffset)
+		x =  self.t + (self.x0  - (zero_crossings[pos_zc_index] - interp) * 1.5 * display_width / trace_data_len)	
+		y = v * (.8 * display_height / (2**self.data_source.bit_depth)) + self.y0
 
-		t =  t + (t0  - (zero_crossings[pos_zc_index] - interp) * display_width / trace_data_len)	
-		v = v * (display_height / (2**bit_depth)) + v0
+		
+		self.trace_points = list(zip(x, y))
 
-		data = list(zip(t, v))
+		
 
-		pygame.draw.line(surface, pygame.Color(192, 192, 0), (0, v0), (display_size[0], v0), 1)
 
-		pygame.draw.line(surface, pygame.Color(192, 192, 0), (t0, 0), (t0, display_size[1]), 1)
-
-		pygame.draw.lines(surface, yellow, False, data, 2)
 
 
 	def draw_traces(self, surface, frame_size):
 		trace_data = self.data_source.get_buffer()
 		trace_data_len = self.data_source.buffer_size
-		self.generate_trace_surface(surface, frame_size, trace_data, trace_data_len)
+		self.generate_trace_surface(surface, frame_size, trace_data, trace_data_len)	
+
+
+		# Reference indicators
+
+		pygame.draw.line(surface, self.dim_trace_colour, (0, self.y0), (self.display_size[0], self.y0), 1)
+		pygame.draw.line(surface, self.dim_trace_colour, (self.x0, 0), (self.x0, self.display_size[1]), 1)
+
+
+		pygame.draw.line(surface, self.dim_trace_colour, (self.x0-10, self.y0), (self.x0+10, self.y0), 1)
+		pygame.draw.line(surface, self.dim_trace_colour, (self.x0, self.y0-10), (self.x0, self.y0+10), 1)
+
+
+		pygame.draw.circle(surface, self.dim_trace_colour, (int(self.x0), int(self.y0)), 10, 1)
+
+		# pygame.draw.lines(surface, self.trace_colour, False, self.trace_points, 2)
+		pygame.draw.lines(surface, self.trace_colour, False, self.trace_points, 2)
 
 
 
@@ -199,7 +275,10 @@ class ButtonState:
 class ScopeAxis:
 
 
-	def __init__(self):
+	def __init__(self, name):
+
+		self.name = name
+
 
 		left_margin = 120
 		top_margin = 20
@@ -218,6 +297,9 @@ class ScopeAxis:
 
 		self.absolute_region = None
 
+		self.font = pygame.font.SysFont("Arial", 12, bold=True, italic=False)
+
+		self.name_surface = self.font.render(self.name, False, (255, 255, 255))
 
 
 
@@ -235,7 +317,7 @@ class ScopeAxis:
 		axis_bounds = pygame.Rect((-self.margin.left, -self.margin.top), (frame_size[0]-(self.margin.width), frame_size[1]-(self.margin.height)))
 		trace_frame = buffer.subsurface(axis_bounds)
 		[ channel.draw_traces(trace_frame, trace_frame.get_size()) for channel in self.channels ]
-
+		buffer.blit(self.name_surface, (-self.margin.left, -self.margin.top - self.name_surface.get_size()[1]))
 
 
 
@@ -253,7 +335,7 @@ class ScopeAxis:
 
 		print("Generating new grid surface, size %d x %d" % display_size) 
 
-		self.grid_surface = pygame.Surface(display_size, flags=pygame.SRCALPHA)
+		self.grid_surface = pygame.Surface(display_size)
 		self.grid_size = display_size
 
 
@@ -281,18 +363,15 @@ class ScopeAxis:
 	def draw_grid(self, surface, frame_size):
 		self.generate_grid_surface(frame_size)
 		surface.blit(self.grid_surface, (0, 0))
+		
+		# TODO: maybe cache reference tick mark
 		for channel in self.channels:
-
 			x = -self.margin.left
 			y = ((-self.margin.top)+(frame_size[1]-self.margin.bottom))//2 + channel.yoffset + channel.temp_yoffset
-
-			pygame.draw.line(surface, yellow, (x-6, y), (x-10, y), 7)
-			pygame.draw.line(surface, yellow, (x-4, y), (x-6, y), 5)
-			pygame.draw.line(surface, yellow, (x-2, y), (x-4, y), 3)
-			pygame.draw.line(surface, yellow, (x-0, y), (x-2, y), 1)
-
-			# pygame.draw.circle(surface, yellow, (-self.margin.left, ((-self.margin.top)+(frame_size[1]-self.margin.bottom))//2 + channel.yoffset + channel.temp_yoffset), 7)
-
+			pygame.draw.line(surface, channel.trace_colour, (x-6, y), (x-10, y), 7)
+			pygame.draw.line(surface, channel.trace_colour, (x-4, y), (x-6, y), 5)
+			pygame.draw.line(surface, channel.trace_colour, (x-2, y), (x-4, y), 3)
+			pygame.draw.line(surface, channel.trace_colour, (x-0, y), (x-2, y), 1)
 
 
 
@@ -309,13 +388,13 @@ class ScopeDisplay:
 		self.tk_frame = tk_frame
 		self.pygame_display = None    
 		self.axes = { 
-			"default" : ScopeAxis(),
-			"secondary" : ScopeAxis() 
+			"default" : ScopeAxis("default"),
+			"secondary" : ScopeAxis("secondary") 
 		}
 		self.channels = []
 
 
-	def add_channel(self, scope_channel, axes_names):
+	def add_channel(self, scope_channel, axes_names, color):
 		[ self.axes[axis_name].add_channel(scope_channel) for axis_name in axes_names ]
 
 
@@ -352,7 +431,8 @@ class ScopeDisplay:
 			pygame.display.init()
 			pygame.display.update()
 
-			self.buffer = pygame.Surface(self.pygame_display.get_size())
+			self.buffer = self.pygame_display
+			# self.buffer = pygame.Surface(self.pygame_display.get_size())
 			self.display_size = self.pygame_display.get_size()
 
 			self.axes["default"].absolute_region = pygame.Rect((0, 0), (self.display_size[0], self.display_size[1]//2))
@@ -365,7 +445,7 @@ class ScopeDisplay:
 			self.secondary_axis_size = (self.display_size[0], self.display_size[1]//2)
 
 
-		self.buffer.fill(black)	
+		# self.buffer.fill(black)	
 
 		self.axes["default"].draw(self.default_axis_subbuf, self.default_axis_size)
 		self.axes["secondary"].draw(self.secondary_axis_subbuf, self.secondary_axis_size)
@@ -472,16 +552,22 @@ class App:
 
 
 	def __init__(self):
-		App.static_inst = self
-		self.ui = UI(800, 600)
 
-		self.data_source = DataSource(2048)
-		self.data_source.set_mode(DataSource.AF_TONE_16BIT)
+		pygame.font.init()
+
+		App.static_inst = self
+		self.ui = UI(1200, 1000)
+
+		self.ch1_data_source = DataSource(2048)
+		self.ch1_data_source.set_mode(DataSource.AF_TONE_16BIT)
+
+		self.ch2_data_source = DataSource(100)
+		self.ch2_data_source.set_mode(DataSource.IF_TONE_8BIT)
 
 		self.scope_display = ScopeDisplay(self.ui.scope_frame)
 
-		self.scope_display.add_channel(ScopeChannel(self.data_source), ["default"])
-		self.scope_display.add_channel(ScopeChannel(self.data_source), ["secondary"])
+		self.scope_display.add_channel(ScopeChannel(self.ch1_data_source, yellow), ["default"], yellow)
+		self.scope_display.add_channel(ScopeChannel(self.ch2_data_source, cyan), ["secondary"], cyan)
 
 		# ui = UI(500, 500)
 		self.ui.bind_interrupt_forwarders()
@@ -582,6 +668,9 @@ def main():
 	app.run()
 
 
+# import cProfile
+# cProfile.run("main()")
+# os._exit(0) # This exits cleanly (AFAIK?)
 
 if __name__ == "__main__":
 	main()
