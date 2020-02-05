@@ -92,10 +92,45 @@ assign has_full_packet = (wr_data_count >= MAX_PACKET_SIZE);
 assign wr_full = (wr_data_count == CAPACITY);
 assign wr_almost_full = (wr_data_count >= CAPACITY-BYTES_PER_WORD);
 
+reg push_pending;
+reg ack_push_pending;
 
-
+// TODO: maybe replace push_pending signal with a command queue
+// TODO: maybe make push_pending and/or ack_push_pending externally available 
+//
+// wr_push is a signal which forces a transfer requst for packets smaller than the maximum size. 
+// However, if a previous transfer request is already active (either because a maximum packet's worth of data was available or a previous wr_push arrived)
+// the new wr_push will be ignored because the handshake mechanism is already in the request state.
+// 
+// To enusre that a wr_push is not ignored, a new signal called push_pending is added.
+// push_pending is a flag that is set when a wr_push signal arrives while a xfer request is already active.
+// If push_pending is high when the buffer becomes idle, i.e. after it has completed its final full-size tranfer, 
+// the remainder of the buffer will be transferred just as if a wr_push arrived at that instant.
+//
+// Be aware that this may cause more than the intended amount of data to be sent. 
+// Normally wr_push actas a breakpoint in the data transfer, i.e. data written after a wr_push is not included in the transfer initiated by that wr_push.
+// The addition of the push_pending logic means any data written after the wr_push but before that push is acknowledged will be also be transferred. 
+//
+// TL;DR: 
+// - Use wr_push at the end of intermittent data burts e.g. UART & finite-sized data blobs
+// - Do not use wr_push with streamed data
+//
+always @(posedge wr_clk) begin
+    if (wr_reset) begin
+        push_pending <= 0;
+    end
+    else begin        
+        if (wr_push && wr_xfer_active) begin
+            push_pending <= 1;
+        end
+        if (ack_push_pending) begin
+            push_pending <= 0;
+        end
+    end
+end
 
 always @(posedge wr_clk) begin
+    ack_push_pending <= 0;
     if (wr_reset) begin
         state <= STATE_IDLE;
         wr_xfer_active <= 0;
@@ -107,6 +142,12 @@ always @(posedge wr_clk) begin
             wr_xfer_size <= 0;
             if (has_full_packet || wr_push) begin
                 state <= STATE_REQ;
+            end
+            else if (push_pending) begin
+                ack_push_pending <= 1;
+                if (wr_data_count > 0) begin 
+                    state <= STATE_REQ;
+                end            
             end
         end
         else if (state == STATE_REQ) begin
@@ -166,7 +207,7 @@ wr_fifo (
     .din({wr_be, wr_data}),      
     .wr_en(wr_en),    
     
-    .rd_clk(!rd_clk), 
+    .rd_clk(rd_clk), 
     .dout({rd_be, rd_data}),  
     .data_valid(rd_valid),
     .rd_en(rd_en)
@@ -190,7 +231,7 @@ xpm_cdc_handshake_inst (
     .src_send(wr_xfer_active),
     .src_rcv(wr_xfer_done), 
     
-    .dest_clk(!rd_clk),
+    .dest_clk(rd_clk),
     .dest_out(rd_xfer_size), 
     .dest_req(rd_xfer_req_int),
     .dest_ack(rd_xfer_done)    
@@ -206,11 +247,11 @@ assign rd_xfer_almost_done = (rd_xfer_count == (rd_xfer_size - BYTES_PER_WORD));
 assign rd_xfer_req = (rd_xfer_done ? 0 : rd_xfer_req_int);
 
 
-always @(negedge rd_clk) begin
+always @(posedge rd_clk) begin
     if (rd_reset || !rd_xfer_req_int) begin
         rd_xfer_count <= 0;
     end
-    else if (rd_en) begin
+    else if (rd_en && rd_valid) begin // TODO: find out why rd_en stays high for an extra cycle. 
         rd_xfer_count <= rd_xfer_count + BYTES_PER_WORD;
     end
 end

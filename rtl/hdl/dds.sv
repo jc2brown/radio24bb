@@ -37,6 +37,7 @@ wire run = (step != 0);
 reg [7:0] lut [0:4095];
 
 reg [11:0] lut_addr;
+reg lut_addr_valid;
 
 always @(posedge cfg_clk) begin
     if (cfg_reset) begin
@@ -72,7 +73,7 @@ always @(posedge clk) begin
     end
 end
     
-    
+    /*
 always @(posedge clk) begin
     if (reset) begin
         out <= 'h0;
@@ -89,7 +90,28 @@ always @(posedge clk) begin
     end
 end
 
+   */ 
+   
+   
 
+always @(posedge clk) begin
+   lut_addr_valid <= run;
+end
+
+    
+always @(posedge clk) begin
+    if (reset) begin
+        out <= 'h0;
+    end
+    else if (lut_addr_valid) begin        
+        out <= lut[rom_addr];
+    end
+end
+
+
+always @(posedge clk) begin
+    out_valid <= lut_addr_valid;
+end
 
 
     

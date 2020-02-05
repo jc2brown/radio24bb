@@ -21,9 +21,9 @@ create_project -f -part $FPGA_PART $PROJECT_NAME
 # set xdc_file_list 	[ add_prefix $xdc_path/ [exec ls $xdc_path/*.xdc] ]
 # set tb_file_list  	[ add_prefix $tb_path/  [exec ls $tb_path/*.sv] ]
 
-set hdl_file_list 	[ add_prefix $hdl_path/ [exec sh -c "ls $hdl_path/*.{v,sv}"] ]
-set xdc_file_list 	[ add_prefix $xdc_path/ [exec sh -c "ls $xdc_path/*.xdc"] ]
-set tb_file_list 	[ add_prefix $tb_path/ [exec sh -c "ls $tb_path/*.sv"] ]
+set hdl_file_list 	[ add_prefix $hdl_path/ [exec bash -c "ls $hdl_path/*.{v,sv}"] ]
+set xdc_file_list 	[ add_prefix $xdc_path/ [exec bash -c "ls $xdc_path/*.xdc"] ]
+set tb_file_list 	[ add_prefix $tb_path/ [exec bash -c "ls $tb_path/*.sv"] ]
 
 
 

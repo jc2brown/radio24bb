@@ -1,10 +1,15 @@
 `timescale 1ps / 1ps
 
 
-module ft601_mcfifo (
+module ft601_mcfifo 
+#(
+    parameter NUM_CHANNELS = 4,
+    parameter MAX_PACKET_SIZE = 1024
+)
+(
     input wire reset_n,
 
-    output reg clk_out,
+    output clk_out,
     inout wire [31:0] data,    // [7:0] channel address
     inout wire [3:0] be,       // [3:0] command (0=read, 1=write)
     input wire oe_n,    // Not used
@@ -14,481 +19,401 @@ module ft601_mcfifo (
     output reg rxf_n,   // Data receive acknowledge output
     input wire siwu_n   // Reserved, tie high
     
+        
+    
 );
 
 
-initial clk_out = 1;
 
-always #5000 begin
-    clk_out <= !clk_out;
-end
+
+
+wire [31:0]   wr_ch_wr_data             [NUM_CHANNELS:1];
+wire [3:0]    wr_ch_wr_be               [NUM_CHANNELS:1];
+wire          wr_ch_wr_en               [NUM_CHANNELS:1];
+wire          wr_ch_wr_push             [NUM_CHANNELS:1];
+
+wire         wr_ch_wr_full             [NUM_CHANNELS:1];
+wire         wr_ch_wr_almost_full      [NUM_CHANNELS:1];
+wire         wr_ch_has_wr_packet_space [NUM_CHANNELS:1];
+
+
+reg [31:0]   rd_ch_rd_data             [NUM_CHANNELS:1];
+reg [3:0]    rd_ch_rd_be               [NUM_CHANNELS:1];
+wire       [NUM_CHANNELS:1]    rd_ch_rd_en;//               = {NUM_CHANNELS{1'b1}};
+reg          rd_ch_rd_valid            [NUM_CHANNELS:1];
+
+wire         rd_ch_rd_empty            [NUM_CHANNELS:1];
+wire         rd_ch_rd_almost_empty     [NUM_CHANNELS:1];
+    
+    
+    
+        
+localparam BYTES_PER_WORD = 4;
+        
+
+reg clk = 1;
+always #4995 clk <= !clk; // Slightly faster than 100MHz
+
+assign clk_out = clk;
+
+//reg reset = 1; 
+//initial #50000 reset <= 0;
+
+wire reset = !reset_n;
 
 
 wire [31:0] data_in;
-reg [31:0] data_out;
-reg [31:0] data_oe;
+wire [31:0] data_out;
+reg [31:0] data_oe_n;
 
 IOBUF data_iobuf [31:0] (
     .IO(data),
     .I(data_out),
     .O(data_in),
-    .T(!data_oe)
+    .T(data_oe_n)
 );
 
 
 
 wire [3:0] be_in;
 reg [3:0] be_out;
-reg [3:0] be_oe;
+reg [3:0] be_oe_n;
 
 
 IOBUF be_iobuf [3:0] (
     .IO(be),
     .I(be_out),
     .O(be_in),
-    .T(!be_oe)
+    .T(be_oe_n)
 );
 
 
-// FPGA may read when not empty
-wire ch1_empty = 1;
-wire ch2_empty = 1;
-wire ch3_empty = 1;
-wire ch4_empty = 1;
 
 
-// FPGA may write when not full
-wire ch1_full = 1;
-wire ch2_full = 1;
-wire ch3_full = 1;
-wire ch4_full = 1;
-
-
-
-initial begin
-
-    txe_n <= 1'b0;
-    rxf_n <= 1'b1;
-
-    data_out[15:8] <= 8'hFF;
-    data_oe[15:8] <= 8'hFF;
-/*
-    data_out[7:0] <= 8'hFF;
-    data_oe[7:0] <= 8'h00;
-
-    data_out[31:16] <= 16'hFFFF;
-    data_oe[31:16] <= 16'h0000;
-   
-    be_out[3:0] <= 4'hF;
-    be_out[3:0] <= 4'h0;
-
-
-    // Read 
-
-    // Idle
-    repeat (10) @(negedge clk_out);
-
-    // Read.Command
-    @(negedge clk_out) begin
-        data_out[7:0] <= 8'h01;
-        be_out[3:0] <= 4'h0;
-    end
-
-    // Read.BTA1 - wait for master to stop driving bus
-    @(negedge clk_out) begin
-        txe_n <= 1'b1;
-    end
-
-    // Read.BTA2 - start driving bus
-    @(negedge clk_out) begin
-        data_out[31:0] <= 32'hFFFFFFFF;
-        data_oe[31:0] <= 32'hFFFFFFFF;
-        be_oe[3:0] <= 4'hF;
-    end
-
-    // Read.SendData
-    repeat(1024) begin
-        @(negedge clk_out) begin
-            data_out <= data_out + 1;
-            be_out <= 4'hF;
-            rxf_n <= 1'b0;
-        end
-    end
-
-    // Read.ReverseBTA - stop driving bus
-    @(negedge clk_out) begin
-        data_oe[31:0] <= 32'h0000FF00;
-        be_oe[3:0] <= 4'hF;
-        rxf_n <= 1'b1;
-    end
-
-    // Idle
-    @(negedge clk_out) begin
-        txe_n <= 1'b0;
-    end
-*/
-    repeat (100) @(negedge clk_out);
-  //  $finish();
-
-end
-
-
-// ch_if_ prefix indicates interface-side signals between FT601 and FPGA
-// ch_pc_ prefix indicates USB-side signals between FT601 and PC
-
-wire [31:0] ch_if_rd_data [1:4];
-wire [31:0] ch_if_rd_be [1:4];
-wire ch_if_rd_en [1:4];
-wire ch_if_rd_empty [1:4];
-
-
-wire [31:0] ch_if_wr_data [1:4];
-wire [31:0] ch_if_wr_be [1:4];
-wire ch_if_wr_en [1:4];
-wire ch_if_wr_full [1:4];
-
-
-
-
-wire [31:0] ch_pc_rd_data [1:4];
-wire [31:0] ch_pc_rd_be [1:4];
-wire ch_pc_rd_en [1:4];
-wire ch_pc_rd_empty [1:4];
-
-
-wire [31:0] ch_pc_wr_data [1:4];
-wire [31:0] ch_pc_wr_be [1:4];
-wire ch_pc_wr_en [1:4];
-wire ch_pc_wr_full [1:4];
-
-
-
-
-
-
-/*
-wire ch_if_pc_tx_en [1:4];
-
-wire ch1_pc_rx_en [1:4];
-
-
-wire wr_buf_full [1:4];
-wire wr_buf_empty [1:4];
-
-wire rd_buf_full [1:4];
-wire rd_buf_empty [1:4];
-*/
-
-
-genvar ch;
-generate
-for (ch = 1; ch <= 4; ch=ch+1) begin
-/*
-    ft601_mcfifo_wr_buf #( )
-    mcfifo_channel_wr_buf (
-        
-       .max_packet_size(),
-                 
-       .wr_reset(  reset),
-       .wr_clk(    clk),
-       .wr_data(   {wr_be, wr_data}),
-       .wr_en(     wr_valid),
-       .wr_ce(     wr_buf_wr_sel == i),
-       .wr_push(   wr_push),
-       .writeable( wr_buf_writeable[i]),
-       .almost_unwriteable(wr_buf_almost_unwriteable[i]),
-       
-       .rd_reset(  !locked_mmcm),
-       .rd_clk(    clk0_mmcm),
-       .rd_data(   wr_buf_rd_data[i]),
-       .rd_valid(  wr_buf_rd_valid[i]),
-       .ft_txe_n(  ft601_txe_n),
-       .ft_wr_n(   ft601_wr_n),  
-       .rd_ce(     wr_buf_rd_sel == i),
-       .rd_empty(  wr_buf_rd_empty[i]),
-       .rd_aempty( wr_buf_rd_aempty[i]),
-       .readable(  wr_buf_readable[i])
-   );
-       
-       
-       
-       
-         
-        
-       input [31:0] max_packet_size, 
-       
-   
-       input wr_reset,
-       input wr_clk,
-       input [35:0] wr_data,
-       input wr_ce,
-       input wr_en,
-       input wr_push,
-       output reg writeable,
-       output almost_unwriteable,
-       
-       input rd_reset,
-       input rd_clk,
-       output [35:0] rd_data,
-       output rd_valid,
-       input rd_en,    
-       output rd_empty,
-       output rd_aempty,
-       output reg readable
-       
-       
-       
-    )
-
-
-    
-    xpm_fifo_async #(
-    
-        .CDC_SYNC_STAGES(2),       // DECIMAL
-        .DOUT_RESET_VALUE("0"),    // String
-        .FIFO_MEMORY_TYPE("block"), // String
-        .READ_MODE("fwft"),
-        .FIFO_READ_LATENCY(1),     // DECIMAL
-        .FIFO_WRITE_DEPTH(2048),   // DECIMAL
-        .READ_DATA_WIDTH(36),      // DECIMAL
-        .WRITE_DATA_WIDTH(36),     // DECIMAL
-        .PROG_FULL_THRESHOLD(1024)
-    )
-    ch1_read_fifo (
-    
-        .rst(!reset_n),   
-        
-        .wr_clk(clk_out),
-        .din({ch1_rd_be, ch1_rd_data}),      
-        .wr_en(ch1_pc_tx_en),    
-        .prog_full(ch1_tx_full),
-            
-        .rd_clk(!clk_out),
-        .dout({be_out, data_out}),  
-        .rd_en(!rd_n && !rxf_n),    
-        .empty(rxf_n)
-    );
-    
-    */
-end
-endgenerate
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    
-    
-//reg [31:0] data_out;
-wire [31:0] data_out;
-wire [31:0] data_in = data;
-    
-wire [3:0] be_out;// = 4'b1111;
-wire [3:0] be_in = be;
-
-// t1: clkout period
-time t1 = 10.00;
-
-
-
+reg [3:0] state;
 
 localparam STATE_RESET = 0;
 localparam STATE_IDLE = 1;
-localparam STATE_READ = 2;
-localparam STATE_WRITE = 3;
 
-reg [1:0] state = STATE_RESET;
+localparam STATE_READ_BTA1 = 2;
+localparam STATE_READ_BTA2 = 3;
+localparam STATE_READ_DATA = 4;
+localparam STATE_READ_BTA3 = 5;
+
+localparam STATE_WRITE_BTA1 = 6;
+localparam STATE_WRITE_DATA = 7;
+localparam STATE_WRITE_BTA2 = 8;
 
 
-reg done_read = 1'b0;
-reg done_write = 1'b0;
+reg [31:0] reset_count;
+
+
+reg [31:0] rd_count;
+
+always @(negedge clk) begin
+    if (state == STATE_READ_BTA2) begin
+        rd_count <= MAX_PACKET_SIZE/BYTES_PER_WORD;
+    end 
+    else if (state == STATE_READ_DATA) begin
+        rd_count <= rd_count - 1; // Should never become negative if we handle rd_almost_empty properly
+    end
+end
+
+wire rd_almost_empty = (rd_count == 0);
 
 
 
-wire write_fifo_aempty;
-wire write_fifo_full;
+reg [31:0] wr_count;
 
+always @(negedge clk) begin
+    if (state == STATE_WRITE_BTA1) begin
+        wr_count <= MAX_PACKET_SIZE/BYTES_PER_WORD;
+    end 
+    else if (state == STATE_WRITE_DATA) begin
+        wr_count <= wr_count - 1; // Should never become negative if we handle wr_almost_full properly
+    end
+end
+
+wire wr_almost_full = (wr_count == 1);
+
+
+
+reg [7:0] channel;
+
+
+
+
+
+
+
+
+
+wire [31:0] wr_ch_rd_data [NUM_CHANNELS:1];
+wire [3:0] wr_ch_rd_be [NUM_CHANNELS:1];
+wire wr_ch_rd_en [NUM_CHANNELS:1];
+
+genvar ch;
+for (ch=1; ch<=NUM_CHANNELS; ch=ch+1) begin
+    assign wr_ch_rd_en[ch] = (state == STATE_READ_DATA) && !wr_n && !rxf_n && (channel == ch);
+end
+
+
+wire wr_ch_rd_valid [NUM_CHANNELS:1];
+
+wire [NUM_CHANNELS:1] wr_ch_rd_xfer_req;
+wire [NUM_CHANNELS:1] wr_ch_rd_xfer_done;// [NUM_CHANNELS:1];
+wire wr_ch_rd_xfer_almost_done [NUM_CHANNELS:1];
+
+
+
+wire rd_ch_wr_en [NUM_CHANNELS:1];
+for (ch=1; ch<=NUM_CHANNELS; ch=ch+1) begin
+    assign rd_ch_wr_en[ch] = (state == STATE_WRITE_DATA) && !wr_n && !rxf_n && (channel == ch);
+end
+
+
+wire [NUM_CHANNELS:1] rd_ch_wr_full;// [NUM_CHANNELS:1];
+wire rd_ch_wr_almost_full [NUM_CHANNELS:1];
+wire [NUM_CHANNELS:1] rd_ch_has_wr_packet_space ;
+
+
+
+assign data_out = 
+    (state == STATE_READ_DATA) ? wr_ch_rd_data[channel] : 
+    {16'h0, {{(4-NUM_CHANNELS){1'b1}}, ~wr_ch_rd_xfer_req}, {{(4-NUM_CHANNELS){1'b1}}, ~rd_ch_has_wr_packet_space}, 8'h0};
+
+
+assign be_out = (state == STATE_READ_DATA) ? wr_ch_rd_be[channel] : 4'h0;
+
+
+
+
+// From PC to FPGA
+// Transfer up to MAX_PACKET_SIZE bytes per xfer
+ft601_mcfifo_wr_buf 
+#(
+    .CAPACITY(2*MAX_PACKET_SIZE), // bytes 
+    .MAX_PACKET_SIZE(MAX_PACKET_SIZE)
+)
+wr_buf [NUM_CHANNELS:1]
+(
+    
+    .wr_reset(reset),
+    .wr_clk(!clk), // negedge within FT601 domain
+    
+    .wr_data(wr_ch_wr_data),
+    .wr_be(wr_ch_wr_be),
+    .wr_en(wr_ch_wr_en),
+//    .wr_en(1'b0),
+    .wr_push(wr_ch_wr_push),
+    
+    .wr_full(wr_ch_wr_full),
+    .wr_almost_full(wr_ch_wr_almost_full),
+    .wr_has_packet_space(wr_ch_has_wr_packet_space), // Asserted when a device can write at least an entire packet's worth of data without the buffer becoming full
+            
+    .rd_reset(reset),
+    .rd_clk(!clk), // negedge per IF spec
+    
+    .rd_data(wr_ch_rd_data),
+    .rd_be(wr_ch_rd_be),
+    .rd_valid(wr_ch_rd_valid),
+    .rd_en(wr_ch_rd_en),    
+    
+    .rd_xfer_done(wr_ch_rd_xfer_done),
+    .rd_xfer_almost_done(wr_ch_rd_xfer_almost_done),
+    .rd_xfer_req(wr_ch_rd_xfer_req)
+
+);
 
 
 genvar i;
-generate 
-for (i=0; i<32; i=i+1) begin    
-    IOBUF data_iobuf (
-        .I(data_out[i]),
-        .O(data_in[i]),
-        .IO(data[i]),
-        .T(oe_n)
-    );    
-end
-for (i=0; i<4; i=i+1) begin    
-    IOBUF be_iobuf (
-        .I(be_out[i]),
-        .O(be_in[i]),
-        .IO(be[i]),
-        .T(oe_n)
-    );    
+generate
+for (i=1; i<=NUM_CHANNELS; i=i+1) begin
+
+
+    ft601_data_source 
+    #(
+        .MAX_PACKET_SIZE(MAX_PACKET_SIZE),
+        .CHANNEL_NUM(i)
+    )
+    src
+    (
+    
+        .reset(reset),
+        .clk(!clk), // negedge within FT601 domain
+        
+        .pc_tx_data(wr_ch_wr_data[i]),
+        .pc_tx_be(wr_ch_wr_be[i]),
+        .pc_tx_en(wr_ch_wr_en[i]),
+        .pc_tx_push(wr_ch_wr_push[i]),
+        
+        .pc_tx_full(wr_ch_wr_full[i])
+                  
+    );
+    
+    
+    
+    ft601_data_sink
+        #(
+            .MAX_PACKET_SIZE(MAX_PACKET_SIZE),
+            .CHANNEL_NUM(i)
+        )
+        sink
+        (
+        
+            .reset(reset),
+            .clk(!clk), // negedge within FT601 domain
+            
+            .pc_rx_data(rd_ch_rd_data[i]),
+            .pc_rx_be(rd_ch_rd_be[i]),
+            .pc_rx_rd_en(rd_ch_rd_en[i]),
+            .pc_rx_valid(rd_ch_rd_valid[i]),
+            
+            .pc_rx_empty(rd_ch_rd_empty[i])
+                      
+        );
+    
+    
 end
 endgenerate
 
 
 
-always #5005 begin // 100 MHz
-    if (!reset_n) begin
-        clk_out <= 1'b0;
-    end
-    else begin
-        clk_out <= !clk_out;
-    end
-end
 
 
 
-integer seed = 0;
 
 
-
-wire read_fifo_re = !rd_n;
-
-assign txe_n = write_fifo_full || !reset_n;
- 
- 
-/////////////////////////////////////////////////////////////
-//
-// Read FIFO + Logic
-//
-/////////////////////////////////////////////////////////////
-
-reg [31:0] pc_tx_data;
-reg [3:0] pc_tx_be;
-reg pc_tx_en;
-wire pc_tx_full;
-
-
-
-xpm_fifo_async #(
-    .CDC_SYNC_STAGES(2),       // DECIMAL
-    .DOUT_RESET_VALUE("0"),    // String
-    .FIFO_MEMORY_TYPE("block"), // String
-    .READ_MODE("fwft"),
-    .FIFO_READ_LATENCY(1),     // DECIMAL
-    .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(36),      // DECIMAL
-    .WRITE_DATA_WIDTH(36)     // DECIMAL
+// From FPGA to PC
+ft601_mcfifo_rd_buf 
+#(
+    .CAPACITY(2*MAX_PACKET_SIZE), // bytes 
+    .MAX_PACKET_SIZE(MAX_PACKET_SIZE)
 )
-read_fifo (
-
-    .rst(!reset_n),   
+rd_buf [NUM_CHANNELS:1]
+(
+           
+    .wr_reset(reset),
+    .wr_clk(clk), // posedge to sample data in middle of stable region
+    .wr_data(data_in),
+    .wr_be(be_in),
+    .wr_en(rd_ch_wr_en),
     
-    .wr_clk(clk_out),
-    .din({pc_tx_be, pc_tx_data}),      
-    .wr_en(pc_tx_en),    
-    .full(pc_tx_full),
-        
-    .rd_clk(!clk_out),
-    .dout({be_out, data_out}),  
-    .rd_en(!rd_n && !rxf_n),    
-    .empty(rxf_n)
+    .wr_full(rd_ch_wr_full),
+    .wr_almost_full(rd_ch_wr_almost_full),
+    .wr_has_packet_space(rd_ch_has_wr_packet_space),
+    
+    .rd_reset(reset),
+    .rd_clk(!clk), // negedge within FT601 domain
+    .rd_data(rd_ch_rd_data),
+    .rd_be(rd_ch_rd_be),
+    .rd_valid(rd_ch_rd_valid),
+    .rd_en(rd_ch_rd_en),
+    .rd_empty(rd_ch_rd_empty),
+    .rd_almost_empty(rd_ch_rd_almost_empty)
+    
 );
 
 
-integer k;
 
 
-// USB data source
-always begin
 
-    if (!reset_n) begin
-        @(posedge clk_out) begin
-            pc_tx_data <= 32'hX;
-            pc_tx_be <= 4'hX;
-            pc_tx_en <= 1'b0;       
-        end
-    end         
+
+
+
+
+always @(negedge clk) begin
+    if (reset) begin
     
+        txe_n <= 1'b0;
+        rxf_n <= 1'b1;
+    
+        data_oe_n <= 32'hFFFFFFFF;
+        be_oe_n <= 4'hF;
+        channel <= 0;
+        reset_count <= 0;
+        state <= STATE_RESET;
+    end
     else begin
+        if (state == STATE_RESET) begin
+            data_oe_n <= 32'hFFFF00FF;
+            be_oe_n <= 4'hF;
+            if (reset_count == 100) begin
+                state <= STATE_IDLE;
+            end
+            else begin
+                reset_count <= reset_count + 1;
+            end
+        end
+        else if (state == STATE_IDLE) begin
+            txe_n <= 1'b0;
+            if (!wr_n) begin
+                channel <= data_in[7:0];
+                txe_n <= 1'b1;
+                if (be_in == 4'h0) begin  // Master read
+                    state <= STATE_READ_BTA1;
+                end
+                else if (be_in == 4'h1) begin  // Master write
+                    state <= STATE_WRITE_BTA1;
+                end
+            end
+        end
     
-        #($urandom_range(500, 500)*1us);
-                
-        pc_tx_be <= 4'b1000;     
+        else if (state == STATE_READ_BTA1) begin
+            data_oe_n <= 32'h00000000;
+            be_oe_n <= 4'h0;
+            state <= STATE_READ_BTA2;
+        end 
+        else if (state == STATE_READ_BTA2) begin
+            rxf_n <= 1'b0;
+            state <= STATE_READ_DATA;
+        end 
+        else if (state == STATE_READ_DATA) begin
+//            if (rd_almost_empty || wr_n) begin
+            if (wr_ch_rd_xfer_almost_done[channel] || wr_n) begin
+                rxf_n <= 1'b1;
+                state <= STATE_READ_BTA3;
+            end
+        end 
+        else if (state == STATE_READ_BTA3) begin
+            data_oe_n <= 32'hFFFF00FF;
+            be_oe_n <= 4'hF;
+            channel <= 8'h00;
+            txe_n <= 1'b0;
+            state <= STATE_IDLE;
+        end 
         
-        for (k=0; k<4096; k=k+1) begin
         
-            while (pc_tx_full) @(posedge clk_out);
-            
-            @(posedge clk_out) begin
-                pc_tx_en <= 1'b1;  
-                pc_tx_data <= k; 
-                pc_tx_be <= {pc_tx_be[2:0], pc_tx_be[3]};
+        
+        else if (state == STATE_WRITE_BTA1) begin
+            data_oe_n <= 32'hFFFFFFFF;
+            rxf_n <= 1'b0;
+            state <= STATE_WRITE_DATA;    
+        end
+                        
+        else if (state == STATE_WRITE_DATA) begin
+            if (wr_almost_full) begin
+                rxf_n <= 1'b1;
+            end
+            if (wr_almost_full || wr_n) begin
+                state <= STATE_WRITE_BTA2;    
             end
         end
         
-        @(posedge clk_out) begin
-            pc_tx_data <= 32'hX;
-            pc_tx_en <= 1'b0;        
-            pc_tx_be <= 4'hX;
+        else if (state == STATE_WRITE_BTA2) begin
+            channel <= 8'h00;
+            txe_n <= 1'b0;
+            rxf_n <= 1'b1;
+            data_oe_n <= 32'hFFFF00FF;
+            state <= STATE_IDLE;    
         end
-                    
+        
     end
 end
 
 
 
-/////////////////////////////////////////////////////////////
-//
-// Write FIFO + Logic
-//
-/////////////////////////////////////////////////////////////
-
-wire [31:0] wr_fifo_dout;
-wire [3:0] wr_fifo_be;
-wire wr_fifo_empty;
-
-reg [31:0] pc_rx_data;
-reg [3:0] pc_rx_be;
-reg pc_rx_valid;
 
 
-xpm_fifo_async #(
-    .DOUT_RESET_VALUE("0"),    // String
-    .FIFO_MEMORY_TYPE("block"), // String
-    .FIFO_READ_LATENCY(1),     // DECIMAL
-    .READ_MODE("fwft"),
-    .FIFO_WRITE_DEPTH(4096),   // DECIMAL
-    .READ_DATA_WIDTH(36),      // DECIMAL
-    .WRITE_DATA_WIDTH(36)     // DECIMAL
-)
-write_fifo (
-
-    .rst(!reset_n),   
-    
-    .wr_clk(!clk_out),
-    .din({be_in, data_in}),      
-    .wr_en(!wr_n),    
-    .full(write_fifo_full),
-    
-    .rd_clk(clk_out),
-    .dout({wr_fifo_be, wr_fifo_dout}),
-    .rd_en(!wr_fifo_empty),    
-    .empty(wr_fifo_empty),
-    .almost_empty(write_fifo_aempty)
-);
-
-
-always @(posedge clk_out) begin
-    pc_rx_data <= wr_fifo_dout;
-    pc_rx_be <= wr_fifo_be;
-    pc_rx_valid <= !wr_fifo_empty;
-end
-
-
-*/
 
 endmodule

@@ -2,7 +2,8 @@
 
 module ft601_mcfifo_rd_buf 
 #(
-    parameter CAPACITY = 8192 // bytes 
+    parameter CAPACITY = 8192, // bytes 
+    parameter MAX_PACKET_SIZE = 1024
 )
 (    
     
@@ -31,8 +32,6 @@ module ft601_mcfifo_rd_buf
    
 localparam BYTES_PER_WORD = 4;
 
-localparam LARGEST_PAPCKET_SIZE = 4096; //bytes
-
 
 
 wire prog_full; // Asserted when there is less than one full packet of space available for writing
@@ -52,13 +51,13 @@ xpm_fifo_async #(
     .READ_DATA_WIDTH(9*BYTES_PER_WORD),      // DECIMAL
     .WRITE_DATA_WIDTH(9*BYTES_PER_WORD),     // DECIMAL
     .USE_ADV_FEATURES("1F0F"), // Enable almost_empty, almost_full, and data_valid
-    .PROG_FULL_THRESHOLD((CAPACITY-LARGEST_PAPCKET_SIZE)/BYTES_PER_WORD)
+    .PROG_FULL_THRESH((CAPACITY-MAX_PACKET_SIZE)/BYTES_PER_WORD)
 )
 rd_fifo (
 
     .rst(wr_reset),   
     
-    .wr_clk(!wr_clk),
+    .wr_clk(wr_clk),
     .din({wr_be, wr_data}),      
     .wr_en(wr_en),  
     .full(wr_full),
