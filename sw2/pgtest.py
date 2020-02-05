@@ -8,6 +8,7 @@ import os
 import sys
 import time
 import ctypes
+import cProfile
 
 import pygame 
 import numpy as np
@@ -167,24 +168,12 @@ class ScopeChannel:
 		self.display_size = display_size
 		self.trace_data_len = trace_data_len
 
-		self.t = np.linspace(0, 1.5*self.display_size[0], self.trace_data_len, endpoint=False)
-		# self.t = np.linspace(0, self.trace_data_len, self.trace_data_len, endpoint=False)
-		# self.t = np.linspace(0, 1.0, self.trace_data_len, endpoint=False)
+		self.t = np.linspace(0, 1, self.trace_data_len, endpoint=False)
 
 
 
 
-
-
-
-
-
-	# trace_size: (width, height) of the area into which traces may be drawn
-	# def precompute_drawing_parameters(self, trace_size):
-
-
-
-	def generate_trace_surface(self, surface, display_size, trace_data, trace_data_len):
+	def generate_trace_surface(self, display_size, trace_data, trace_data_len):
 
 
 
@@ -206,31 +195,35 @@ class ScopeChannel:
 
 		# The following depends on trace data in addition to surface dimensions and trace buffer length
 
-
-		# self.data_source.bit_depth = 16
-
+		# Covnert the received buffer to a numpy array
 		v = np.ctypeslib.as_array(trace_data, (trace_data_len, ))
 
-		zero_crossings = np.where(np.diff(np.signbit(v)))[0]
+		# Find all positive zero crossing
+		non_negative = v >= 0
+		negative = v < 0
+		zero_crossings = np.where(np.bitwise_and(negative[1:], non_negative[:-1]))[0]
 
-		# zero_crossings includes both positive- and negative-going crossings
-		# Here we set pos_zc_index to the first positive-going crossing
-		if v[zero_crossings[len(zero_crossings)//2]] >= 0:
-			pos_zc_index = len(zero_crossings)//2
-		else:
-			pos_zc_index = len(zero_crossings)//2 + 1
+		# Set pos_zc_index to the index of the median crossing 
+		pos_zc_index = zero_crossings[len(zero_crossings)//2]
 
-		dv = v[zero_crossings[pos_zc_index]+1] - v[zero_crossings[pos_zc_index]]
-		interp = v[zero_crossings[pos_zc_index]] / dv - 0.0
-		#interp = 0
-		x =  self.t + (self.x0  - (zero_crossings[pos_zc_index] - interp) * 1.5 * display_width / trace_data_len)	
-		# x =  (1.5 * display_width) * (self.t / trace_data_len+ ((self.x0  - (zero_crossings[pos_zc_index] - interp) / trace_data_len)))
+		# interp is the linearly interpolated fraction of the sample period at which the signal crosses zero
+		# This subsample correction factor is added as a horizontal offset to eliminate jitter in the displayed waverform
+		# Reminder: this interpolation only works for a zero reference. Non-zero crossings require a more complex calculation
+		dv = v[pos_zc_index+1] - v[pos_zc_index]
+		interp = v[pos_zc_index] / dv
+		#interp = 0   # disable zero cross interpolation
+
+		# Calculate the (x, y) pixels that define the trace as displayed on screen
+		x =  self.x0  + 1.5*self.display_size[0] * (self.t - (pos_zc_index - interp) / trace_data_len)
 		y = v * (.8 * display_height / (2**self.data_source.bit_depth)) + self.y0
-
-		
 		self.trace_points = list(zip(x, y))
 
-		
+
+		# self.trace_points = np.array([
+		# 	self.x0  + 1.5*self.display_size[0] * (self.t - (pos_zc_index - interp) / trace_data_len),
+		# 	v * (.8 * display_height / (2**self.data_source.bit_depth)) + self.y0
+		# ]).T
+
 
 
 
@@ -238,7 +231,7 @@ class ScopeChannel:
 	def draw_traces(self, surface, frame_size):
 		trace_data = self.data_source.get_buffer()
 		trace_data_len = self.data_source.buffer_size
-		self.generate_trace_surface(surface, frame_size, trace_data, trace_data_len)	
+		self.generate_trace_surface(frame_size, trace_data, trace_data_len)	
 
 
 		# Reference indicators
@@ -254,7 +247,7 @@ class ScopeChannel:
 		pygame.draw.circle(surface, self.dim_trace_colour, (int(self.x0), int(self.y0)), 10, 1)
 
 		# pygame.draw.lines(surface, self.trace_colour, False, self.trace_points, 2)
-		pygame.draw.lines(surface, self.trace_colour, False, self.trace_points, 2)
+		pygame.draw.lines(surface, self.trace_colour, False, self.trace_points, 1)
 
 
 
@@ -420,7 +413,7 @@ class ScopeDisplay:
 			os.environ['SDL_WINDOWID'] = str(self.tk_frame.winfo_id())
 			if sys.platform == "Windows":
 				os.environ['SDL_VIDEODRIVER'] = 'windib'
-			self.pygame_display = pygame.display.set_mode(frame_size, flags=pygame.DOUBLEBUF)
+			self.pygame_display = pygame.display.set_mode(frame_size)
 			print(pygame.display.Info())
 			self.pygame_display_size = frame_size
 			pygame.init()
@@ -603,8 +596,6 @@ class App:
 				fps_accum = 0
 				fps_accum_count = 0
 
-			# buf = data_source.get_buffer()
-
 			self.scope_display.draw()
 			self.ui.update_idletasks()
 			self.ui.update()
@@ -618,43 +609,12 @@ class App:
 
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					self.scope_display.handle_event(event)
-					# if event.button >= 1 and event.button <= 3:
-					# 	button_states[event.button].dragging = True
-					# 	button_states[event.button].drag_start_pos = event.pos
 
 				if event.type == pygame.MOUSEBUTTONUP:
 					self.scope_display.handle_event(event)
-					# if event.button >= 1 and event.button <= 3:
-					# 	button_states[event.button].dragging = False
-					# 	drag_stop = event.pos
-					# 	rel = (drag_stop[0]-button_states[event.button].drag_start_pos[0], drag_stop[1]-button_states[event.button].drag_start_pos[1])
-					# 	# TODO: send event to scope_display object
-					# 	if event.button == 2:
-					# 		self.scope_display.xoffset += rel[0]
-					# 		self.scope_display.yoffset += rel[1]
-					# 		self.scope_display.temp_xoffset = 0
-					# 		self.scope_display.temp_yoffset = 0
 
 				if event.type == pygame.MOUSEMOTION:
 					self.scope_display.handle_event(event)
-					# buttons = [0, 0, 0]
-					# if isinstance(event.buttons, tuple):
-					# 	buttons = event.buttons
-					# else:
-					# 	if event.buttons & 0x100:
-					# 		buttons[0] = 1
-					# 	if event.buttons & 0x200:
-					# 		buttons[1] = 1
-					# 	if event.buttons & 0x400:
-					# 		buttons[2] = 1
-
-					# if buttons[1]:
-					# 	button = 2
-					# 	drag_stop = event.pos
-					# 	rel = (drag_stop[0]-button_states[button].drag_start_pos[0], drag_stop[1]-button_states[button].drag_start_pos[1])
-					# 	self.scope_display.temp_xoffset = rel[0]
-					# 	self.scope_display.temp_yoffset = rel[1]
-
 
 
 
@@ -664,17 +624,14 @@ class App:
 
 
 
-def main():
-	app = App()
-	app.run()
-
-
-# import cProfile
-# cProfile.run("main()")
-# os._exit(0) # This exits cleanly (AFAIK?)
 
 if __name__ == "__main__":
-	main()
+	
+	app = App()
+
+	app.run()
+	# cProfile.run("app.run")
+
 	#sys.exit() # Why does this throw an exception now?
 	os._exit(0) # This exits cleanly (AFAIK?)
 	# Why doesn't the program terminate without an exit call under Sublime?
