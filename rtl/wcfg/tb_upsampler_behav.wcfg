@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_upsampler_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_upsampler" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1001000000001fs"></ZoomEndTime>
+      <Cursor1Time time="303220000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="243"></NameColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="2" />
+   <wvobject type="group" fp_name="group3811">
+      <obj_property name="label">dut</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/tb_upsampler/dut/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/dut/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/in">
+         <obj_property name="ElementShortName">in[7:0]</obj_property>
+         <obj_property name="ObjectShortName">in[7:0]</obj_property>
+         <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+         <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="AnalogYRangeMin">0.000000</obj_property>
+         <obj_property name="AnalogYRRangeMax">0.000000</obj_property>
+         <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+         <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+         <obj_property name="AnalogHorizLine">0.000000</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/dut/in_valid">
+         <obj_property name="ElementShortName">in_valid</obj_property>
+         <obj_property name="ObjectShortName">in_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/out">
+         <obj_property name="ElementShortName">out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">out[15:0]</obj_property>
+         <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+         <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="AnalogYRangeMin">-72553.3</obj_property>
+         <obj_property name="AnalogYRRangeMax">50153.7</obj_property>
+         <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+         <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+         <obj_property name="AnalogHorizLine">0.000000</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/error_accum">
+         <obj_property name="ElementShortName">error_accum[31:0]</obj_property>
+         <obj_property name="ObjectShortName">error_accum[31:0]</obj_property>
+         <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+         <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="AnalogYRangeMin">-12435.7</obj_property>
+         <obj_property name="AnalogYRRangeMax">16689.3</obj_property>
+         <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+         <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+         <obj_property name="AnalogHorizLine">0.000000</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/dut/out_valid">
+         <obj_property name="ElementShortName">out_valid</obj_property>
+         <obj_property name="ObjectShortName">out_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/ratio">
+         <obj_property name="ElementShortName">ratio[24:0]</obj_property>
+         <obj_property name="ObjectShortName">ratio[24:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/in_d1">
+         <obj_property name="ElementShortName">in_d1[7:0]</obj_property>
+         <obj_property name="ObjectShortName">in_d1[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/in_d2">
+         <obj_property name="ElementShortName">in_d2[7:0]</obj_property>
+         <obj_property name="ObjectShortName">in_d2[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/dy">
+         <obj_property name="ElementShortName">dy[32:0]</obj_property>
+         <obj_property name="ObjectShortName">dy[32:0]</obj_property>
+         <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+         <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="AnalogYRangeMin">0.000000</obj_property>
+         <obj_property name="AnalogYRRangeMax">34359300000.000000</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_AUTO</obj_property>
+         <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_HOLD</obj_property>
+         <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+         <obj_property name="AnalogHorizLine">0.000000</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/out_accum">
+         <obj_property name="ElementShortName">out_accum[31:0]</obj_property>
+         <obj_property name="ObjectShortName">out_accum[31:0]</obj_property>
+         <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+         <obj_property name="CellHeight">100</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/dut/apply_error_correction">
+         <obj_property name="ElementShortName">apply_error_correction</obj_property>
+         <obj_property name="ObjectShortName">apply_error_correction</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/INPUT_WIDTH">
+         <obj_property name="ElementShortName">INPUT_WIDTH[31:0]</obj_property>
+         <obj_property name="ObjectShortName">INPUT_WIDTH[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/dut/OUTPUT_WIDTH">
+         <obj_property name="ElementShortName">OUTPUT_WIDTH[31:0]</obj_property>
+         <obj_property name="ObjectShortName">OUTPUT_WIDTH[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group3810">
+      <obj_property name="label">tb</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/tb_upsampler/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/in_valid">
+         <obj_property name="ElementShortName">in_valid</obj_property>
+         <obj_property name="ObjectShortName">in_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/out">
+         <obj_property name="ElementShortName">out[15:0]</obj_property>
+         <obj_property name="ObjectShortName">out[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/out_valid">
+         <obj_property name="ElementShortName">out_valid</obj_property>
+         <obj_property name="ObjectShortName">out_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/sig_p">
+         <obj_property name="ElementShortName">sig_p[31:0]</obj_property>
+         <obj_property name="ObjectShortName">sig_p[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/in">
+         <obj_property name="ElementShortName">in[7:0]</obj_property>
+         <obj_property name="ObjectShortName">in[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/sigclk">
+         <obj_property name="ElementShortName">sigclk</obj_property>
+         <obj_property name="ObjectShortName">sigclk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/sigclk_d1">
+         <obj_property name="ElementShortName">sigclk_d1</obj_property>
+         <obj_property name="ObjectShortName">sigclk_d1</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_upsampler/sig_valid">
+         <obj_property name="ElementShortName">sig_valid</obj_property>
+         <obj_property name="ObjectShortName">sig_valid</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/ratio">
+         <obj_property name="ElementShortName">ratio[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ratio[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/INPUT_WIDTH">
+         <obj_property name="ElementShortName">INPUT_WIDTH[31:0]</obj_property>
+         <obj_property name="ObjectShortName">INPUT_WIDTH[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_upsampler/OUTPUT_WIDTH">
+         <obj_property name="ElementShortName">OUTPUT_WIDTH[31:0]</obj_property>
+         <obj_property name="ObjectShortName">OUTPUT_WIDTH[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/tb_upsampler/FS">
+         <obj_property name="ElementShortName">FS</obj_property>
+         <obj_property name="ObjectShortName">FS</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/tb_upsampler/FSYS">
+         <obj_property name="ElementShortName">FSYS</obj_property>
+         <obj_property name="ObjectShortName">FSYS</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

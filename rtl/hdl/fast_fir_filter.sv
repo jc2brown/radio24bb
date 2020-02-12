@@ -134,15 +134,15 @@ reg signed [47:0] sum4 [1:2];
 
 
 
-
-generate
-
 always @(posedge clk) sum1_valid <= valid_out_del[LEN];
 always @(posedge clk) sum2_valid <= sum1_valid;
 always @(posedge clk) sum3_valid <= sum2_valid;
 always @(posedge clk) sum4_valid <= sum3_valid;
 always @(posedge clk) valid_out <= sum4_valid;
-    
+
+
+
+generate
     
 for (i=1; i<=16; i=i+1) begin    
     always @(posedge clk) begin

@@ -1,0 +1,2713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_ft601_mcfifo_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_ft601_mcfifo" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="77596685833fs"></ZoomStartTime>
+      <ZoomEndTime time="524378020834fs"></ZoomEndTime>
+      <Cursor1Time time="449914465000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="287"></NameColumnWidth>
+      <ValueColumnWidth column_width="83"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="27" />
+   <wvobject type="group" fp_name="group232">
+      <obj_property name="label">tb</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/reset_n">
+         <obj_property name="ElementShortName">reset_n</obj_property>
+         <obj_property name="ObjectShortName">reset_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/clk_out">
+         <obj_property name="ElementShortName">clk_out</obj_property>
+         <obj_property name="ObjectShortName">clk_out</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/data">
+         <obj_property name="ElementShortName">data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/be">
+         <obj_property name="ElementShortName">be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/oe_n">
+         <obj_property name="ElementShortName">oe_n</obj_property>
+         <obj_property name="ObjectShortName">oe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/wr_n">
+         <obj_property name="ElementShortName">wr_n</obj_property>
+         <obj_property name="ObjectShortName">wr_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/rd_n">
+         <obj_property name="ElementShortName">rd_n</obj_property>
+         <obj_property name="ObjectShortName">rd_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/txe_n">
+         <obj_property name="ElementShortName">txe_n</obj_property>
+         <obj_property name="ObjectShortName">txe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/rxf_n">
+         <obj_property name="ElementShortName">rxf_n</obj_property>
+         <obj_property name="ObjectShortName">rxf_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/siwu_n">
+         <obj_property name="ElementShortName">siwu_n</obj_property>
+         <obj_property name="ObjectShortName">siwu_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/locked">
+         <obj_property name="ElementShortName">locked</obj_property>
+         <obj_property name="ObjectShortName">locked</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_data">
+         <obj_property name="ElementShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_be">
+         <obj_property name="ElementShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_en">
+         <obj_property name="ElementShortName">wr_ch_wr_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_push">
+         <obj_property name="ElementShortName">wr_ch_wr_push[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_push[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_full">
+         <obj_property name="ElementShortName">wr_ch_wr_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_wr_almost_full">
+         <obj_property name="ElementShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/wr_ch_has_wr_packet_space">
+         <obj_property name="ElementShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_data">
+         <obj_property name="ElementShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_be">
+         <obj_property name="ElementShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_en">
+         <obj_property name="ElementShortName">rd_ch_rd_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_valid">
+         <obj_property name="ElementShortName">rd_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_valid[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/rd_ch_rd_almost_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/NUM_CHANNELS">
+         <obj_property name="ElementShortName">NUM_CHANNELS[31:0]</obj_property>
+         <obj_property name="ObjectShortName">NUM_CHANNELS[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group525">
+      <obj_property name="label">ft601</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/reset_n">
+         <obj_property name="ElementShortName">reset_n</obj_property>
+         <obj_property name="ObjectShortName">reset_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/clk_out">
+         <obj_property name="ElementShortName">clk_out</obj_property>
+         <obj_property name="ObjectShortName">clk_out</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/data">
+         <obj_property name="ElementShortName">data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/be">
+         <obj_property name="ElementShortName">be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/oe_n">
+         <obj_property name="ElementShortName">oe_n</obj_property>
+         <obj_property name="ObjectShortName">oe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/wr_n">
+         <obj_property name="ElementShortName">wr_n</obj_property>
+         <obj_property name="ObjectShortName">wr_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/rd_n">
+         <obj_property name="ElementShortName">rd_n</obj_property>
+         <obj_property name="ObjectShortName">rd_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/txe_n">
+         <obj_property name="ElementShortName">txe_n</obj_property>
+         <obj_property name="ObjectShortName">txe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/rxf_n">
+         <obj_property name="ElementShortName">rxf_n</obj_property>
+         <obj_property name="ObjectShortName">rxf_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/siwu_n">
+         <obj_property name="ElementShortName">siwu_n</obj_property>
+         <obj_property name="ObjectShortName">siwu_n</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_data">
+         <obj_property name="ElementShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_be">
+         <obj_property name="ElementShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_en">
+         <obj_property name="ElementShortName">wr_ch_wr_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_push">
+         <obj_property name="ElementShortName">wr_ch_wr_push[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_push[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_full">
+         <obj_property name="ElementShortName">wr_ch_wr_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_wr_almost_full">
+         <obj_property name="ElementShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_has_wr_packet_space">
+         <obj_property name="ElementShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_data">
+         <obj_property name="ElementShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_be">
+         <obj_property name="ElementShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_en">
+         <obj_property name="ElementShortName">rd_ch_rd_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_valid">
+         <obj_property name="ElementShortName">rd_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_valid[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_rd_almost_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/data_in">
+         <obj_property name="ElementShortName">data_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/data_out">
+         <obj_property name="ElementShortName">data_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_out[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/data_oe_n">
+         <obj_property name="ElementShortName">data_oe_n[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_oe_n[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/be_in">
+         <obj_property name="ElementShortName">be_in[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_in[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/be_out">
+         <obj_property name="ElementShortName">be_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/be_oe_n">
+         <obj_property name="ElementShortName">be_oe_n[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_oe_n[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/state">
+         <obj_property name="ElementShortName">state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">state[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/reset_count">
+         <obj_property name="ElementShortName">reset_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">reset_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_count">
+         <obj_property name="ElementShortName">rd_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/rd_almost_empty">
+         <obj_property name="ElementShortName">rd_almost_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_almost_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_count">
+         <obj_property name="ElementShortName">wr_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/channel">
+         <obj_property name="ElementShortName">channel[7:0]</obj_property>
+         <obj_property name="ObjectShortName">channel[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_data">
+         <obj_property name="ElementShortName">wr_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_be">
+         <obj_property name="ElementShortName">wr_ch_rd_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_en">
+         <obj_property name="ElementShortName">wr_ch_rd_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_valid">
+         <obj_property name="ElementShortName">wr_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_valid[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_xfer_req">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_req[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_req[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_xfer_done">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_done[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_done[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/wr_ch_rd_xfer_almost_done">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_almost_done[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_almost_done[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_wr_en">
+         <obj_property name="ElementShortName">rd_ch_wr_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_wr_full">
+         <obj_property name="ElementShortName">rd_ch_wr_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_wr_almost_full">
+         <obj_property name="ElementShortName">rd_ch_wr_almost_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_almost_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/rd_ch_has_wr_packet_space">
+         <obj_property name="ElementShortName">rd_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/NUM_CHANNELS">
+         <obj_property name="ElementShortName">NUM_CHANNELS[31:0]</obj_property>
+         <obj_property name="ObjectShortName">NUM_CHANNELS[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_RESET">
+         <obj_property name="ElementShortName">STATE_RESET[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_RESET[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_READ_BTA1">
+         <obj_property name="ElementShortName">STATE_READ_BTA1[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA1[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_READ_BTA2">
+         <obj_property name="ElementShortName">STATE_READ_BTA2[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA2[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_READ_DATA">
+         <obj_property name="ElementShortName">STATE_READ_DATA[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_DATA[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_READ_BTA3">
+         <obj_property name="ElementShortName">STATE_READ_BTA3[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA3[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_WRITE_BTA1">
+         <obj_property name="ElementShortName">STATE_WRITE_BTA1[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_BTA1[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_WRITE_DATA">
+         <obj_property name="ElementShortName">STATE_WRITE_DATA[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_DATA[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/STATE_WRITE_BTA2">
+         <obj_property name="ElementShortName">STATE_WRITE_BTA2[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_BTA2[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group468">
+      <obj_property name="label">tb_sink1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group526">
+      <obj_property name="label">tb_sink2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group527">
+      <obj_property name="label">tb_sink3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group528">
+      <obj_property name="label">tb_sink4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group249">
+      <obj_property name="label">tb_src1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[1].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group628">
+      <obj_property name="label">tb_src2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[2].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group629">
+      <obj_property name="label">tb_src3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[3].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group630">
+      <obj_property name="label">tb_src4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/\genblk1[4].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group679">
+         <obj_property name="label">pc_src1</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group202">
+      <obj_property name="label">if</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_clkin">
+         <obj_property name="ElementShortName">ft601_clkin</obj_property>
+         <obj_property name="ObjectShortName">ft601_clkin</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/ft601_data">
+         <obj_property name="ElementShortName">ft601_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">ft601_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/ft601_be">
+         <obj_property name="ElementShortName">ft601_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">ft601_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_txe_n">
+         <obj_property name="ElementShortName">ft601_txe_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_txe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_rxf_n">
+         <obj_property name="ElementShortName">ft601_rxf_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_rxf_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_oe_n">
+         <obj_property name="ElementShortName">ft601_oe_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_oe_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_wr_n">
+         <obj_property name="ElementShortName">ft601_wr_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_wr_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_rd_n">
+         <obj_property name="ElementShortName">ft601_rd_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_rd_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/ft601_siwu_n">
+         <obj_property name="ElementShortName">ft601_siwu_n</obj_property>
+         <obj_property name="ObjectShortName">ft601_siwu_n</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/locked">
+         <obj_property name="ElementShortName">locked</obj_property>
+         <obj_property name="ObjectShortName">locked</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_data">
+         <obj_property name="ElementShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_data[4:1][31:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_be">
+         <obj_property name="ElementShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_en">
+         <obj_property name="ElementShortName">wr_ch_wr_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_push">
+         <obj_property name="ElementShortName">wr_ch_wr_push[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_push[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_full">
+         <obj_property name="ElementShortName">wr_ch_wr_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_wr_almost_full">
+         <obj_property name="ElementShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_wr_almost_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_has_wr_packet_space">
+         <obj_property name="ElementShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_has_wr_packet_space[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_data">
+         <obj_property name="ElementShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_be">
+         <obj_property name="ElementShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_en">
+         <obj_property name="ElementShortName">rd_ch_rd_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_valid">
+         <obj_property name="ElementShortName">rd_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_rd_almost_empty">
+         <obj_property name="ElementShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_rd_almost_empty[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/clk0_mmcm">
+         <obj_property name="ElementShortName">clk0_mmcm</obj_property>
+         <obj_property name="ObjectShortName">clk0_mmcm</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/clkfb">
+         <obj_property name="ElementShortName">clkfb</obj_property>
+         <obj_property name="ObjectShortName">clkfb</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/locked_mmcm">
+         <obj_property name="ElementShortName">locked_mmcm</obj_property>
+         <obj_property name="ObjectShortName">locked_mmcm</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/data_in">
+         <obj_property name="ElementShortName">data_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_in[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/be_out">
+         <obj_property name="ElementShortName">be_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/be_in">
+         <obj_property name="ElementShortName">be_in[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_in[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/data_oe_n">
+         <obj_property name="ElementShortName">data_oe_n[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_oe_n[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/be_oe_n">
+         <obj_property name="ElementShortName">be_oe_n[3:0]</obj_property>
+         <obj_property name="ObjectShortName">be_oe_n[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/cmd_mux">
+         <obj_property name="ElementShortName">cmd_mux</obj_property>
+         <obj_property name="ObjectShortName">cmd_mux</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/cmd_data">
+         <obj_property name="ElementShortName">cmd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">cmd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/cmd_be">
+         <obj_property name="ElementShortName">cmd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">cmd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/channel">
+         <obj_property name="ElementShortName">channel[2:0]</obj_property>
+         <obj_property name="ObjectShortName">channel[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/data_out">
+         <obj_property name="ElementShortName">data_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_out[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_data">
+         <obj_property name="ElementShortName">wr_ch_rd_data[4:1][31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_data[4:1][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_be">
+         <obj_property name="ElementShortName">wr_ch_rd_be[4:1][3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_be[4:1][3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_en">
+         <obj_property name="ElementShortName">wr_ch_rd_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_en[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_valid">
+         <obj_property name="ElementShortName">wr_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_valid[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_xfer_req">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_req[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_req[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_xfer_done">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_done[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_done[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_ch_rd_xfer_almost_done">
+         <obj_property name="ElementShortName">wr_ch_rd_xfer_almost_done[4:1]</obj_property>
+         <obj_property name="ObjectShortName">wr_ch_rd_xfer_almost_done[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/state">
+         <obj_property name="ElementShortName">state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">state[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_wr_en">
+         <obj_property name="ElementShortName">rd_ch_wr_en[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_en[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/can_write">
+         <obj_property name="ElementShortName">can_write[4:1]</obj_property>
+         <obj_property name="ObjectShortName">can_write[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/can_read">
+         <obj_property name="ElementShortName">can_read[4:1]</obj_property>
+         <obj_property name="ObjectShortName">can_read[4:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_wr_full">
+         <obj_property name="ElementShortName">rd_ch_wr_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_wr_almost_full">
+         <obj_property name="ElementShortName">rd_ch_wr_almost_full[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_wr_almost_full[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_ch_has_wr_packet_space">
+         <obj_property name="ElementShortName">rd_ch_has_wr_packet_space[4:1]</obj_property>
+         <obj_property name="ObjectShortName">rd_ch_has_wr_packet_space[4:1]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/reset_count">
+         <obj_property name="ElementShortName">reset_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">reset_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/tmp">
+         <obj_property name="ElementShortName">tmp[31:0]</obj_property>
+         <obj_property name="ObjectShortName">tmp[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/tmp0">
+         <obj_property name="ElementShortName">tmp0[3:0]</obj_property>
+         <obj_property name="ObjectShortName">tmp0[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/rd_count">
+         <obj_property name="ElementShortName">rd_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/wr_count">
+         <obj_property name="ElementShortName">wr_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/NUM_CHANNELS">
+         <obj_property name="ElementShortName">NUM_CHANNELS[31:0]</obj_property>
+         <obj_property name="ObjectShortName">NUM_CHANNELS[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_RESET">
+         <obj_property name="ElementShortName">STATE_RESET[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_RESET[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_MAYBE_START_READ">
+         <obj_property name="ElementShortName">STATE_MAYBE_START_READ[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_MAYBE_START_READ[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_MAYBE_START_WRITE">
+         <obj_property name="ElementShortName">STATE_MAYBE_START_WRITE[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_MAYBE_START_WRITE[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_READ_COMMAND">
+         <obj_property name="ElementShortName">STATE_READ_COMMAND[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_COMMAND[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_READ_BTA1">
+         <obj_property name="ElementShortName">STATE_READ_BTA1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA1[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_READ_BTA2">
+         <obj_property name="ElementShortName">STATE_READ_BTA2[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA2[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_READ_DATA">
+         <obj_property name="ElementShortName">STATE_READ_DATA[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_DATA[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_READ_BTA3">
+         <obj_property name="ElementShortName">STATE_READ_BTA3[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_READ_BTA3[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_WRITE_COMMAND">
+         <obj_property name="ElementShortName">STATE_WRITE_COMMAND[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_COMMAND[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_WRITE_BTA1">
+         <obj_property name="ElementShortName">STATE_WRITE_BTA1[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_BTA1[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_WRITE_DATA">
+         <obj_property name="ElementShortName">STATE_WRITE_DATA[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_DATA[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/STATE_WRITE_BTA2">
+         <obj_property name="ElementShortName">STATE_WRITE_BTA2[3:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WRITE_BTA2[3:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group429">
+      <obj_property name="label">pc_sink1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group577">
+      <obj_property name="label">pc_sink2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group578">
+      <obj_property name="label">pc_sink3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group579">
+      <obj_property name="label">pc_sink4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /pc_rx_data">
+         <obj_property name="ElementShortName">pc_rx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /pc_rx_be">
+         <obj_property name="ElementShortName">pc_rx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /pc_rx_rd_en">
+         <obj_property name="ElementShortName">pc_rx_rd_en</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /pc_rx_valid">
+         <obj_property name="ElementShortName">pc_rx_valid</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /pc_rx_empty">
+         <obj_property name="ElementShortName">pc_rx_empty</obj_property>
+         <obj_property name="ObjectShortName">pc_rx_empty</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /is_first_word">
+         <obj_property name="ElementShortName">is_first_word</obj_property>
+         <obj_property name="ObjectShortName">is_first_word</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /last_word">
+         <obj_property name="ElementShortName">last_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">last_word[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].sink /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group679">
+      <obj_property name="label">pc_src1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[1].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group679">
+      <obj_property name="label">pc_src2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[2].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group679">
+      <obj_property name="label">pc_src3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[3].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group679">
+      <obj_property name="label">pc_src4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /reset">
+         <obj_property name="ElementShortName">reset</obj_property>
+         <obj_property name="ObjectShortName">reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /clk">
+         <obj_property name="ElementShortName">clk</obj_property>
+         <obj_property name="ObjectShortName">clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /pc_tx_data">
+         <obj_property name="ElementShortName">pc_tx_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /pc_tx_be">
+         <obj_property name="ElementShortName">pc_tx_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /pc_tx_en">
+         <obj_property name="ElementShortName">pc_tx_en</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /pc_tx_push">
+         <obj_property name="ElementShortName">pc_tx_push</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /pc_tx_full">
+         <obj_property name="ElementShortName">pc_tx_full</obj_property>
+         <obj_property name="ObjectShortName">pc_tx_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /word_count">
+         <obj_property name="ElementShortName">word_count[31:0]</obj_property>
+         <obj_property name="ObjectShortName">word_count[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /wait_cycles_remaining">
+         <obj_property name="ElementShortName">wait_cycles_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wait_cycles_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /blob_bytes_remaining">
+         <obj_property name="ElementShortName">blob_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">blob_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /packet_bytes_remaining">
+         <obj_property name="ElementShortName">packet_bytes_remaining[31:0]</obj_property>
+         <obj_property name="ObjectShortName">packet_bytes_remaining[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /need_push">
+         <obj_property name="ElementShortName">need_push</obj_property>
+         <obj_property name="ObjectShortName">need_push</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /k">
+         <obj_property name="ElementShortName">k[31:0]</obj_property>
+         <obj_property name="ObjectShortName">k[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /CHANNEL_NUM">
+         <obj_property name="ElementShortName">CHANNEL_NUM[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CHANNEL_NUM[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\genblk3[4].src /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group756">
+      <obj_property name="label">pc_wr_buf1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_push">
+         <obj_property name="ElementShortName">wr_push</obj_property>
+         <obj_property name="ObjectShortName">wr_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_req">
+         <obj_property name="ElementShortName">rd_xfer_req</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_done">
+         <obj_property name="ElementShortName">rd_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_almost_done">
+         <obj_property name="ElementShortName">rd_xfer_almost_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_almost_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /state">
+         <obj_property name="ElementShortName">state[2:0]</obj_property>
+         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_data_count">
+         <obj_property name="ElementShortName">wr_data_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /has_full_packet">
+         <obj_property name="ElementShortName">has_full_packet</obj_property>
+         <obj_property name="ObjectShortName">has_full_packet</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_xfer_active">
+         <obj_property name="ElementShortName">wr_xfer_active</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_active</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_xfer_done">
+         <obj_property name="ElementShortName">wr_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /wr_xfer_size">
+         <obj_property name="ElementShortName">wr_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_size">
+         <obj_property name="ElementShortName">rd_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_count">
+         <obj_property name="ElementShortName">rd_xfer_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /rd_xfer_req_int">
+         <obj_property name="ElementShortName">rd_xfer_req_int</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req_int</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /push_pending">
+         <obj_property name="ElementShortName">push_pending</obj_property>
+         <obj_property name="ObjectShortName">push_pending</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /ack_push_pending">
+         <obj_property name="ElementShortName">ack_push_pending</obj_property>
+         <obj_property name="ObjectShortName">ack_push_pending</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /STATE_REQ">
+         <obj_property name="ElementShortName">STATE_REQ[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /STATE_REQ_ACK">
+         <obj_property name="ElementShortName">STATE_REQ_ACK[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ_ACK[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /STATE_WAIT_UNTIL_DONE">
+         <obj_property name="ElementShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[1] /STATE_ACK_DONE">
+         <obj_property name="ElementShortName">STATE_ACK_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_ACK_DONE[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group756">
+      <obj_property name="label">pc_wr_buf2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_push">
+         <obj_property name="ElementShortName">wr_push</obj_property>
+         <obj_property name="ObjectShortName">wr_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_req">
+         <obj_property name="ElementShortName">rd_xfer_req</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_done">
+         <obj_property name="ElementShortName">rd_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_almost_done">
+         <obj_property name="ElementShortName">rd_xfer_almost_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_almost_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /state">
+         <obj_property name="ElementShortName">state[2:0]</obj_property>
+         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_data_count">
+         <obj_property name="ElementShortName">wr_data_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /has_full_packet">
+         <obj_property name="ElementShortName">has_full_packet</obj_property>
+         <obj_property name="ObjectShortName">has_full_packet</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_xfer_active">
+         <obj_property name="ElementShortName">wr_xfer_active</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_active</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_xfer_done">
+         <obj_property name="ElementShortName">wr_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /wr_xfer_size">
+         <obj_property name="ElementShortName">wr_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_size">
+         <obj_property name="ElementShortName">rd_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_count">
+         <obj_property name="ElementShortName">rd_xfer_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /rd_xfer_req_int">
+         <obj_property name="ElementShortName">rd_xfer_req_int</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req_int</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /push_pending">
+         <obj_property name="ElementShortName">push_pending</obj_property>
+         <obj_property name="ObjectShortName">push_pending</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /ack_push_pending">
+         <obj_property name="ElementShortName">ack_push_pending</obj_property>
+         <obj_property name="ObjectShortName">ack_push_pending</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /STATE_REQ">
+         <obj_property name="ElementShortName">STATE_REQ[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /STATE_REQ_ACK">
+         <obj_property name="ElementShortName">STATE_REQ_ACK[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ_ACK[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /STATE_WAIT_UNTIL_DONE">
+         <obj_property name="ElementShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[2] /STATE_ACK_DONE">
+         <obj_property name="ElementShortName">STATE_ACK_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_ACK_DONE[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group756">
+      <obj_property name="label">pc_wr_buf3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_push">
+         <obj_property name="ElementShortName">wr_push</obj_property>
+         <obj_property name="ObjectShortName">wr_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_req">
+         <obj_property name="ElementShortName">rd_xfer_req</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_done">
+         <obj_property name="ElementShortName">rd_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_almost_done">
+         <obj_property name="ElementShortName">rd_xfer_almost_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_almost_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /state">
+         <obj_property name="ElementShortName">state[2:0]</obj_property>
+         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_data_count">
+         <obj_property name="ElementShortName">wr_data_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /has_full_packet">
+         <obj_property name="ElementShortName">has_full_packet</obj_property>
+         <obj_property name="ObjectShortName">has_full_packet</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_xfer_active">
+         <obj_property name="ElementShortName">wr_xfer_active</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_active</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_xfer_done">
+         <obj_property name="ElementShortName">wr_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /wr_xfer_size">
+         <obj_property name="ElementShortName">wr_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_size">
+         <obj_property name="ElementShortName">rd_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_count">
+         <obj_property name="ElementShortName">rd_xfer_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /rd_xfer_req_int">
+         <obj_property name="ElementShortName">rd_xfer_req_int</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req_int</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /push_pending">
+         <obj_property name="ElementShortName">push_pending</obj_property>
+         <obj_property name="ObjectShortName">push_pending</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /ack_push_pending">
+         <obj_property name="ElementShortName">ack_push_pending</obj_property>
+         <obj_property name="ObjectShortName">ack_push_pending</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /STATE_REQ">
+         <obj_property name="ElementShortName">STATE_REQ[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /STATE_REQ_ACK">
+         <obj_property name="ElementShortName">STATE_REQ_ACK[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ_ACK[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /STATE_WAIT_UNTIL_DONE">
+         <obj_property name="ElementShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[3] /STATE_ACK_DONE">
+         <obj_property name="ElementShortName">STATE_ACK_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_ACK_DONE[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group756">
+      <obj_property name="label">pc_wr_buf4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_push">
+         <obj_property name="ElementShortName">wr_push</obj_property>
+         <obj_property name="ObjectShortName">wr_push</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_req">
+         <obj_property name="ElementShortName">rd_xfer_req</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_done">
+         <obj_property name="ElementShortName">rd_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_almost_done">
+         <obj_property name="ElementShortName">rd_xfer_almost_done</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_almost_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /state">
+         <obj_property name="ElementShortName">state[2:0]</obj_property>
+         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_data_count">
+         <obj_property name="ElementShortName">wr_data_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /has_full_packet">
+         <obj_property name="ElementShortName">has_full_packet</obj_property>
+         <obj_property name="ObjectShortName">has_full_packet</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_xfer_active">
+         <obj_property name="ElementShortName">wr_xfer_active</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_active</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_xfer_done">
+         <obj_property name="ElementShortName">wr_xfer_done</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_done</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /wr_xfer_size">
+         <obj_property name="ElementShortName">wr_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_size">
+         <obj_property name="ElementShortName">rd_xfer_size[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_size[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_count">
+         <obj_property name="ElementShortName">rd_xfer_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_count[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /rd_xfer_req_int">
+         <obj_property name="ElementShortName">rd_xfer_req_int</obj_property>
+         <obj_property name="ObjectShortName">rd_xfer_req_int</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /push_pending">
+         <obj_property name="ElementShortName">push_pending</obj_property>
+         <obj_property name="ObjectShortName">push_pending</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /ack_push_pending">
+         <obj_property name="ElementShortName">ack_push_pending</obj_property>
+         <obj_property name="ObjectShortName">ack_push_pending</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /STATE_IDLE">
+         <obj_property name="ElementShortName">STATE_IDLE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_IDLE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /STATE_REQ">
+         <obj_property name="ElementShortName">STATE_REQ[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /STATE_REQ_ACK">
+         <obj_property name="ElementShortName">STATE_REQ_ACK[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_REQ_ACK[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /STATE_WAIT_UNTIL_DONE">
+         <obj_property name="ElementShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_WAIT_UNTIL_DONE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/ft601/\wr_buf[4] /STATE_ACK_DONE">
+         <obj_property name="ElementShortName">STATE_ACK_DONE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">STATE_ACK_DONE[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group911">
+      <obj_property name="label">tb_rd_buf4</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_empty">
+         <obj_property name="ElementShortName">rd_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /rd_almost_empty">
+         <obj_property name="ElementShortName">rd_almost_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_almost_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /prog_full">
+         <obj_property name="ElementShortName">prog_full</obj_property>
+         <obj_property name="ObjectShortName">prog_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[4] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group911">
+      <obj_property name="label">tb_rd_buf3</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_empty">
+         <obj_property name="ElementShortName">rd_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /rd_almost_empty">
+         <obj_property name="ElementShortName">rd_almost_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_almost_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /prog_full">
+         <obj_property name="ElementShortName">prog_full</obj_property>
+         <obj_property name="ObjectShortName">prog_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[3] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group911">
+      <obj_property name="label">tb_rd_buf2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_empty">
+         <obj_property name="ElementShortName">rd_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /rd_almost_empty">
+         <obj_property name="ElementShortName">rd_almost_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_almost_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /prog_full">
+         <obj_property name="ElementShortName">prog_full</obj_property>
+         <obj_property name="ObjectShortName">prog_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[2] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group911">
+      <obj_property name="label">tb_rd_buf1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_reset">
+         <obj_property name="ElementShortName">wr_reset</obj_property>
+         <obj_property name="ObjectShortName">wr_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_clk">
+         <obj_property name="ElementShortName">wr_clk</obj_property>
+         <obj_property name="ObjectShortName">wr_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_data">
+         <obj_property name="ElementShortName">wr_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_be">
+         <obj_property name="ElementShortName">wr_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_en">
+         <obj_property name="ElementShortName">wr_en</obj_property>
+         <obj_property name="ObjectShortName">wr_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_full">
+         <obj_property name="ElementShortName">wr_full</obj_property>
+         <obj_property name="ObjectShortName">wr_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_almost_full">
+         <obj_property name="ElementShortName">wr_almost_full</obj_property>
+         <obj_property name="ObjectShortName">wr_almost_full</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /wr_has_packet_space">
+         <obj_property name="ElementShortName">wr_has_packet_space</obj_property>
+         <obj_property name="ObjectShortName">wr_has_packet_space</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_reset">
+         <obj_property name="ElementShortName">rd_reset</obj_property>
+         <obj_property name="ObjectShortName">rd_reset</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_clk">
+         <obj_property name="ElementShortName">rd_clk</obj_property>
+         <obj_property name="ObjectShortName">rd_clk</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_data">
+         <obj_property name="ElementShortName">rd_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_be">
+         <obj_property name="ElementShortName">rd_be[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_be[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_valid">
+         <obj_property name="ElementShortName">rd_valid</obj_property>
+         <obj_property name="ObjectShortName">rd_valid</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_en">
+         <obj_property name="ElementShortName">rd_en</obj_property>
+         <obj_property name="ObjectShortName">rd_en</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_empty">
+         <obj_property name="ElementShortName">rd_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /rd_almost_empty">
+         <obj_property name="ElementShortName">rd_almost_empty</obj_property>
+         <obj_property name="ObjectShortName">rd_almost_empty</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /prog_full">
+         <obj_property name="ElementShortName">prog_full</obj_property>
+         <obj_property name="ObjectShortName">prog_full</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /CAPACITY">
+         <obj_property name="ElementShortName">CAPACITY[31:0]</obj_property>
+         <obj_property name="ObjectShortName">CAPACITY[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /MAX_PACKET_SIZE">
+         <obj_property name="ElementShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+         <obj_property name="ObjectShortName">MAX_PACKET_SIZE[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_ft601_mcfifo/dut/\rd_buf[1] /BYTES_PER_WORD">
+         <obj_property name="ElementShortName">BYTES_PER_WORD[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BYTES_PER_WORD[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

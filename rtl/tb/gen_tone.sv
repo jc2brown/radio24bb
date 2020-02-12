@@ -16,7 +16,8 @@ module gen_tone
 )
 (
     output wire [31:0] sig_p_uv,
-    output wire [31:0] sig_n_uv
+    output wire [31:0] sig_n_uv,
+    output wire clkout
 );
     
     
@@ -28,6 +29,8 @@ localparam real NOISE_CLK_PER = SIG_CLK_PER / 4.0;
     
 reg sigclk = 1'b0;
 always #(SIG_CLK_PER/2) sigclk <= !sigclk;
+
+assign clkout = sigclk;
 
 reg noiseclk = 1'b0;
 always #(NOISE_CLK_PER/2) noiseclk <= !noiseclk;
