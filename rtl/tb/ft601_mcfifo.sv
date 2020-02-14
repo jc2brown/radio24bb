@@ -90,6 +90,26 @@ IOBUF be_iobuf [3:0] (
 
 
 
+
+enum reg [3:0]  {
+
+    STATE_RESET, 
+    STATE_IDLE, 
+    
+    STATE_READ_BTA1,
+    STATE_READ_BTA2, 
+    STATE_READ_DATA, 
+    STATE_READ_BTA3, 
+    
+    STATE_WRITE_BTA1, 
+    STATE_WRITE_DATA, 
+    STATE_WRITE_BTA2
+    
+} 
+state;
+ 
+ 
+/*
 reg [3:0] state;
 
 localparam STATE_RESET = 0;
@@ -103,6 +123,11 @@ localparam STATE_READ_BTA3 = 5;
 localparam STATE_WRITE_BTA1 = 6;
 localparam STATE_WRITE_DATA = 7;
 localparam STATE_WRITE_BTA2 = 8;
+*/
+
+
+
+
 
 
 reg [31:0] reset_count;

@@ -63,8 +63,11 @@ always @(posedge clk) begin
 end
 
 
-
 reg signed [31:0] error_accum;
+
+wire apply_error_correction = 0;//(error_accum > error_bound || error_accum < -error_bound);
+
+
 
 always @(posedge clk) begin
     if (reset) begin
@@ -99,9 +102,6 @@ always @(*) out <= out_accum[31:(32-OUTPUT_WIDTH)];
 
 
 reg signed [31:0] error_bound = 2**(32-OUTPUT_WIDTH) / 2; // Limit error to +/- 0.5 output LSb
-
-wire apply_error_correction = 0;//(error_accum > error_bound || error_accum < -error_bound);
-
 
 
 always @(posedge clk) begin

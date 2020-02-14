@@ -43,6 +43,9 @@ wire signed [SAMPLE_WIDTH-1:0] out;
 wire out_valid;
     
     
+wire signed [SAMPLE_WIDTH-1:0] out_opt; 
+wire out_valid_opt;
+    
     
     
     
@@ -101,6 +104,36 @@ dut
     .out_valid(out_valid)
 );   
     
+    
+    
+    
+    
+    
+fast_biquad_opt
+#(
+    .SAMPLE_WIDTH(SAMPLE_WIDTH),
+    .COEF_WIDTH(COEF_WIDTH)
+)
+dut_opt
+(
+    .clk(clk),
+    .reset(reset),
+    
+    .b0(b0),
+    .b1(b1),
+    .b2(b2),
+    .a1(a1),
+    .a2(a2),
+    
+    .in(in),
+    .in_valid(in_valid),
+    
+    .out(out_opt),
+    .out_valid(out_valid_opt)
+);   
+
+
+
     
     
 endmodule
