@@ -33,4 +33,9 @@ clean: $(RTL_ROOT)/clean $(FW_ROOT)/clean
 # make from within fw/ will use the copied files which do not depend on the RTL sources.
 .PHONY: copy
 copy: 
-	cp $(RTL_ROOT)/out/* $(FW_ROOT)
+	#cp $(RTL_ROOT)/out/* $(FW_ROOT)
+	# VERY BAD HACK BELOW - FOR DEBUG ONLY
+	cp $(RTL_ROOT)/syn/radio24bb.runs/impl_1/r24bb_top.bit $(FW_ROOT)/r24bb_top.bit
+	cp $(RTL_ROOT)/syn/radio24bb.runs/impl_1/r24bb_top.hwdef $(FW_ROOT)/r24bb_top.hdf
+
+

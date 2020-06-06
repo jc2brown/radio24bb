@@ -119,6 +119,7 @@ $(RTL_ROOT)/hdf: $(RTL_ROOT)/bit
 $(RTL_ROOT)/info: $(RTL_ROOT)/bit
 
 
+
 .PHONY: $(RTL_ROOT)/clean
 $(RTL_ROOT)/clean :	
 	rm -rf $(RTL_ROOT)/syn/

@@ -35,26 +35,26 @@ module ft601_mcfifo_wr_buf
     input wr_reset,
     input wr_clk,
     
-    input [31:0] wr_data,
-    input [3:0] wr_be,
-    input wr_en,
-    input wr_push,
+    (* mark_debug = "true" *) input [31:0] wr_data,
+    (* mark_debug = "true" *) input [3:0] wr_be,
+    (* mark_debug = "true" *) input wr_en,
+    (* mark_debug = "true" *) input wr_push,
         
-    output wr_full,
-    output wr_almost_full,
-    output wr_has_packet_space, // Asserted when a device can write at least an entire packet's worth of data without the buffer becoming full
+    (* mark_debug = "true" *) output wr_full,
+    (* mark_debug = "true" *) output wr_almost_full,
+    (* mark_debug = "true" *) output wr_has_packet_space, // Asserted when a device can write at least an entire packet's worth of data without the buffer becoming full
     
     
     input rd_reset,
     input rd_clk,
-    output [31:0] rd_data,
-    output [3:0] rd_be,
-    output rd_valid,
-    input rd_en,    
+    (* mark_debug = "true" *) output [31:0] rd_data,
+    (* mark_debug = "true" *) output [3:0] rd_be,
+    (* mark_debug = "true" *) output rd_valid,
+    (* mark_debug = "true" *) input rd_en,    
     
-    output rd_xfer_req,
-    output rd_xfer_done,
-    output rd_xfer_almost_done
+    (* mark_debug = "true" *) output rd_xfer_req,
+    (* mark_debug = "true" *) output rd_xfer_done,
+    (* mark_debug = "true" *) output rd_xfer_almost_done
     
 );
     
@@ -68,22 +68,22 @@ localparam STATE_REQ_ACK = 3;
 localparam STATE_WAIT_UNTIL_DONE = 4;
 localparam STATE_ACK_DONE = 5;
 
-reg [2:0] state;
+(* mark_debug = "true" *) reg [2:0] state;
     
-reg [15:0] wr_data_count; //bytes
+(* mark_debug = "true" *) reg [15:0] wr_data_count; //bytes
 
-wire has_full_packet;
+(* mark_debug = "true" *) wire has_full_packet;
 
-reg wr_xfer_active; // Assert to send, and must stay high until ack
-wire wr_xfer_done;
-reg [15:0] wr_xfer_size; // bytes
+(* mark_debug = "true" *) reg wr_xfer_active; // Assert to send, and must stay high until ack
+(* mark_debug = "true" *) wire wr_xfer_done;
+(* mark_debug = "true" *) reg [15:0] wr_xfer_size; // bytes
 
-wire [15:0] rd_xfer_size;
-reg [15:0] rd_xfer_count;
+(* mark_debug = "true" *) wire [15:0] rd_xfer_size;
+(* mark_debug = "true" *) reg [15:0] rd_xfer_count;
 
 // This signal stays high for some cycles after finishing the tracnfer
 // The external version is driven low immediately to avoid re-triggering the arbiter
-wire rd_xfer_req_int; 
+(* mark_debug = "true" *) wire rd_xfer_req_int; 
 
 
 
@@ -92,8 +92,8 @@ assign has_full_packet = (wr_data_count >= MAX_PACKET_SIZE);
 assign wr_full = (wr_data_count == CAPACITY);
 assign wr_almost_full = (wr_data_count >= CAPACITY-BYTES_PER_WORD);
 
-reg push_pending;
-reg ack_push_pending;
+(* mark_debug = "true" *) reg push_pending;
+(* mark_debug = "true" *) reg ack_push_pending;
 
 // TODO: maybe replace push_pending signal with a command queue
 // TODO: maybe make push_pending and/or ack_push_pending externally available 
@@ -220,7 +220,7 @@ xpm_cdc_handshake #(
     .DEST_EXT_HSK(1),   // DECIMAL; 0=internal handshake, 1=external handshake
     .DEST_SYNC_FF(2),   // DECIMAL; range: 2-10
     .INIT_SYNC_FF(1),   // DECIMAL; 0=disable simulation init values, 1=enable simulation init values
-    .SIM_ASSERT_CHK(0), // DECIMAL; 0=disable simulation messages, 1=enable simulation messages
+    .SIM_ASSERT_CHK(1), // DECIMAL; 0=disable simulation messages, 1=enable simulation messages
     .SRC_SYNC_FF(2),    // DECIMAL; range: 2-10
     .WIDTH(16)           // DECIMAL; range: 1-1024
 )

@@ -43,11 +43,11 @@ module ft601_mcfifo_if
     input wire          ft601_clkin,
     inout wire [31:0]   ft601_data,
     inout wire [3:0]    ft601_be,
-    input wire          ft601_txe_n,
-    input wire          ft601_rxf_n,
-    output reg          ft601_oe_n,
-    output reg          ft601_wr_n,
-    output reg          ft601_rd_n,
+    (* mark_debug = "true" *) input wire          ft601_txe_n,
+    (* mark_debug = "true" *) input wire          ft601_rxf_n,
+    (* mark_debug = "true" *) output reg          ft601_oe_n,
+    (* mark_debug = "true" *) output reg          ft601_wr_n,
+    (* mark_debug = "true" *) output reg          ft601_rd_n,
     output wire         ft601_siwu_n,
     
    
@@ -79,6 +79,14 @@ module ft601_mcfifo_if
     output wire         rd_ch_rd_almost_empty     [NUM_CHANNELS:1]
     
 );
+
+
+
+always @(*) begin
+    ft601_oe_n <= 1'b1;
+    ft601_rd_n <= 1'b1;
+end
+    
     
     
 localparam STATE_RESET                  = 4'd0;
@@ -107,38 +115,38 @@ wire clkfb;
 wire locked_mmcm;
 
     
-wire [31:0] data_in;
+(* mark_debug = "true" *) wire [31:0] data_in;
 
-reg [3:0] be_out;
-wire [3:0] be_in;
+(* mark_debug = "true" *) reg [3:0] be_out;
+(* mark_debug = "true" *) wire [3:0] be_in;
 
-reg [31:0] data_oe_n;
-reg [3:0] be_oe_n;
-
-
-
-reg cmd_mux; // 0=normal data, 1=cmd data
-reg [31:0] cmd_data;
-reg [3:0] cmd_be;
-
-reg [2:0] channel;
+(* mark_debug = "true" *) reg [31:0] data_oe_n;
+(* mark_debug = "true" *) reg [3:0] be_oe_n;
 
 
-wire [31:0] data_out;
 
-wire [31:0] wr_ch_rd_data [NUM_CHANNELS:1];
-wire [3:0] wr_ch_rd_be [NUM_CHANNELS:1];
-wire wr_ch_rd_en [NUM_CHANNELS:1];
+(* mark_debug = "true" *) reg cmd_mux; // 0=normal data, 1=cmd data
+(* mark_debug = "true" *) reg [31:0] cmd_data;
+(* mark_debug = "true" *) reg [3:0] cmd_be;
 
-
-wire wr_ch_rd_valid [NUM_CHANNELS:1];
-
-wire wr_ch_rd_xfer_req [NUM_CHANNELS:1];
-wire wr_ch_rd_xfer_done [NUM_CHANNELS:1];
-wire wr_ch_rd_xfer_almost_done [NUM_CHANNELS:1];
+(* mark_debug = "true" *) reg [2:0] channel;
 
 
-reg [3:0] state;
+(* mark_debug = "true" *) wire [31:0] data_out;
+
+(* mark_debug = "true" *) wire [31:0] wr_ch_rd_data [NUM_CHANNELS:1];
+(* mark_debug = "true" *) wire [3:0] wr_ch_rd_be [NUM_CHANNELS:1];
+(* mark_debug = "true" *) wire wr_ch_rd_en [NUM_CHANNELS:1];
+
+
+(* mark_debug = "true" *) wire wr_ch_rd_valid [NUM_CHANNELS:1];
+
+(* mark_debug = "true" *) wire wr_ch_rd_xfer_req [NUM_CHANNELS:1];
+(* mark_debug = "true" *) wire wr_ch_rd_xfer_done [NUM_CHANNELS:1];
+(* mark_debug = "true" *) wire wr_ch_rd_xfer_almost_done [NUM_CHANNELS:1];
+
+
+(* mark_debug = "true" *) reg [3:0] state;
 
 
 wire rd_ch_wr_en [NUM_CHANNELS:1];
@@ -147,8 +155,8 @@ wire rd_ch_wr_full [NUM_CHANNELS:1];
 wire rd_ch_wr_almost_full [NUM_CHANNELS:1];
 wire rd_ch_has_wr_packet_space [NUM_CHANNELS:1];
 
-wire can_write [4:1];
-wire can_read [4:1];
+(* mark_debug = "true" *) wire can_write [4:1];
+(* mark_debug = "true" *) wire can_read [4:1];
 reg [31:0] reset_count;
 
 
@@ -170,10 +178,10 @@ assign be_out =     (state == STATE_WRITE_DATA && channel == 1) ? wr_ch_rd_be[1]
                     0;
 
 
-assign wr_ch_rd_en[1] = (channel == 1) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_WRITE_DATA);
-assign wr_ch_rd_en[2] = (channel == 2) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_WRITE_DATA);
-assign wr_ch_rd_en[3] = (channel == 3) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_WRITE_DATA);
-assign wr_ch_rd_en[4] = (channel == 4) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_WRITE_DATA);
+assign wr_ch_rd_en[1] = (channel == 1) && /*!ft601_rxf_n && */!ft601_wr_n && (state == STATE_WRITE_DATA);
+assign wr_ch_rd_en[2] = (channel == 2) && /*!ft601_rxf_n && */!ft601_wr_n && (state == STATE_WRITE_DATA);
+assign wr_ch_rd_en[3] = (channel == 3) && /*!ft601_rxf_n && */!ft601_wr_n && (state == STATE_WRITE_DATA);
+assign wr_ch_rd_en[4] = (channel == 4) && /*!ft601_rxf_n && */!ft601_wr_n && (state == STATE_WRITE_DATA);
 
 
 assign rd_ch_wr_en[1] = (channel == 1) && !ft601_rxf_n && !ft601_wr_n && (state == STATE_READ_DATA);
@@ -454,41 +462,49 @@ always @(negedge clk0_mmcm, negedge locked_mmcm) begin
        
            else begin     
                        
-               wr_count <= 0;  
+                       
+               /* HACK FOR DEBUG - txe_n needs a load */        
+               if (!ft601_txe_n) begin
+               
                    
-               ft601_wr_n <= 1'b0;
-               cmd_mux <= 1'b1;
-               cmd_data <= {28'h0000000, channel};
-               data_oe_n <= 32'h0000FF00;
-               cmd_be <= 4'h1; // Write command
-               be_oe_n <= 4'h0;           
-               state <= STATE_WRITE_COMMAND;
+                   wr_count <= 0;  
+                       
+                   ft601_wr_n <= 1'b0;
+                   cmd_mux <= 1'b1;
+                   cmd_data <= {28'h0000000, channel};
+                   data_oe_n <= 32'h0000FF00;
+                   cmd_be <= 4'h1; // Write command
+                   be_oe_n <= 4'h0;           
+                   state <= STATE_WRITE_COMMAND;
+           
+                end
+           
            end
                    
         end
         
        
-       else if (state == STATE_WRITE_COMMAND) begin
-            cmd_mux <= 1'b0;
+        else if (state == STATE_WRITE_COMMAND) begin
             state <= STATE_WRITE_BTA1;
         end
         
 
         else if (state == STATE_WRITE_BTA1) begin
-            if (ft601_txe_n) begin
+            //if (ft601_txe_n) begin
+                cmd_mux <= 1'b0;
                 data_oe_n <= 32'h00000000;
                 state <= STATE_WRITE_DATA;
-            end
+           //end
         end
         
 
         else if (state == STATE_WRITE_DATA) begin
         
-            if (!ft601_wr_n && !ft601_rxf_n) begin
+            if (!ft601_wr_n/* && !ft601_rxf_n*/) begin
                 wr_count <= wr_count + 1;
             end
         
-            if (ft601_rxf_n || wr_ch_rd_xfer_almost_done[channel]) begin
+            if (/*ft601_rxf_n || */wr_ch_rd_xfer_almost_done[channel]) begin
                 ft601_wr_n <= 1'b1;
                 state <= STATE_WRITE_BTA2;
             end

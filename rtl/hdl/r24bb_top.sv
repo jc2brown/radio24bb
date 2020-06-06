@@ -748,7 +748,22 @@ max5851_if max5851_if_inst (
 // 100MHz 32bit 3.2Gb/s
 //
 /////////////////////////////////////////////////////////////
-    
+  
+  
+  
+
+// Uncomment one of the following modes
+//`define FT601_245_MODE
+`define FT601_MCFIFO_MODE
+
+
+
+
+
+
+
+
+  
     
     
 wire usb_led_r;
@@ -849,6 +864,14 @@ usb_i2c_ioexp (
 );
 */
 
+
+
+
+
+
+
+
+
 wire usb_rd_en_raw;
     
 assign usb_wr_data =(usb_wr_mux == 0) ? usb_wr_data_raw :
@@ -880,6 +903,10 @@ assign usb_rd_en =  (usb_wr_mux == 0) ? usb_rd_en_raw :
 //assign usb_rd_en = 1; 
 
 wire usb_wr_push;
+
+
+
+`ifdef FT601_245_MODE
 
 
 ft601_if2 ft601_if_inst (
@@ -920,7 +947,172 @@ ft601_if2 ft601_if_inst (
     
     .locked(usb_mmcm_locked)
     
+);  
+    
+`endif
+
+
+
+
+`ifdef FT601_MCFIFO_MODE
+
+
+
+
+
+localparam FT601_NUM_CHANNELS = 4;
+
+
+//wire [31:0]   wr_ch_wr_data             [FT601_NUM_CHANNELS:1];
+//wire [3:0]    wr_ch_wr_be               [FT601_NUM_CHANNELS:1];
+//wire          wr_ch_wr_en               [FT601_NUM_CHANNELS:1];
+//wire          wr_ch_wr_push             [FT601_NUM_CHANNELS:1];
+
+//wire         wr_ch_wr_full             [FT601_NUM_CHANNELS:1];
+//wire         wr_ch_wr_almost_full      [FT601_NUM_CHANNELS:1];
+//wire         wr_ch_has_wr_packet_space [FT601_NUM_CHANNELS:1];
+
+
+//reg [31:0]   rd_ch_rd_data             [FT601_NUM_CHANNELS:1];
+//reg [3:0]    rd_ch_rd_be               [FT601_NUM_CHANNELS:1];
+//wire         rd_ch_rd_en               [FT601_NUM_CHANNELS:1];
+//reg          rd_ch_rd_valid            [FT601_NUM_CHANNELS:1];
+
+//wire         rd_ch_rd_empty            [FT601_NUM_CHANNELS:1];
+//wire         rd_ch_rd_almost_empty     [FT601_NUM_CHANNELS:1];
+
+
+
+wire [31:0]   wr_ch_wr_data             [FT601_NUM_CHANNELS:1];
+assign wr_ch_wr_data[1] = usb_wr_data;
+
+
+wire [3:0]    wr_ch_wr_be               [FT601_NUM_CHANNELS:1];
+assign wr_ch_wr_be[1] = usb_wr_be;
+
+wire          wr_ch_wr_en               [FT601_NUM_CHANNELS:1];
+assign wr_ch_wr_en[1] = usb_wr_en;
+
+wire          wr_ch_wr_push             [FT601_NUM_CHANNELS:1];
+assign wr_ch_wr_push[1] = usb_wr_push;
+
+
+wire         wr_ch_wr_full             [FT601_NUM_CHANNELS:1];
+assign usb_wr_fifo_full = wr_ch_wr_full[1]; 
+
+wire         wr_ch_wr_almost_full      [FT601_NUM_CHANNELS:1];
+
+wire         wr_ch_has_wr_packet_space [FT601_NUM_CHANNELS:1];
+
+
+
+
+
+
+
+wire [31:0]   rd_ch_rd_data             [FT601_NUM_CHANNELS:1];
+assign usb_rd_data = rd_ch_rd_data[1];
+
+wire [3:0]    rd_ch_rd_be               [FT601_NUM_CHANNELS:1];
+assign usb_rd_be = rd_ch_rd_be[1];
+
+wire         rd_ch_rd_en               [FT601_NUM_CHANNELS:1];
+assign rd_ch_rd_en[1] = usb_rd_en;
+
+wire          rd_ch_rd_valid            [FT601_NUM_CHANNELS:1];
+assign usb_rd_valid = rd_ch_rd_valid[1];
+
+wire         rd_ch_rd_empty            [FT601_NUM_CHANNELS:1];
+assign usb_rd_fifo_empty = rd_ch_rd_empty[1];
+
+wire         rd_ch_rd_almost_empty     [FT601_NUM_CHANNELS:1];
+
+
+
+
+
+
+
+
+
+
+
+
+    
+ft601_mcfifo_if 
+#(
+    .NUM_CHANNELS(FT601_NUM_CHANNELS),
+    .MAX_PACKET_SIZE(1024)
+)
+ft601_mcfifo_if_inst (
+
+    /////////////////////////////////////////////
+    // Device interface
+    /////////////////////////////////////////////
+    
+    .ft601_clkin(USB_CLK),
+    .ft601_data(USB_D),
+    .ft601_be(USB_BE),
+    .ft601_txe_n(USB_TXE_N),
+    .ft601_rxf_n(USB_RXF_N),
+    .ft601_oe_n(USB_OE_N),
+    .ft601_wr_n(USB_WR_N),
+    .ft601_rd_n(USB_RD_N),
+    .ft601_siwu_n(USB_SIWU_N),
+    
+    
+    /////////////////////////////////////////////
+    // PL interface
+    /////////////////////////////////////////////
+    
+    .clk(clk),
+    .reset(reset),
+    
+    .locked(usb_mmcm_locked),
+
+    .wr_ch_wr_data(wr_ch_wr_data),
+    .wr_ch_wr_be(wr_ch_wr_be),
+    .wr_ch_wr_en(wr_ch_wr_en),
+    .wr_ch_wr_push(wr_ch_wr_push),
+    
+    .wr_ch_wr_full(wr_ch_wr_full),
+    .wr_ch_wr_almost_full(wr_ch_wr_almost_full),
+    .wr_ch_has_wr_packet_space(wr_ch_has_wr_packet_space),
+    
+    
+    .rd_ch_rd_data(rd_ch_rd_data),
+    .rd_ch_rd_be(rd_ch_rd_be),
+    .rd_ch_rd_en(rd_ch_rd_en),
+    .rd_ch_rd_valid(rd_ch_rd_valid),
+    
+    .rd_ch_rd_empty(rd_ch_rd_empty),
+    .rd_ch_rd_almost_empty(rd_ch_rd_almost_empty)
+    
+    
 );
+
+    
+    
+    
+    
+    
+    
+    
+    
+`endif
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
        

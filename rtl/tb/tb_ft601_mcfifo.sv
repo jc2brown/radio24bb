@@ -4,7 +4,7 @@
 module tb_ft601_mcfifo();
     
     
-localparam NUM_CHANNELS = 1;    
+localparam NUM_CHANNELS = 4;    
 localparam MAX_PACKET_SIZE = 1024;    
 
 
