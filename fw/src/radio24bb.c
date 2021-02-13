@@ -28,6 +28,7 @@
 #include "dac.h"
 #include "dds.h"
 #include "mpx.h"
+#include "usb.h"
 
 #include "spips.h"
 #include "playback.h"
@@ -266,40 +267,10 @@ int update_codec_ioexp(struct radio24bb *r24bb) {
 
 
 
-// USB IOExp0 Port 0
-#define USB_IOEXP_0_USB_LED_B    	(1<<0)
-#define USB_IOEXP_0_USB_LED_G    	(1<<1)
-#define USB_IOEXP_0_POWER_LED_B   	(1<<2)
-#define USB_IOEXP_0_POWER_LED_G   	(1<<3)
-#define USB_IOEXP_0_POWER_LED_COM 	(1<<4)
-#define USB_IOEXP_0_POWER_LED_R   	(1<<5)
-#define USB_IOEXP_0_USB_LED_R  		(1<<6)
-#define USB_IOEXP_0_USB_LED_COM    	(1<<7)
-
-// USB IOExp0 Port 1
-// #define CODEC_IOEXP_NOT_CONNECTED (1<<0)
-// #define CODEC_IOEXP_NOT_CONNECTED (1<<1)
-// #define CODEC_IOEXP_NOT_CONNECTED (1<<2)
-// #define CODEC_IOEXP_NOT_CONNECTED (1<<3)
-// #define CODEC_IOEXP_NOT_CONNECTED (1<<4)
-#define USB_IOEXP_0_SN0      (1<<5)
-#define USB_IOEXP_0_SN1      (1<<6)
-#define USB_IOEXP_0_SN2      (1<<7)
 
 
-
-// USB IOExp1 Port 0
-#define USB_IOEXP_1_VBUS_DET_N    	(1<<0)
-#define USB_IOEXP_1_USB_GPIO0	   	(1<<1)
-#define USB_IOEXP_1_USB_GPIO1   	(1<<2)
-#define USB_IOEXP_1_USB_WAKE_N   	(1<<3)
-#define USB_IOEXP_1_USB_RESET_N 	(1<<4)
-// #define USB_IOEXP_1_NOT_CONNECTED (1<<5)
-// #define USB_IOEXP_1_NOT_CONNECTED (1<<6)
-// #define USB_IOEXP_1_NOT_CONNECTED (1<<7)
-
-
-
+// Read VBUS_DET and set or clear blue LED
+//
 int update_usb_ioexp_0(struct radio24bb *r24bb) {
 	// Critical section
 	// - need to guard bus_sel (modified by ioexp_read_port  shared by usb_ioexp_0 and usb_ioexp_1
@@ -321,6 +292,8 @@ int update_usb_ioexp_0(struct radio24bb *r24bb) {
 	mtcpsr(ireg);
 	return XST_SUCCESS;
 }
+
+
 
 
 
@@ -506,6 +479,10 @@ int init_radio24bb(struct radio24bb *r24bb, uint32_t regs_addr) {
 	init_dds_channel_context("ddsb", r24bb->ddsb, root_ctx);
 
 	init_mpx_channel_context("mpx", r24bb->mpx, root_ctx);
+
+	init_usb_channel_context("usb", r24bb, root_ctx);
+
+
 
 
 

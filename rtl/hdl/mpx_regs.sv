@@ -30,7 +30,16 @@ module mpx_regs (
     output reg [24:0] filter_cfg_din,
     output reg filter_cfg_ce,
     
-    output reg [3:0] mux
+    output reg [3:0] mux,
+    
+    output reg enable_preemph,
+    
+    
+    output reg signed [29:0] preemph_b0,
+    output reg signed [29:0] preemph_b1,
+    output reg signed [29:0] preemph_b2,
+    output reg signed [29:0] preemph_a1,
+    output reg signed [29:0] preemph_a2
         
 );
 
@@ -48,6 +57,13 @@ localparam REG_STAT_COUNT   = 12'h1C;
 
 localparam REG_FILTER_COEF  = 12'h20;
 localparam REG_MUX          = 12'h24;
+localparam REG_PREEMPH_EN   = 12'h28;
+
+localparam REG_PREEMPH_B0   = 12'h2C;
+localparam REG_PREEMPH_B1   = 12'h30;
+localparam REG_PREEMPH_B2   = 12'h34;
+localparam REG_PREEMPH_A1   = 12'h38;
+localparam REG_PREEMPH_A2   = 12'h3C;
 
 
 
@@ -69,7 +85,15 @@ begin
         filter_cfg_ce <= 'h0;
         
         mux <= 'h0;
-                   
+        
+        enable_preemph <= 'b0;
+
+        preemph_b0 <= 'b0;
+        preemph_b1 <= 'b0;
+        preemph_b2 <= 'b0;
+        preemph_a1 <= 'b0;
+        preemph_a2 <= 'b0;
+           
     end
     else begin
                 
@@ -99,6 +123,14 @@ begin
                     end      
                 
                 REG_MUX: mux <= pwdata[3:0];      
+                
+                REG_PREEMPH_EN: enable_preemph <= pwdata[0];     
+                
+                REG_PREEMPH_B0: preemph_b0 <= pwdata[29:0];     
+                REG_PREEMPH_B1: preemph_b1 <= pwdata[29:0];     
+                REG_PREEMPH_B2: preemph_b2 <= pwdata[29:0];     
+                REG_PREEMPH_A1: preemph_a1 <= pwdata[29:0];  
+                REG_PREEMPH_A2: preemph_a2 <= pwdata[29:0];        
                     
             endcase
         end

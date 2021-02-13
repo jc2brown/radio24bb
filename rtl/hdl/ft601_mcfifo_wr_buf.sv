@@ -210,6 +210,7 @@ wr_fifo (
     .rd_clk(rd_clk), 
     .dout({rd_be, rd_data}),  
     .data_valid(rd_valid),
+    //.empty(rd_empty),
     .rd_en(rd_en)
 );
 
@@ -218,10 +219,10 @@ wr_fifo (
     
 xpm_cdc_handshake #(
     .DEST_EXT_HSK(1),   // DECIMAL; 0=internal handshake, 1=external handshake
-    .DEST_SYNC_FF(2),   // DECIMAL; range: 2-10
+    .DEST_SYNC_FF(4),   // DECIMAL; range: 2-10
     .INIT_SYNC_FF(1),   // DECIMAL; 0=disable simulation init values, 1=enable simulation init values
     .SIM_ASSERT_CHK(1), // DECIMAL; 0=disable simulation messages, 1=enable simulation messages
-    .SRC_SYNC_FF(2),    // DECIMAL; range: 2-10
+    .SRC_SYNC_FF(4),    // DECIMAL; range: 2-10
     .WIDTH(16)           // DECIMAL; range: 1-1024
 )
 xpm_cdc_handshake_inst (
@@ -251,7 +252,8 @@ always @(posedge rd_clk) begin
     if (rd_reset || !rd_xfer_req_int) begin
         rd_xfer_count <= 0;
     end
-    else if (rd_en && rd_valid) begin // TODO: find out why rd_en stays high for an extra cycle. 
+//    else if (rd_en && rd_valid) begin // TODO: find out why rd_en stays high for an extra cycle. 
+    else if (rd_en) begin // TODO: find out why rd_en stays high for an extra cycle. 
         rd_xfer_count <= rd_xfer_count + BYTES_PER_WORD;
     end
 end

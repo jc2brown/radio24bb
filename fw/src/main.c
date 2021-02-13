@@ -34,33 +34,16 @@
 
 
 
-void usb_handler(void *arg, struct command *cmd) {
-
-	struct radio24bb *r24bb = (struct radio24bb *)arg;
-
-	static int n = 0;
-	static char msg[1024];
 
 
-	//USB_WR_PUSH = 1;
 
 
-	sprintf(msg, "Hello #%d\n", n++);
 
-	for (char *c = msg; *c != '\0'; ++c) {
-		// USB_WR_DATA = *c;
-		r24bb->regs->usb_wr_data = *c;
-	}
 
-	// USB_WR_PUSH = 1;
-	r24bb->regs->usb_wr_push = 1;
-/*
 
-	for (int i = 0; i < 1024; ++i) {
-		USB_WR_DATA = i;
-	}
-*/
-}
+
+
+
 
 
 void handle_ls_cmd(void *arg, struct command *cmd) {
@@ -133,6 +116,17 @@ void tonea_handler(void *arg, struct command *cmd) {
 
 
 
+char *p0_script[] = {
+	"ddsa fm gain 400",	
+	"mpx preemph 0",
+};	
+
+char *p1_script[] = {
+	"mpx preemph 1",
+	"ddsa fm gain 600",
+};	
+
+
 char *stereo_script[] = {
 
 	"ddsa am src raw",	
@@ -151,13 +145,14 @@ char *stereo_script[] = {
 	"ddsa fm offset 0",
 
 	"mpx pilot 1000",
+	"mpx src aud",
 
 	"outa src ddsa",
 
 	"outb src ddsb",
 	"outb att 0",
 
-	"ddsb src mpx"
+	"ddsb src mpx",
 
 
 };
@@ -255,6 +250,16 @@ char *pmtone_script[] = {
 
 };
 
+
+void p0_handler(void *arg, struct command *cmd) {
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	_run_script(r24bb->shell, p0_script, 2);
+}
+
+void p1_handler(void *arg, struct command *cmd) {
+	struct radio24bb *r24bb = (struct radio24bb *)arg;
+	_run_script(r24bb->shell, p1_script, 2);
+}
 
 void stereo_handler(void *arg, struct command *cmd) {
 	struct radio24bb *r24bb = (struct radio24bb *)arg;
@@ -597,7 +602,8 @@ int main()
 	// add_command(NULL, "xadc", xadc_handler);
 
 	//add_command(NULL, "tonea", tonea_handler);
-	add_command(r24bb->shell->root_ctx, "usb", usb_handler);
+	add_command(r24bb->shell->root_ctx, "p00", p0_handler);
+	add_command(r24bb->shell->root_ctx, "p11", p1_handler);
 	add_command(r24bb->shell->root_ctx, "stereo", stereo_handler);
 	add_command(r24bb->shell->root_ctx, "amtone", amtone_handler);
 	add_command(r24bb->shell->root_ctx, "fmtone", fmtone_handler);

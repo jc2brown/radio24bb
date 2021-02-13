@@ -1,8 +1,9 @@
 
 module fast_biquad_opt2
 #(
-    parameter SAMPLE_WIDTH = 0,
-    parameter COEF_WIDTH = 0
+    parameter SAMPLE_WIDTH = 0, // Up to 18bit for Zynq7000 DSP48
+    parameter COEF_WIDTH = 0,    // Up to 30bit for Zynq7000 DSP48
+    parameter COEF_INT_WIDTH = 0
 )
 (
     input clk,
@@ -29,14 +30,20 @@ module fast_biquad_opt2
 
 localparam PRODUCT_WIDTH = SAMPLE_WIDTH + COEF_WIDTH;
 
+
+//
+// Output sum - predeclared here 
+//
+wire signed [PRODUCT_WIDTH-1:0] out_d1;
+
 //
 // Input registers
 //
 reg signed [SAMPLE_WIDTH-1:0] in_d0;
 always @(posedge clk) in_d0 <= in;
 
-reg in_valid_d0;
-always @(posedge clk) in_valid_d0 <= in_valid;
+reg valid_d0;
+always @(posedge clk) valid_d0 <= in_valid;
 
 
 
@@ -53,12 +60,24 @@ wire signed [PRODUCT_WIDTH-1:0] b2_X_in_d0 = b2 * in_d0;
 //
 // Feed-forward post-multiplier registers
 //
+
+reg valid_d1;
+always @(posedge clk) begin
+    if (reset) begin
+        valid_d1 <= 0;
+    end
+    else begin
+        valid_d1 <= valid_d0;
+    end
+end
+
+
 reg signed [PRODUCT_WIDTH-1:0] b0_X_in_d1;
 always @(posedge clk) begin
     if (reset) begin
         b0_X_in_d1 <= 0;
     end
-    else if (in_valid_d0) begin
+    else if (valid_d0) begin
         b0_X_in_d1 <= b0_X_in_d0;
     end
 end
@@ -69,7 +88,7 @@ always @(posedge clk) begin
     if (reset) begin
         b1_X_in_d1 <= 0;
     end
-    else if (in_valid_d0) begin
+    else if (valid_d0) begin
         b1_X_in_d1 <= b1_X_in_d0;
     end
 end
@@ -80,7 +99,7 @@ always @(posedge clk) begin
     if (reset) begin
         b2_X_in_d1 <= 0;
     end
-    else if (in_valid_d0) begin
+    else if (valid_d0) begin
         b2_X_in_d1 <= b2_X_in_d0;
     end
 end
@@ -91,20 +110,12 @@ always @(posedge clk) begin
     if (reset) begin
         b2_X_in_d2 <= 0;
     end
-    else if (in_valid_d0) begin
+    else if (valid_d0) begin
         b2_X_in_d2 <= b2_X_in_d1;
     end
 end
-
-
-
-
-wire [PRODUCT_WIDTH-1:0] d1_term;
-wire [PRODUCT_WIDTH-1:0] d2_terms;
-wire [PRODUCT_WIDTH-1:0] d3_terms;
-wire [PRODUCT_WIDTH-1:0] sum = d1_term + d2_terms + d3_terms;
-wire [SAMPLE_WIDTH-1:0] out_d1 = sum[PRODUCT_WIDTH-4:PRODUCT_WIDTH-SAMPLE_WIDTH-3];
-
+    
+    
 
 
 
@@ -112,9 +123,8 @@ wire [SAMPLE_WIDTH-1:0] out_d1 = sum[PRODUCT_WIDTH-4:PRODUCT_WIDTH-SAMPLE_WIDTH-
 //
 // Feedback multipliers
 //
-wire signed [PRODUCT_WIDTH-1:0] a1_X_out_d1 = a1 * out_d1;
-wire signed [PRODUCT_WIDTH-1:0] a2_X_out_d1 = a2 * out_d1;
-
+wire signed [PRODUCT_WIDTH-1:0] a1_X_out_d1 = -a1 * out_d1;
+wire signed [PRODUCT_WIDTH-1:0] a2_X_out_d1 = -a2 * out_d1;
 
 
 
@@ -122,13 +132,14 @@ wire signed [PRODUCT_WIDTH-1:0] a2_X_out_d1 = a2 * out_d1;
 //
 // Feedback post-multiplier registers
 //
-reg signed [PRODUCT_WIDTH-1:0] a1_X_out_d2;
+
+reg valid_d2;
 always @(posedge clk) begin
     if (reset) begin
-        a1_X_out_d2 <= 0;
+        valid_d2 <= 0;
     end
-    else if (in_valid_d0) begin
-        a1_X_out_d2 <= a1_X_out_d1;
+    else begin
+        valid_d2 <= valid_d1;
     end
 end
 
@@ -138,149 +149,90 @@ always @(posedge clk) begin
     if (reset) begin
         a2_X_out_d2 <= 0;
     end
-    else if (in_valid_d0) begin
+    else if (valid_d0) begin
         a2_X_out_d2 <= a2_X_out_d1;
     end
 end
 
 
+//
+// Intermediate adders
+//
+wire signed [PRODUCT_WIDTH-1:0] sum1_d1 = b1_X_in_d1 - a1_X_out_d1;
+wire signed [PRODUCT_WIDTH-1:0] sum2_d2 = b2_X_in_d2 - a2_X_out_d2;
 
 
 
+//
+// Post-intermediate adder registers
+//
+
+reg valid_d3;
+always @(posedge clk) begin
+    if (reset) begin
+        valid_d3 <= 0;
+    end
+    else begin
+        valid_d3 <= valid_d2;
+    end
+end
+
+
+reg signed [PRODUCT_WIDTH-1:0] sum1_d2;
+always @(posedge clk) begin
+    if (reset) begin
+        sum1_d2 <= 0;
+    end
+    else if (valid_d0) begin
+        sum1_d2 <= sum1_d1;
+    end
+end
+
+
+reg signed [PRODUCT_WIDTH-1:0] sum2_d3;
+always @(posedge clk) begin
+    if (reset) begin
+        sum2_d3 <= 0;
+    end
+    else if (valid_d0) begin
+        sum2_d3 <= sum2_d2;
+    end
+end
 
 
 
+//
+// Output adder
+//
+assign out_d1 = (b0_X_in_d1 / signed'(2**(COEF_WIDTH-COEF_INT_WIDTH))) + (sum1_d2 / signed'(2**(COEF_WIDTH-COEF_INT_WIDTH))) + (sum2_d3 / signed'((2**COEF_WIDTH-COEF_INT_WIDTH)));
 
 
-
-
-
-
-
-reg signed [SAMPLE_WIDTH-1:0] out_del [1:2];
-//always @(*) out_del[1] <= sum;
-
-
-reg valid_del [0:3];
-
-//reg ready;
-
-
+//
+// Output registers
+//
 
 always @(posedge clk) begin
     if (reset) begin
-        valid_del[0] <= 0;
-        valid_del[1] <= 0;
-        valid_del[2] <= 0;
-        valid_del[3] <= 0;
         out_valid <= 0;
+    end
+    else begin
+        out_valid <= valid_d3;
+        out_valid <= valid_d0;
+    end
+end
+
+
+always @(posedge clk) begin
+    if (reset) begin
         out <= 0;
-//        ready <= 0;
     end
-    else begin
-        valid_del[0] <= in_valid;
-        valid_del[1] <= valid_del[0];
-        valid_del[2] <= valid_del[1];
-        valid_del[3] <= valid_del[2];
-        out_valid <= valid_del[3];
-        out <= out_del[1];
-//        ready <= 1;
+    else if (valid_d0) begin
+        out <= out_d1;
     end
 end
 
 
 
-
-reg signed [SAMPLE_WIDTH-1:0] in_del [0:2];
-
-always @(posedge clk) begin
-    if (reset) begin
-        in_del[0] <= 0;
-        in_del[1] <= 0;
-        in_del[2] <= 0;
-        in_del[3] <= 0;
-    end
-    else if (in_valid) begin
-        in_del[0] <= in;
-        in_del[1] <= in_del[0];
-        in_del[2] <= in_del[1];
-        in_del[3] <= in_del[2];
-    end
-end
-
-
-
-
-
-
-
-always @(posedge clk) begin
-    if (reset) begin
-        out_del[2] <= 0;
-//        out_del[3] <= 0;
-    end
-    else if (in_valid) begin
-        out_del[2] <= out_del[1];
-//        out_del[3] <= out_del[2];
-    end
-end
-
-
-
-
-
-reg signed [PRODUCT_WIDTH-1:0] b0_in1;
-always @(posedge clk) b0_in1 <= b0 * in_del[0];
-
-reg signed [PRODUCT_WIDTH-1:0] b1_in2;
-always @(posedge clk) b1_in2 <= b1 * in_del[1];
-
-reg signed [PRODUCT_WIDTH-1:0] b2_in3;
-always @(posedge clk) b2_in3 <= b2 * in_del[2];
-
-
-
-
-
-reg signed [PRODUCT_WIDTH-1:0] a1_out2;
-always @(posedge clk) begin
-    if (reset) begin
-        a1_out2 <= 0;
-    end
-    else begin
-        a1_out2 <= a1 * out_del[1];
-    end
-end
-
-
-reg signed [PRODUCT_WIDTH-1:0] a2_out3_p1;
-always @(posedge clk) begin
-    if (reset) begin
-        a2_out3_p1 <= 0;
-    end
-    else begin
-        a2_out3_p1 <= a2 * out_del[1];
-    end
-end
-
-reg signed [PRODUCT_WIDTH-1:0] a2_out3;
-always @(posedge clk) a2_out3 <= a2_out3_p1;
-
-
-
-
-
-
-
-/*
-
-wire signed [PRODUCT_WIDTH-1:0] sum = b0_in1 + b1_in2 + b2_in3 - a1_out2 - a2_out3; 
-
-always @(*) begin
-    out_del[1] <= sum[PRODUCT_WIDTH-4:PRODUCT_WIDTH-SAMPLE_WIDTH-3];
-end
-
-*/
 
 
 endmodule

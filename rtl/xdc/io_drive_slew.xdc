@@ -1,20 +1,53 @@
 
-set_property SLEW FAST [get_ports ADC_CLK_P]
-set_property SLEW FAST [get_ports ADC_CLK_N]
-
-set_property DRIVE 16 [get_ports ADC_CLK_P]
-set_property DRIVE 16 [get_ports ADC_CLK_N]
 
 
+set adc_clock_outputs [list \
+    [get_ports "ADC_CLK_*"] \
+]
+
+set_property SLEW FAST $adc_clock_outputs
+set_property DRIVE 12 $adc_clock_outputs
 
 
 
 
-set_property SLEW FAST [get_ports DAC_CLKX_P]
-set_property SLEW FAST [get_ports DAC_CLKX_N]
 
-set_property DRIVE 16 [get_ports DAC_CLKX_P]
-set_property DRIVE 16 [get_ports DAC_CLKX_N]
+set dac_clock_outputs [list \
+    [get_ports "DAC_CLKX_*"] \
+]
+
+set_property SLEW FAST $dac_clock_outputs
+set_property DRIVE 12 $dac_clock_outputs
+
+
+
+
+set dac_outputs [list \
+    [get_ports "DAC_DA[*]"] \
+    [get_ports "DAC_DB[*]"] \
+    [get_ports "DAC_CWN"] \
+]
+
+set_property SLEW SLOW $dac_outputs
+set_property DRIVE 12 $dac_outputs
+
+
+
+
+
+
+
+set usb_outputs [list \
+    [get_ports "USB_D[*]"] \
+    [get_ports "USB_BE[*]"] \
+    [get_ports "USB_RD_N"] \
+    [get_ports "USB_WR_N"] \
+]
+
+set_property SLEW SLOW $usb_outputs
+set_property DRIVE 12 $usb_outputs
+
+
 
 
 

@@ -284,7 +284,7 @@ ft601_mcfifo_wr_buf
 wr_buf [NUM_CHANNELS:1] 
 (
     
-    .wr_reset(reset),
+    .wr_reset(reset || !locked),
     .wr_clk(clk),
     
     .wr_data(wr_ch_wr_data),
@@ -336,7 +336,7 @@ rd_buf [NUM_CHANNELS:1]
     .wr_almost_full(rd_ch_wr_almost_full),
     .wr_has_packet_space(rd_ch_has_wr_packet_space),
     
-    .rd_reset(reset),
+    .rd_reset(reset || !locked),
     .rd_clk(clk),
     .rd_data(rd_ch_rd_data),
     .rd_be(rd_ch_rd_be),

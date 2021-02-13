@@ -17,7 +17,8 @@ from ctypes.wintypes import UINT
 from ctypes.wintypes import LPSTR
 from ctypes.wintypes import FILETIME
 
-_libname = 'ftd3xx.dll'
+# _libname = 'ftd3xx.dll'
+_libname = 'FTD3XX.dll'
 _libraries = {}
 _libraries[_libname] = WinDLL(_libname)
 

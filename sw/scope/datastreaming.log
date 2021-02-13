@@ -1,0 +1,60 @@
+[2020-08-15 19:41:39,477] 
+[2020-08-15 19:41:39,478] **************************************************************
+[2020-08-15 19:41:39,524] FT60X D3XX PYTHON DATA STREAMING DEMO
+[2020-08-15 19:41:39,525] WORKSTATION,HEADQUARTERS
+[2020-08-15 19:41:39,525] OSVERSION,Windows 10,x86
+[2020-08-15 19:41:39,526] OPERATOR,Chris
+[2020-08-15 19:41:39,526] DATE,2020-08-15
+[2020-08-15 19:41:39,526] TIME,19:41:39
+[2020-08-15 19:41:39,526] PYTHON,3.7.4
+[2020-08-15 19:41:39,527] **************************************************************
+[2020-08-15 19:41:39,527] 
+[2020-08-15 19:41:39,527] 
+[2020-08-15 19:41:39,528] 
+[2020-08-15 19:41:39,528] 
+[2020-08-15 19:41:39,529] USAGE: datastreaming.py [-h] [-s SIZE] [-i ITERATION] [-c [CHANNEL [CHANNEL ..]]] [-r] [-w] [-t]
+[2020-08-15 19:41:39,529] 
+[2020-08-15 19:41:39,535] INPUT: CHANNELS=[0], SIZE=1024, ITERATION=1, WRITE=True, READ=True, STRESS=True
+[2020-08-15 19:41:39,535] 
+[2020-08-15 19:41:39,536] 
+[2020-08-15 19:41:39,891] Detected 1 device(s) connected.
+[2020-08-15 19:41:39,892] DEVICE[0]
+[2020-08-15 19:41:39,892] 	Flags = 4
+[2020-08-15 19:41:39,892] 	Type = 0
+[2020-08-15 19:41:39,892] 	ID = 0X0403601F
+[2020-08-15 19:41:39,907] 	LocId = 0
+[2020-08-15 19:41:39,907] 	SerialNumber = 000000000001
+[2020-08-15 19:41:39,907] 	Description = FTDI SuperSpeed-FIFO Bridge
+[2020-08-15 19:41:39,933] Library Version: 0X1030002
+[2020-08-15 19:41:39,934] Driver Version: 0X1030002
+[2020-08-15 19:41:39,934] Firmware Version: 0X000109
+[2020-08-15 19:41:39,935] Chip Configuration:
+[2020-08-15 19:41:39,935] 	VendorID = 0x0403
+[2020-08-15 19:41:39,936] 	ProductID = 0x601f
+[2020-08-15 19:41:39,936] 	StringDescriptors
+[2020-08-15 19:41:39,936] 		Manufacturer = FTDI
+[2020-08-15 19:41:39,937] 		ProductDescription = FTDI SuperSpeed-FIFO Bridge
+[2020-08-15 19:41:39,937] 		SerialNumber = 000000000001
+[2020-08-15 19:41:39,937] 	InterruptInterval = 0x09
+[2020-08-15 19:41:39,938] 	PowerAttributes = 0xe0 (Self-powered Remote wakeup)
+[2020-08-15 19:41:39,938] 	PowerConsumption = 0x60
+[2020-08-15 19:41:39,939] 	Reserved2 = 0x00
+[2020-08-15 19:41:39,939] 	FIFOClock = 0x00 (100 MHz)
+[2020-08-15 19:41:39,939] 	FIFOMode = 0x01 (600 Mode)
+[2020-08-15 19:41:39,940] 	ChannelConfig = 0x00 (4 Channels)
+[2020-08-15 19:41:39,940] 	OptionalFeatureSupport = 0x0000
+[2020-08-15 19:41:39,940] 		BatteryChargingEnabled  : 0
+[2020-08-15 19:41:39,941] 		DisableCancelOnUnderrun : 0
+[2020-08-15 19:41:39,941] 		NotificationEnabled     : 0 0 0 0
+[2020-08-15 19:41:39,942] 		UnderrunEnabled         : 0 0 0 0
+[2020-08-15 19:41:39,942] 		EnableFifoInSuspend     : 0
+[2020-08-15 19:41:39,942] 		DisableChipPowerdown    : 0
+[2020-08-15 19:41:39,942] 	BatteryChargingGPIOConfig = 0x0
+[2020-08-15 19:41:39,951] 	FlashEEPROMDetection = 0x10 (read-only)
+[2020-08-15 19:41:39,952] 		Custom Config Validity  : Valid
+[2020-08-15 19:41:39,952] 		Custom Config Checksum  : Valid
+[2020-08-15 19:41:39,953] 		GPIO Input              : Ignore
+[2020-08-15 19:41:39,953] 		Config Used             : Custom
+[2020-08-15 19:41:39,953] 	MSIO_Control = 0x00010800
+[2020-08-15 19:41:39,954] 	GPIO_Control = 0x00000000
+[2020-08-15 19:41:39,954] 

@@ -56,6 +56,7 @@ module regs (
     output reg [3:0] usb_wr_be,
     output reg usb_wr_en,
     input usb_wr_fifo_full,
+//    output reg [31:0] usb_wr_auto_trigger_period,
         
     input [31:0] usb_rd_data,
     input [3:0] usb_rd_be,
@@ -88,7 +89,10 @@ module regs (
     output reg pbka_wr_en,
     input pbka_full,
     
-    output reg audout_mux
+    output reg audout_mux,
+    
+    output reg [31:0] ina_usb_wr_count,
+    output reg ina_usb_wr_count_en 
         
     
     
@@ -203,6 +207,7 @@ localparam REG_PBKA_FULL = 12'h044;
 localparam REG_AUDOUT_MUX = 12'h048;
 
         
+localparam REG_INA_USB_WR_COUNT = 12'h04C;
     
     
     
@@ -269,6 +274,7 @@ begin
         usb_wr_data <= 32'h0;
         usb_wr_be <= 4'h0;
         usb_wr_en <= 1'b0;
+//        usb_wr_auto_trigger_period <= '0;
         
         dac_cfg <= 8'h0;
         dac_cfg_wr_en <= 1'b0;
@@ -292,6 +298,10 @@ begin
         pbka_wr_en <= 0;
         
         audout_mux <= 0;
+        
+        ina_usb_wr_count <= '0;
+        ina_usb_wr_count_en <= 1'b0; 
+                
             
         
 //        outa_raw <= 'h0;       
@@ -314,6 +324,9 @@ begin
         dac_cfg_wr_en <= 1'b0;
         pbka_wr_en <= 1'b0;
         
+        
+        ina_usb_wr_count_en <= 1'b0; 
+                            
         
 //        outa_dds_cfg_ce <= 1'b0;
                                 
@@ -418,6 +431,13 @@ begin
                
 //                REG_OUTA_DDS_STEP: outa_dds_step <= pwdata;   
                 
+                
+                REG_INA_USB_WR_COUNT: begin
+                    ina_usb_wr_count <= pwdata[31:0];
+                    ina_usb_wr_count_en <= 1'b1; 
+                end
+                
+
             endcase
         end
     end

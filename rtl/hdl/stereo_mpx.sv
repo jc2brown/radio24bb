@@ -86,64 +86,170 @@ wire signed [15:0] sig_valid_180 = (
         0);
 
 
-wire signed [15:0] sig_l_filtered;
-wire signed [15:0] sig_r_filtered;
+wire signed [15:0] sig_l_preemph;// = sig_l;
+wire signed [15:0] sig_r_preemph;// = sig_r;
 
 
-fast_fir_filter 
-#( 
-    .LEN(21),
-    .UPPER(32767),
-    .LOWER(-32768)
-) 
-preemph_l_inst (    
-    .reset(mreset),
+wire enable_preemph;
+
+
+wire signed [15:0] sig_l_filtered = enable_preemph ? sig_l_preemph : sig_l;
+wire signed [15:0] sig_r_filtered = enable_preemph ? sig_r_preemph : sig_r;
+
+
+
+
+
+
+localparam PREEMPH_SAMPLE_WIDTH = 16;
+localparam PREEMPH_COEF_WIDTH = 30;
+localparam PREEMPH_COEF_INT_WIDTH = 4;
+
+
+
+wire signed [29:0] preemph_b0;
+wire signed [29:0] preemph_b1;
+wire signed [29:0] preemph_b2;
+wire signed [29:0] preemph_a1;
+wire signed [29:0] preemph_a2;
+    
+    
+
+
+fast_biquad_opt2
+#(
+    .SAMPLE_WIDTH(PREEMPH_SAMPLE_WIDTH),
+    .COEF_WIDTH(PREEMPH_COEF_WIDTH),
+    .COEF_INT_WIDTH(PREEMPH_COEF_INT_WIDTH)
+    
+)
+preemph_l_50us_38khz
+(
     .clk(mclk),
-
-    .cfg_clk(clk),
-    .cfg_reset(reset),
-
-    .cfg_din(filter_cfg_din),
-    .cfg_ce(filter_cfg_ce),
-    
-    .len(),    
-
-    .in(signed'(sig_l)), 
-    .valid_in(sig_valid),
-    
-    .out(sig_l_filtered),
-    .valid_out()
-
-);
-
-
-
-
-fast_fir_filter 
-#( 
-    .LEN(21),
-    .UPPER(32767),
-    .LOWER(-32768)
-) 
-preemph_r_inst (    
     .reset(mreset),
+    
+//    .b0(4.750 * 2**(PREEMPH_COEF_WIDTH-PREEMPH_COEF_INT_WIDTH)),
+//    .b1(-3.750 * 2**(PREEMPH_COEF_WIDTH-PREEMPH_COEF_INT_WIDTH)),
+        
+//        .b0(30'sh13000000),
+//        .b1(30'sh31000000),
+//    .b2(0),
+//    .a1(0),
+//    .a2(0),
+
+
+    .b0(preemph_b0),
+    .b1(preemph_b1),
+    .b2(preemph_b2),
+    .a1(preemph_a1),
+    .a2(preemph_a2),
+
+    
+    .in(sig_l),
+    .in_valid(sig_valid),
+    
+    .out(sig_l_preemph),
+    .out_valid()
+);   
+
+
+
+fast_biquad_opt2
+#(
+    .SAMPLE_WIDTH(PREEMPH_SAMPLE_WIDTH),
+    .COEF_WIDTH(PREEMPH_COEF_WIDTH),
+    .COEF_INT_WIDTH(PREEMPH_COEF_INT_WIDTH)
+    
+)
+preemph_r_50us_38khz
+(
     .clk(mclk),
-
-    .cfg_clk(clk),
-    .cfg_reset(reset),
-
-    .cfg_din(filter_cfg_din),
-    .cfg_ce(filter_cfg_ce),
+    .reset(mreset),
     
-    .len(),    
+//    .b0(4.750 * 2**(PREEMPH_COEF_WIDTH-PREEMPH_COEF_INT_WIDTH)),
+//    .b1(-3.750 * 2**(PREEMPH_COEF_WIDTH-PREEMPH_COEF_INT_WIDTH)),
+//            .b0(30'sh13000000),
+//            .b1(30'sh31000000),
+//    .b2(0),
+//    .a1(0),
+//    .a2(0),
 
-    .in(signed'(sig_r)), 
-    .valid_in(sig_valid),
+    .b0(preemph_b0),
+    .b1(preemph_b1),
+    .b2(preemph_b2),
+    .a1(preemph_a1),
+    .a2(preemph_a2),
     
-    .out(sig_r_filtered),
-    .valid_out()
+    .in(sig_r),
+    .in_valid(sig_valid),
+    
+    .out(sig_r_preemph),
+    .out_valid()
+);   
 
-);
+
+
+
+
+
+
+
+
+
+//fast_fir_filter 
+//#( 
+//    .LEN(21),
+//    .UPPER(32767),
+//    .LOWER(-32768)
+//) 
+//preemph_l_inst (    
+//    .reset(mreset),
+//    .clk(mclk),
+
+//    .cfg_clk(clk),
+//    .cfg_reset(reset),
+
+//    .cfg_din(filter_cfg_din),
+//    .cfg_ce(filter_cfg_ce),
+    
+//    .len(),    
+
+//    .in(signed'(sig_l)), 
+//    .valid_in(sig_valid),
+    
+//    .out(sig_l_filtered),
+//    .valid_out()
+
+//);
+
+
+
+
+//fast_fir_filter 
+//#( 
+//    .LEN(21),
+//    .UPPER(32767),
+//    .LOWER(-32768)
+//) 
+//preemph_r_inst (    
+//    .reset(mreset),
+//    .clk(mclk),
+
+//    .cfg_clk(clk),
+//    .cfg_reset(reset),
+
+//    .cfg_din(filter_cfg_din),
+//    .cfg_ce(filter_cfg_ce),
+    
+//    .len(),    
+
+//    .in(signed'(sig_r)), 
+//    .valid_in(sig_valid),
+    
+//    .out(sig_r_filtered),
+//    .valid_out()
+
+//);
 
 
 
@@ -293,7 +399,15 @@ mpx_regs regs_inst (
     .filter_cfg_din(filter_cfg_din),
     .filter_cfg_ce(filter_cfg_ce),
     
-    .mux(mux)
+    .mux(mux),
+    
+    .enable_preemph(enable_preemph),
+    
+    .preemph_b0(preemph_b0),
+    .preemph_b1(preemph_b1),
+    .preemph_b2(preemph_b2),
+    .preemph_a1(preemph_a1),
+    .preemph_a2(preemph_a2)
           
         
 );

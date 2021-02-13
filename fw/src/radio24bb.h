@@ -85,6 +85,7 @@ struct radio24bb_regs {
 	volatile uint32_t pbka_data;
 	volatile uint32_t pbka_full;
 	volatile uint32_t audout_mux;
+	volatile uint32_t ina_usb_wr_count;
 }; 
 
 

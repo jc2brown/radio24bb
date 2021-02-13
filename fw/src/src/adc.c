@@ -1,0 +1,200 @@
+
+#include <stdint.h>
+#include <stdlib.h>
+#include "command.h"
+
+#include "roe.h"
+#include "adc.h"
+#include "xil_printf.h"
+#include "sleep.h"
+
+
+
+#undef trace
+#define trace(...)
+//#define trace xil_printf
+
+
+
+
+
+
+const double ina_filter0_coef[21] = {
+        0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0, 0.0
+};
+/*
+const double ina_filter1_coef[21] = {
+	-0.0026459203, 0.0017194303, -0.0030456384, 0.00019475492, -0.0028101971, -0.0038461867,
+	0.000098695584, -0.018084701, 0.030485547, -0.43251019, 0.43251019, -0.030485547,
+	0.018084701, -0.000098695584, 0.0038461867, 0.0028101971, -0.00019475492, 0.0030456384,
+	-0.0017194303, 0.0026459203, 0
+};
+
+
+// 0.5dB-flat between 7MHz-13MHz
+const double ina_filter2_coef[21] = {
+		0.0086061177, -0.014499215, 0.014741051,
+			0.052044280, -0.033934747, -0.039228125, 0.049100553, -0.24203432, -0.46529025,
+			0.24094970, 0.86553072, 0.24094970, -0.46529025, -0.24203432, 0.049100553,
+			-0.039228125, -0.033934747, 0.052044280, 0.014741051, -0.014499215, 0.0086061177
+};
+
+
+
+const double ina_filter3_coef[21] = {
+		0.0091849059, -0.019084909, 0.0033509231,
+			0.040091750, -0.036572322, -0.013564985, 0.12903680, -0.12903350, -0.42604124,
+			0.11707684, 0.65213891, 0.11707684, -0.42604124, -0.12903350, 0.12903680,
+			-0.013564985, -0.036572322, 0.040091750, 0.0033509231, -0.019084909, 0.0091849059
+
+};
+*/
+
+
+
+
+
+
+
+
+
+struct adc_channel *make_adc_channel() {
+	struct adc_channel *channel = (struct adc_channel *)malloc(sizeof(struct adc_channel));
+	return channel;
+}
+
+
+
+
+
+int init_adc_channel_regs(struct adc_channel_regs *regs) {
+
+	regs->gain = 256;
+	regs->offset = 0;
+
+	for (int i = 0; i < 21; ++i) {
+		regs->filter_coef = (uint32_t)(ina_filter0_coef[i] * (double)(1<<19));
+	}
+
+	regs->stat_cfg = 0;
+	regs->stat_limit = 0;
+
+
+	regs->att = 0b00;
+	regs->amp_en = 1;
+	regs->led = 0b001;
+
+	return XST_SUCCESS;
+
+}
+
+
+
+
+int init_adc_channel(struct adc_channel *channel, uint32_t regs_addr) {
+	trace("init_adc_channel\n");
+	channel->regs = (struct adc_channel_regs *)regs_addr;
+	_return_if_error_(init_adc_channel_regs(channel->regs));
+	return XST_SUCCESS;
+}
+
+
+
+
+
+void handle_adc_gain_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int gain = atoi(cmd->tokens[cmd->index++]);
+	if (gain >= 0 && gain <= 65535) {
+		channel->regs->gain = gain;
+	}
+}
+
+
+void handle_adc_offset_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int offset = atoi(cmd->tokens[cmd->index++]);
+	if (offset >= -128 && offset <= 127) {
+		channel->regs->offset = offset;
+	}
+}
+
+
+void handle_adc_opt_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	adc_stat(channel);
+	int min = (int8_t)channel->regs->stat_min;
+	int max = (int8_t)channel->regs->stat_max;
+	xil_printf("min:%d  max:%d\n", min, max);
+	int ampl = max - min;
+	int avg = (min + max) / 2;
+	xil_printf("ampl:%d  avg:%d\n", ampl, avg);
+	int gain = (256UL * 128UL) / ampl;
+	int offset = -avg;
+	xil_printf("gain:%d  offset:%d\n", gain, offset);
+	channel->regs->gain = gain;
+	channel->regs->offset = offset;
+}
+
+
+
+
+void handle_adc_led_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int led = atoi(cmd->tokens[cmd->index++]);
+	if (led >= 0 && led <= 7) {
+		channel->regs->led = led;
+	}
+}
+
+
+void handle_adc_att_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	int att_sel = atoi(cmd->tokens[cmd->index++]);
+	if (att_sel >= 0 && att_sel <= 3) {
+		channel->regs->att = att_sel;
+	}
+}
+
+
+
+void adc_stat(struct adc_channel *channel) {
+	channel->regs->stat_cfg = 1;
+	channel->regs->stat_cfg = 0;
+	channel->regs->stat_limit = 1000000000;
+	channel->regs->stat_cfg = 2;
+	usleep(100000);
+	channel->regs->stat_cfg = 0;
+}
+
+
+
+void handle_adc_stat_cmd(void *arg, struct command *cmd) {
+	struct adc_channel *channel = (struct adc_channel *)arg;
+	adc_stat(channel);
+	xil_printf("STAT: %d .. %d  (%d)\n", (int8_t)channel->regs->stat_min, (int8_t)channel->regs->stat_max, channel->regs->stat_count);
+}
+
+
+
+
+void init_adc_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
+
+	struct cmd_context *adc_channel_ctx = make_cmd_context(name, arg);
+	add_subcontext(parent_ctx, adc_channel_ctx);
+
+	add_command(adc_channel_ctx, "gain", handle_adc_gain_cmd);
+	add_command(adc_channel_ctx, "offset", handle_adc_offset_cmd);
+	add_command(adc_channel_ctx, "opt", handle_adc_opt_cmd);
+	add_command(adc_channel_ctx, "att", handle_adc_att_cmd);
+	add_command(adc_channel_ctx, "led", handle_adc_led_cmd);
+	add_command(adc_channel_ctx, "stat", handle_adc_stat_cmd);
+}
+
+
+
+

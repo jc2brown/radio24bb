@@ -228,7 +228,7 @@ def SelectDevice(numDevices):
 
 
 
-def main():
+def usb_main():
     # ftd3xx.raiseExceptionOnError(True)
 
 
@@ -326,7 +326,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--stress', action="store_false", help="disable stress test, do one time transfer")   
     args = parser.parse_args()
     
-    main()
+    usb_main()
 
 
 

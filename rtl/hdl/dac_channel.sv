@@ -185,7 +185,7 @@ sigstat_inst (
 );
 
 
-
+reg [2:0] led_reg;
 dac_channel_regs regs (
     
     
@@ -217,10 +217,35 @@ dac_channel_regs regs (
     
     .att(att),
     .amp_en(amp_en),
-    .led(led)
+    .led(led_reg)
     
 );
 
+reg green_led;
+reg [31:0] count_nonzero;
+always @(posedge clk) begin
+    if (reset) begin
+        count_nonzero <= 0;
+        green_led <= 1'b0;
+    end
+    else begin
+        if (dac_data_out != 0) begin
+            count_nonzero <= 1000000;
+            green_led <= 1'b1;
+        end
+        else if (count_nonzero == 0) begin
+            green_led <= 1'b0;
+        end
+        else begin
+            count_nonzero <= count_nonzero - 1;
+        end
+    end
+end
+
+
+assign led[0] = led_reg[0];
+assign led[1] = led_reg[1] | green_led;
+assign led[2] = led_reg[2];
 
 
 

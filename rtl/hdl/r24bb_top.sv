@@ -227,10 +227,10 @@ wire signed [7:0] ddsb_data;
 /////////////////////////////////////////////////////////////
 
 
-wire [15:0] pbka_l_m;
+wire signed [15:0]  pbka_l_m;
 wire pbka_l_valid_m;
 
-wire [15:0] pbka_r_m;
+wire signed [15:0] pbka_r_m;
 wire pbka_r_valid_m;
 
 
@@ -864,9 +864,52 @@ usb_i2c_ioexp (
 );
 */
 
+// 0 - no auto trigger
+// 1 - trigger every cycle
+// 1000000 - trigger every 10ms @ clk=100MHz
+//wire [31:0] ina_usb_auto_trigger_period;
 
 
+//reg [31:0] ina_usb_auto_trigger_count;
 
+
+//wire ina_usb_trigger = (ina_usb_auto_trigger_count == 1);
+
+//always @(posedge clk) begin
+//    if (reset || (ina_usb_auto_trigger_period == 0)) begin
+//        ina_usb_auto_trigger_count <= 0;
+//    end
+//    else begin
+//        if (ina_usb_auto_trigger_count == ina_usb_auto_trigger_period) begin
+//            ina_usb_auto_trigger_count <= 0;
+//        end
+//        else begin
+//            ina_usb_auto_trigger_count <= ina_usb_auto_trigger_count + 1;
+//        end
+//    end
+//end
+
+
+wire [31:0] ina_usb_wr_count;
+wire ina_usb_wr_count_en; 
+
+reg [31:0] ina_usb_wr_remaining;
+
+wire ina_usb_wr_en = (ina_usb_wr_remaining != 0);
+
+always @(posedge clk) begin
+    if (reset) begin
+        ina_usb_wr_remaining <= 0;
+    end
+    else begin
+        if (ina_usb_wr_count_en) begin
+            ina_usb_wr_remaining <= ina_usb_wr_count;
+        end
+        else if (ina_usb_wr_remaining != 0) begin
+            ina_usb_wr_remaining <= ina_usb_wr_remaining - 1;
+        end
+    end
+end
 
 
 
@@ -888,7 +931,7 @@ assign usb_wr_be =  (usb_wr_mux == 0) ? usb_wr_be_raw :
   
 assign usb_wr_en =  (usb_wr_mux == 0) ? usb_wr_en_raw :
                     (usb_wr_mux == 1) ? 0 : 
-                    (usb_wr_mux == 2) ? 1 :
+                    (usb_wr_mux == 2) ? ina_usb_wr_en :
                     (usb_wr_mux == 3) ? usb_rd_valid : 
                     0; 
                                
@@ -960,7 +1003,7 @@ ft601_if2 ft601_if_inst (
 
 
 
-localparam FT601_NUM_CHANNELS = 4;
+localparam FT601_NUM_CHANNELS = 1;
 
 
 //wire [31:0]   wr_ch_wr_data             [FT601_NUM_CHANNELS:1];
@@ -985,20 +1028,38 @@ localparam FT601_NUM_CHANNELS = 4;
 
 wire [31:0]   wr_ch_wr_data             [FT601_NUM_CHANNELS:1];
 assign wr_ch_wr_data[1] = usb_wr_data;
+// assign wr_ch_wr_data[2] = usb_wr_data;
+// assign wr_ch_wr_data[3] = usb_wr_data;
+// assign wr_ch_wr_data[4] = usb_wr_data;
 
 
 wire [3:0]    wr_ch_wr_be               [FT601_NUM_CHANNELS:1];
 assign wr_ch_wr_be[1] = usb_wr_be;
+// assign wr_ch_wr_be[2] = usb_wr_be;
+// assign wr_ch_wr_be[3] = usb_wr_be;
+// assign wr_ch_wr_be[4] = usb_wr_be;
+
 
 wire          wr_ch_wr_en               [FT601_NUM_CHANNELS:1];
 assign wr_ch_wr_en[1] = usb_wr_en;
+// assign wr_ch_wr_en[2] = usb_wr_en;
+// assign wr_ch_wr_en[3] = usb_wr_en;
+// assign wr_ch_wr_en[4] = usb_wr_en;
+
 
 wire          wr_ch_wr_push             [FT601_NUM_CHANNELS:1];
 assign wr_ch_wr_push[1] = usb_wr_push;
+// assign wr_ch_wr_push[2] = usb_wr_push;
+// assign wr_ch_wr_push[3] = usb_wr_push;
+// assign wr_ch_wr_push[4] = usb_wr_push;
 
 
 wire         wr_ch_wr_full             [FT601_NUM_CHANNELS:1];
 assign usb_wr_fifo_full = wr_ch_wr_full[1]; 
+//assign usb_wr_fifo_full = wr_ch_wr_full[2]; 
+//assign usb_wr_fifo_full = wr_ch_wr_full[3]; 
+//assign usb_wr_fifo_full = wr_ch_wr_full[4]; 
+
 
 wire         wr_ch_wr_almost_full      [FT601_NUM_CHANNELS:1];
 
@@ -1420,7 +1481,8 @@ xpm_cdc_single xpm_cdc_single_inst (
 
 wire [15:0] aud_out_l_m = (audout_mux_m == 0) ? aud_in_l_m : pbka_l_m;
 wire [15:0] aud_out_r_m = (audout_mux_m == 0) ? aud_in_r_m : pbka_r_m;
-wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : (pbka_l_m && pbka_r_m);
+//wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : (pbka_l_m && pbka_r_m);
+wire tx_data_valid_m = (audout_mux_m == 0) ? rx_data_valid_m : (pbka_l_valid_m && pbka_r_valid_m);
 
 
 
@@ -1518,7 +1580,7 @@ aic3204_if aic3204_if_inst(
 //
 /////////////////////////////////////////////////////////////
 
-wire [15:0] mpx_m;
+wire signed [15:0] mpx_m;
 wire mpx_valid_m;
     
 stereo_mpx mpx_inst (
@@ -1541,8 +1603,8 @@ stereo_mpx mpx_inst (
     .in_valid(rx_data_valid_m),    
     .in_valid_180(rx_data_valid_180_m),
         
-    .pbka_l(pbka_l_m),
-    .pbka_r(pbka_r_m),    
+    .pbka_l(pbka_l_m/4),   // TODO: why does this need to be divided?
+    .pbka_r(pbka_r_m/4),   // TODO: why does this need to be divided?
     .pbka_valid(pbka_rd_valid_m),
     .pbka_valid_180(pbka_rd_valid_180_m),
     
@@ -1817,6 +1879,7 @@ regs regs_inst (
     .usb_wr_be(usb_wr_be_raw),
     .usb_wr_en(usb_wr_en_raw),
     .usb_wr_fifo_full(usb_wr_fifo_full),
+//    .usb_wr_auto_trigger_period(ina_usb_auto_trigger_period),
     
     .usb_rd_data(usb_rd_data),
     .usb_rd_be(usb_rd_be),
@@ -1845,7 +1908,11 @@ regs regs_inst (
     .pbka_wr_en(pbka_wr_en),
     .pbka_full(pbka_full),
     
-    .audout_mux(audout_mux)
+    .audout_mux(audout_mux),
+    
+    
+    .ina_usb_wr_count(ina_usb_wr_count),
+    .ina_usb_wr_count_en(ina_usb_wr_count_en) 
                 
 );    
     

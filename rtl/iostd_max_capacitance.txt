@@ -1,0 +1,16 @@
+IO Std.				Max. load capacitance
+----------------    ---------------------
+LVCMOS18_S_4_HR 	2.5pF
+LVCMOS18_F_4_HR 	2.3pF
+
+LVCMOS18_S_8_HR 	5.0pF
+LVCMOS18_F_8_HR 	3.4pF
+
+LVCMOS18_S_12_HR 	7.5pF
+LVCMOS18_F_12_HR 	5.2pF
+
+LVCMOS18_S_16_HR 	6.8pF
+LVCMOS18_F_16_HR 	4.6pF
+
+LVCMOS18_S_24_HR 	6.4pF
+LVCMOS18_F_24_HR 	4.1pF

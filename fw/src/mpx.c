@@ -79,6 +79,40 @@ int init_mpx_channel_regs(struct mpx_channel_regs *regs) {
 		regs->filter_coef = (uint32_t)(10.0*mpx_filter1_coef[i] * (double)(1<<19));
 	}
 
+	regs->preemph_en = 0;
+
+	regs->b0 = 1.0 * (1LL<<26);
+	regs->b1 = 0.0 * (1LL<<26);
+	regs->b2 = 0.0 * (1LL<<26);
+	regs->a1 = 0.0 * (1LL<<26);
+	regs->a2 = 0.0 * (1LL<<26);
+
+	
+	// regs->b0 = 1.2 * (1LL<<26);
+	// regs->b1 = -0.8 * (1LL<<26);
+	// regs->b2 = 0.0 * (1LL<<26);
+	// regs->a1 = 0.400 * (1LL<<26);
+	// regs->a2 = 0.0 * (1LL<<26);
+
+
+	// regs->b0 = 1.5 * (1LL<<26);
+	// regs->b1 = -1.1 * (1LL<<26);
+	// regs->b2 = 0.0 * (1LL<<26);
+	// regs->a1 = 0.400 * (1LL<<26);
+	// regs->a2 = 0.0 * (1LL<<26);
+
+	// regs->b0 = 0.950 * (1LL<<26);
+	// regs->b1 = -0.700 * (1LL<<26);
+	// regs->b2 = 0.0 * (1LL<<26);
+	// regs->a1 = 0.100 * (1LL<<26);
+	// regs->a2 = 0.0 * (1LL<<26);
+
+	// regs->b0 = 0.950 * (1LL<<26);
+	// regs->b1 = -0.650 * (1LL<<26);
+	// regs->b2 = 0.0 * (1LL<<26);
+	// regs->a1 = 0.150 * (1LL<<26);
+	// regs->a2 = 0.0 * (1LL<<26);
+
 	return XST_SUCCESS;
 
 }
@@ -176,6 +210,16 @@ void handle_mpx_filt_cmd(void *arg, struct command *cmd) {
 
 
 
+void handle_mpx_preemph_cmd(void *arg, struct command *cmd) {
+	struct mpx_channel *channel = (struct mpx_channel *)arg;
+	int en = atoi(cmd->tokens[cmd->index++]);
+	channel->regs->preemph_en = en;
+}
+
+
+
+
+
 
 void init_mpx_channel_context(char *name, void* arg, struct cmd_context *parent_ctx) {
 
@@ -186,6 +230,7 @@ void init_mpx_channel_context(char *name, void* arg, struct cmd_context *parent_
 	add_command(mpx_channel_ctx, "src", handle_mpx_src_cmd);
 	add_command(mpx_channel_ctx, "freq", handle_mpx_freq_cmd);
 	add_command(mpx_channel_ctx, "filt", handle_mpx_filt_cmd);
+	add_command(mpx_channel_ctx, "preemph", handle_mpx_preemph_cmd);
 
 
 }
