@@ -17,4 +17,4 @@ This repo contains RTL, baremetal firmware, and application software (all WIP) f
 
 ![Block diagram](https://github.com/jc2brown/radio24bb/blob/master/www/baseband_rxtx.png)
 
-![Baseband hardware](https://github.com/jc2brown/radio24bb/blob/master/www/baseband_hw.png)
+![Baseband hardware](https://github.com/jc2brown/radio24bb/blob/master/www/baseband_hw.jpg)
